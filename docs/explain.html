@@ -1,0 +1,300 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<title>컬쳐랜드 쓸곳찾기 — 설명 자료</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" />
+<style>
+  @page { size: 1280px 720px; margin: 0; }
+  :root { --red: #ff3838; --red-deep: #e60011; --ink: #222; --ink-2: #4b4b4b; --ink-3: #757575; --line: #dfdfdf; --bg: #f4f4f4; --ok: #067a4b; --ok-bg: #e5f6ee; --warn: #9a5200; --warn-bg: #fff3df; --mut: #565c68; --mut-bg: #eef0f3; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: #d9dbe0; }
+  body { font-family: 'Pretendard Variable', Pretendard, 'Malgun Gothic', sans-serif; color: var(--ink); word-break: keep-all; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .page { width: 1280px; height: 720px; background: #fff; margin: 20px auto; position: relative; overflow: hidden; padding: 44px 64px 40px; page-break-after: always; break-after: page; }
+  @media print { html, body { background: #fff; } .page { margin: 0; } }
+  .sec { font-size: 15px; font-weight: 600; color: var(--ink-3); margin: 0 0 6px; }
+  h1.t { font-size: 30px; margin: 0 0 6px; padding-left: 16px; border-left: 4px solid var(--red-deep); line-height: 1.15; letter-spacing: -0.02em; }
+  .lead { font-size: 15.5px; color: var(--ink-2); margin: 10px 0 0 20px; font-weight: 600; }
+  .pno { position: absolute; left: 64px; bottom: 22px; font-size: 12px; color: var(--ink-3); }
+  .foot { position: absolute; right: 64px; bottom: 22px; font-size: 11px; color: var(--ink-3); }
+  .red { color: var(--red-deep); }
+  b { font-weight: 700; }
+  small { font-size: 0.85em; }
+  a { color: inherit; }
+
+  /* 표지 */
+  .cover { display: grid; grid-template-columns: 470px 1fr; gap: 36px; height: 100%; }
+  .cover .eyebrow { font-size: 16px; font-weight: 700; color: var(--ink-3); margin: 18px 0 0; }
+  .cover .eyebrow::after { content: ''; display: block; width: 46px; height: 4px; background: var(--red-deep); margin-top: 14px; }
+  .cover h1 { font-size: 52px; margin: 22px 0 6px; letter-spacing: -0.03em; line-height: 1.1; }
+  .cover .sub { font-size: 21px; font-weight: 700; color: var(--ink-2); margin: 0 0 18px; line-height: 1.45; }
+  .cover p.desc { font-size: 14.5px; line-height: 1.65; color: var(--ink-2); margin: 0 0 16px; }
+  .links { display: grid; gap: 8px; margin-top: 8px; }
+  .links div { display: grid; grid-template-columns: 92px 1fr; font-size: 13.5px; align-items: baseline; }
+  .links span { color: var(--ink-3); font-weight: 600; }
+  .links a { font-weight: 700; text-decoration: none; border-bottom: 1px solid var(--line); word-break: break-all; }
+  .tagrow { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 18px; }
+  .tag { font-size: 12.5px; font-weight: 700; padding: 4px 10px; border-radius: 999px; background: var(--bg); color: var(--ink-2); }
+  .tag.r { background: #fff0f0; color: var(--red-deep); }
+  .flow3 { display: grid; grid-template-columns: 1fr 26px 1fr 26px 1fr; align-items: start; gap: 6px; padding-top: 6px; }
+  .shot { border-radius: 22px; border: 6px solid #111; overflow: hidden; background: #fff; box-shadow: 0 10px 24px rgba(0,0,0,.12); }
+  .shot img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: top; }
+  .flow3 .shot { aspect-ratio: 780 / 1688; }
+  .cap { font-size: 13px; line-height: 1.5; color: var(--ink-2); margin-top: 10px; text-align: center; }
+  .cap b { display: block; font-size: 14px; color: var(--ink); }
+  .arrow { align-self: center; color: var(--red-deep); font-size: 22px; font-weight: 800; text-align: center; margin-top: -40px; }
+
+  /* 공통 블록 */
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 26px; margin-top: 22px; }
+  .box { border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; }
+  .box h3 { margin: 0 0 10px; font-size: 16.5px; }
+  .barhead { background: #4b4b4b; color: #fff; border-radius: 8px; padding: 7px 12px; font-size: 14px; font-weight: 700; margin: 0 0 10px; }
+  ol.prob { margin: 0; padding: 0; list-style: none; display: grid; gap: 9px; }
+  ol.prob li { display: grid; grid-template-columns: 30px 1fr; gap: 8px; font-size: 13.5px; line-height: 1.5; color: var(--ink-2); }
+  ol.prob li > i { font-style: normal; font-weight: 800; color: var(--red-deep); font-size: 17px; }
+  ol.prob li b { color: var(--ink); }
+  .src { font-size: 11px; color: var(--ink-3); }
+  .persona { display: grid; gap: 8px; }
+  .persona div { display: grid; grid-template-columns: 54px 1fr; gap: 10px; align-items: center; background: var(--bg); border-radius: 12px; padding: 9px 12px; font-size: 13px; line-height: 1.45; color: var(--ink-2); }
+  .persona img { width: 54px; height: 54px; object-fit: contain; }
+  .persona b { color: var(--ink); display: block; font-size: 13.5px; }
+  .intent { margin-top: 12px; padding: 12px 16px; border-radius: 12px; background: #fff3f3; font-size: 13.5px; line-height: 1.6; color: var(--ink-2); }
+  .intent b { color: var(--red-deep); }
+
+  /* 기능 4단계 */
+  .steps4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-top: 18px; position: relative; }
+  .steps4::before { content: ''; position: absolute; top: 26px; left: 12%; right: 12%; height: 2px; background: var(--line); }
+  .st { text-align: center; position: relative; }
+  .st .n { width: 52px; height: 52px; border-radius: 50%; background: var(--red-deep); color: #fff; font-weight: 800; font-size: 19px; display: grid; place-items: center; margin: 0 auto 8px; }
+  .st h4 { margin: 0 0 4px; font-size: 16px; }
+  .st .req { font-size: 11.5px; color: var(--ink-3); margin: 0 0 8px; }
+  .st ul { text-align: left; margin: 0; padding: 10px 12px 10px 26px; background: var(--bg); border-radius: 10px; font-size: 12.5px; line-height: 1.55; color: var(--ink-2); min-height: 150px; }
+  .ideas { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 14px; }
+  .idea { border: 1.5px dashed var(--red); border-radius: 12px; padding: 10px 12px; font-size: 12.5px; line-height: 1.5; color: var(--ink-2); }
+  .idea b { display: block; color: var(--red-deep); font-size: 13.5px; margin-bottom: 2px; }
+
+  /* 시나리오 화면 */
+  .scenario { display: grid; grid-template-columns: 1fr 300px; gap: 26px; margin-top: 16px; }
+  .flow4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+  .flow4 .shot { aspect-ratio: 780 / 1520; border-width: 5px; border-radius: 18px; }
+  .flow4 .cap { text-align: left; font-size: 12px; }
+  .flow4 .cap b { font-size: 13px; }
+  .flow4 .cap i { font-style: normal; display: inline-block; background: var(--red-deep); color: #fff; font-weight: 800; border-radius: 6px; padding: 0 6px; margin-right: 4px; font-size: 11.5px; }
+  .others { display: grid; gap: 8px; align-content: start; }
+  .others h3 { margin: 0 0 2px; font-size: 15px; }
+  .oth { display: grid; grid-template-columns: 62px 1fr; gap: 10px; align-items: start; border: 1px solid var(--line); border-radius: 12px; padding: 8px; }
+  .oth .shot { height: 100px; border-width: 3px; border-radius: 10px; box-shadow: none; }
+  .oth p { margin: 0; font-size: 12px; line-height: 1.45; color: var(--ink-2); }
+  .oth p b { color: var(--ink); font-size: 12.5px; display: block; }
+  .oth p .k { display: inline-block; font-weight: 800; color: #fff; background: var(--ink-2); border-radius: 5px; padding: 0 5px; margin-right: 3px; font-size: 11px; }
+
+  /* 적용 구상 */
+  table.t { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+  table.t th { background: #4b4b4b; color: #fff; font-weight: 600; padding: 7px 10px; text-align: left; }
+  table.t td { padding: 7px 10px; border-bottom: 1px solid var(--line); vertical-align: top; line-height: 1.45; color: var(--ink-2); }
+  table.t td:first-child { font-weight: 700; color: var(--ink); white-space: nowrap; }
+  table.t tr:nth-child(even) td { background: #fafafa; }
+  .entries { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+  .entry { background: var(--bg); border-radius: 12px; padding: 10px 12px; font-size: 12.5px; line-height: 1.5; color: var(--ink-2); }
+  .entry b { display: block; color: var(--ink); font-size: 13.5px; }
+  .entry b i { font-style: normal; color: var(--red-deep); margin-right: 4px; }
+  .pc { border: 1px solid var(--line); border-radius: 10px; overflow: hidden; font-size: 11px; color: var(--ink-3); }
+  .pc .bar { background: #f1f1f1; padding: 6px 10px; display: flex; gap: 6px; align-items: center; }
+  .pc .bar i { width: 8px; height: 8px; border-radius: 50%; background: #ccc; display: inline-block; }
+  .pc .body { display: grid; grid-template-columns: 1fr 1.3fr; gap: 6px; padding: 8px; }
+  .pc .search { grid-column: 1 / -1; border: 1.5px solid var(--red); border-radius: 8px; padding: 7px 10px; color: var(--ink-2); font-weight: 600; }
+  .pc .col { border-radius: 8px; background: var(--bg); padding: 8px; display: grid; gap: 5px; }
+  .pc .row { background: #fff; border-radius: 6px; padding: 5px 8px; display: flex; justify-content: space-between; }
+  .pc .ok { color: var(--ok); font-weight: 700; } .pc .wn { color: var(--warn); font-weight: 700; }
+  .scope { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .scope ul { margin: 0; padding-left: 18px; font-size: 12.5px; line-height: 1.6; color: var(--ink-2); }
+  .scope h4 { margin: 0 0 6px; font-size: 14px; }
+  .scope .yes h4 { color: var(--ok); } .scope .no h4 { color: var(--mut); }
+  .scope .box { padding: 12px 16px; }
+  .scope .box.yes { background: #f3fbf7; border-color: #cfeadc; }
+  .scope .box.no { background: #f6f7f9; }
+
+  /* AI */
+  .ai { display: grid; grid-template-columns: 330px 1fr; gap: 24px; margin-top: 16px; }
+  .ai-steps { display: grid; gap: 7px; }
+  .ai-step { display: grid; grid-template-columns: 26px 1fr; gap: 8px; font-size: 12.5px; line-height: 1.5; color: var(--ink-2); }
+  .ai-step i { font-style: normal; width: 24px; height: 24px; border-radius: 50%; background: var(--red-deep); color: #fff; font-weight: 800; display: grid; place-items: center; font-size: 12px; }
+  .ai-step b { color: var(--ink); }
+  table.v { width: 100%; border-collapse: collapse; font-size: 11.8px; }
+  table.v th { background: #4b4b4b; color: #fff; font-weight: 600; padding: 6px 8px; text-align: left; }
+  table.v td { padding: 6px 8px; border-bottom: 1px solid var(--line); vertical-align: top; line-height: 1.42; color: var(--ink-2); }
+  table.v td:first-child { font-weight: 700; color: var(--ink); white-space: nowrap; }
+  table.v .fix { color: var(--ok); font-weight: 700; }
+  .srcs { margin-top: 10px; font-size: 10.8px; line-height: 1.55; color: var(--ink-3); columns: 2; column-gap: 18px; }
+  .srcs b { color: var(--ink-2); }
+  .note { font-size: 11.5px; color: var(--ink-3); margin-top: 8px; line-height: 1.5; }
+</style>
+</head>
+<body>
+
+<!-- 1. 표지 · 한눈에 -->
+<section class="page">
+  <div class="cover">
+    <div>
+      <p class="eyebrow">Y-AI 메이커톤 2026 · 컬쳐랜드 사전 미션</p>
+      <h1>컬쳐랜드<br /><span class="red">쓸곳찾기</span></h1>
+      <p class="sub">어디서 쓸 수 있는지 묻고,<br />그 자리에서 쓰는 법까지.</p>
+      <p class="desc">사용처 이름·카테고리·자연어 질문 하나로 <b>온라인/매장별 사용 가능 여부</b>를 확인하고, 같은 화면의 버튼 하나로 <b>내 상품권에 맞춘 충전·바코드·전환 순서</b>까지 이어지는 컬쳐랜드 <b>앱</b> 기능 제안입니다. 모든 정보에 공식 출처와 확인일(2026-11-06)을 붙였습니다.</p>
+      <div class="links">
+        <div><span>클릭형 시제품</span><a href="https://usedupnote.github.io/cultureland-finder/">usedupnote.github.io/cultureland-finder</a></div>
+        <div><span>소스 코드</span><a href="https://github.com/usedupnote/cultureland-finder">github.com/usedupnote/cultureland-finder</a></div>
+        <div><span>시연 방법</span><span style="color:var(--ink-2);font-weight:500">PC에서 열면 왼쪽 패널의 시나리오 A~E·M 버튼으로 바로 시연</span></div>
+      </div>
+      <div class="tagrow"><span class="tag r">앱 적용 우선</span><span class="tag">PC 적용 구상 포함</span><span class="tag">서버·API 없이 동작</span><span class="tag">결제·계정은 시연용 데이터</span></div>
+    </div>
+    <div class="flow3">
+      <div><div class="shot"><img src="screens/02-search.png" alt="입력 화면" /></div><p class="cap"><b>① 입력</b>이름·카테고리·자연어<br />+ 내 상품권 선택</p></div>
+      <div class="arrow">→</div>
+      <div><div class="shot"><img src="screens/03-result-conv.png" alt="결과 화면" /></div><p class="cap"><b>② 결과</b>사용 가능 여부<br />온라인·매장 구분 + 출처</p></div>
+      <div class="arrow">→</div>
+      <div><div class="shot"><img src="screens/04-guide-conv.png" alt="사용 안내 화면" /></div><p class="cap"><b>③ 사용 안내</b>내 상품권에 맞춘 단계<br />앱 기능 화면으로 바로 연결</p></div>
+    </div>
+  </div>
+  <span class="pno">01</span>
+</section>
+
+<!-- 2. 제안 배경 · 대상 이용자 · 주요 기능 -->
+<section class="page">
+  <p class="sec">01. 제안 배경과 대상 이용자</p>
+  <h1 class="t">“여기서 돼요?”에 한 번에 답하지 못하는 이유</h1>
+  <div class="grid2" style="grid-template-columns: 1.25fr 1fr;">
+    <div>
+      <p class="barhead">공식 사이트를 조사하며 확인한 문제 (확인일 2026-11-06)</p>
+      <ol class="prob">
+        <li><i>1</i><span><b>이름이 같아 보이는 다른 상품권.</b> 18자리 ‘문화상품권’은 ㈜문화상품권 발행으로 2023-01-01 제휴 종료 후 충전 불가, 컬쳐랜드상품권은 옛 ‘모바일문화상품권’(16자리). 이용자는 이 차이를 모른 채 질문합니다. <span class="src">— 컬쳐랜드 FAQ, 넥슨 공지</span></span></li>
+        <li><i>2</i><span><b>쓰는 방법이 네 갈래로 흩어짐.</b> 결제창 바로사용 · 포인트 전환(수수료 4.5~8%) · 모바일 쿠폰 구매 · 매장 바코드. “스타벅스 돼요?”의 정답은 ‘바로는 안 되고 쿠폰으로 가능’입니다. <span class="src">— 사용처 안내(모바일)·사용 방법</span></span></li>
+        <li><i>3</i><span><b>사용처 페이지에 온라인/매장 구분과 확인일이 없음.</b> PC 사용처 154곳은 로고 이미지로만 나열되고, 매장 사용처(28곳)는 별도 팝업에 있습니다. <span class="src">— 컬쳐캐쉬 사용처(PC)</span></span></li>
+        <li><i>4</i><span><b>조건이 결과를 바꿈.</b> 본인인증 회원(보유한도 50만원), 전환 시 명의 일치·취소 불가, 일부 상품 제외(CGV·YES24), 매장에선 충전 없이 문자 바코드로도 결제 가능. <span class="src">— 회원 유형 안내, 전환 안내</span></span></li>
+      </ol>
+      <div class="intent"><b>기획 의도</b> — 사용처 검색과 사용 안내를 ‘따로 찾아보는 두 메뉴’가 아니라 <b>하나의 답</b>으로: “가능 여부 + 내 상황에 맞는 순서 + 근거”를 한 화면에서 이어 줍니다.</div>
+    </div>
+    <div>
+      <p class="barhead">대상 이용자와 사용 상황</p>
+      <div class="persona">
+        <div><img src="../assets/char/boy-please.webp" alt="" /><span><b>선물·경품으로 처음 받은 이용자</b>컬쳐캐쉬·전환 개념이 낯섦. “문화상품권 받았는데 어디서 써요?” — 중장년 포함</span></div>
+        <div><img src="../assets/char/boy-thumb.webp" alt="" /><span><b>계산대 앞에서 지금 쓰려는 이용자</b>편의점·영화관·서점 매장. 충전 없이 문자 바코드로 끝나는 경로가 필요</span></div>
+        <div><img src="../assets/char/catsh-cash.webp" alt="" /><span><b>온라인 결제·게임 충전 이용자(10~20대)</b>쿠팡·네이버페이·넥슨·구글플레이. 전환 수수료와 한도가 궁금</span></div>
+      </div>
+      <p class="barhead" style="margin-top:14px">이용자에게 달라지는 것</p>
+      <ol class="prob">
+        <li><i>✓</i><span>질문 1번 → 가능 여부·장소 구분·수수료를 <b>한 카드</b>에서</span></li>
+        <li><i>✓</i><span>결과 카드의 버튼 1번 → <b>내 상품권 기준</b> 3~4단계 안내 (이미 충전했으면 충전 단계 자동 생략)</span></li>
+        <li><i>✓</i><span>안 되는 경우에도 <b>사유와 대안</b>(전환·쿠폰·다른 채널·고객센터)까지</span></li>
+      </ol>
+    </div>
+  </div>
+  <span class="pno">02</span>
+</section>
+
+<!-- 3. 주요 기능 · 화면 흐름 -->
+<section class="page">
+  <p class="sec">02. 주요 기능과 화면 흐름</p>
+  <h1 class="t">필수 기능 4가지를 한 흐름으로</h1>
+  <div class="steps4">
+    <div class="st"><div class="n">01</div><h4>사용처 검색</h4><p class="req">사용처명·카테고리·자연어</p>
+      <ul><li>입력창 하나로 이름·카테고리·문장 모두 처리</li><li>초성(ㅋㅍ→쿠팡)·오타(메가빡스→메가박스) 허용, 자동완성</li><li>카테고리 8종·예시 질문 칩</li><li><b>내 상품권</b> 선택(문자 16자리/컬쳐캐쉬/18자리/스마트문상)</li></ul></div>
+    <div class="st"><div class="n">02</div><h4>사용 가능 여부</h4><p class="req">온라인·오프라인 구분</p>
+      <ul><li>판정 4종: 바로 가능 · 바꿔서 가능(전환·쿠폰·코드) · 불가 · 확인 필요</li><li>온라인 / 매장 두 줄로 나눠 방식·수수료·한도 표시</li><li>공식 출처·확인일·신뢰도 배지</li><li>결과 없음·미등재도 안내</li></ul></div>
+    <div class="st"><div class="n">03</div><h4>사용 방법 안내</h4><p class="req">충전·바코드·전환 이용 순서</p>
+      <ul><li>방식 7종 템플릿: 문자 바코드·앱 바코드·바로사용·번호 입력·전환·쿠폰·기프트코드</li><li>내 상품권에 따라 충전 단계 추가/생략</li><li>준비물·수수료 계산·주의사항·방법 비교</li></ul></div>
+    <div class="st"><div class="n">04</div><h4>연결된 이용 흐름</h4><p class="req">결과에서 바로 사용 방법으로</p>
+      <ul><li>결과 카드의 CTA 1번 → 안내 (추가 검색 0회)</li><li>안내 단계의 [앱에서 바로 하기] → 충전·바코드·전환 화면 → 다시 안내로 복귀</li><li>불가 채널이면 가능한 채널로 대신 연결</li></ul></div>
+  </div>
+  <div class="ideas">
+    <div class="idea"><b>“이렇게 이해했어요” 칩</b>질문을 사용처·장소·상품권으로 풀어 보여주고, 탭해서 바로 고칠 수 있어요.</div>
+    <div class="idea"><b>내 상품권 판별 (PIN 미수집)</b>받은 방식·자릿수만 물어 16/18자리를 가리고, ‘문화상품권’처럼 모호하면 다시 물어요.</div>
+    <div class="idea"><b>수수료 계산·방법 비교</b>1만원 → 쿠팡캐시 9,400원처럼 실수령액을 보여주고, 단계 수·충전 필요 여부를 비교해요.</div>
+    <div class="idea"><b>문자 상품권에서 시작</b>MMS의 [사용처/잔액안내] 링크로 들어오면 ‘문자로 받은 상품권’이 자동 설정돼요.</div>
+  </div>
+  <div class="scope" style="margin-top:16px; grid-template-columns: 1fr 1fr; gap: 18px;">
+    <div class="box yes"><h4>실제 구현 범위 (클릭형 시제품에서 동작)</h4><ul>
+      <li>앱 홈 진입·입력·결과·사용 안내 화면, 해석 칩 수정, 상품권 판별 도우미</li>
+      <li>사용처 53곳(공식 154곳 중 선정, 미등재·확인 필요 4곳 포함) · 이용 방식 7종 · 카테고리 8종</li>
+      <li>시연용 앱 화면 6종(문자 상품권·충전·바코드 결제·전환·쿠폰·기프트코드), 진행 체크·즐겨찾기 연동</li>
+      <li>규칙 기반 해석기(초성·오타·조사 처리) + 자동 테스트 91건 통과, 모바일·PC 화면 대응</li></ul></div>
+    <div class="box no"><h4>미구현 (컬쳐랜드 내부 검토·개발 전제)</h4><ul>
+      <li>실제 결제·충전·전환·로그인·본인인증 연동 — 모두 시연용 가상 데이터</li>
+      <li>실제 바코드 발급·상품권 PIN 처리(시제품은 PIN을 받지 않음)</li>
+      <li>공식 사용처 154곳 전체·실시간 연동, 쿠폰 수수료 등 로그인 후 정보</li>
+      <li>LLM 기반 자유 질문 해석, 위치 기반 주변 매장, PC 화면(구상만 제시)</li></ul></div>
+  </div>
+  <span class="pno">03</span>
+  <span class="foot">빨간 점선 = 이번 제안에서 새로 만든 아이디어</span>
+</section>
+
+<!-- 4. 단계별 화면 설명 -->
+<section class="page">
+  <p class="sec">02. 단계별 화면 설명</p>
+  <h1 class="t">사용 사례 A — “편의점에서 컬쳐랜드상품권 써도 돼?”</h1>
+  <div class="scenario">
+    <div class="flow4">
+      <div><div class="shot"><img src="screens/01-home.png" alt="" /></div><p class="cap"><i>0</i><b>앱 홈 진입</b>잔액 카드 위 검색바(제안). 많이 묻는 질문에서 바로 시작</p></div>
+      <div><div class="shot"><img src="screens/03-result-conv.png" alt="" /></div><p class="cap"><i>1·2</i><b>해석 + 판정</b>편의점 4사로 해석, ‘매장에서 바로 사용 가능’ · 온라인 해당 없음 · 공식 출처</p></div>
+      <div><div class="shot"><img src="screens/04-guide-conv.png" alt="" /></div><p class="cap"><i>3</i><b>3단계 안내</b>충전 없이 문자 바코드: 문자 열기 → 계산대 제시 → 잔액 확인. 앱 바코드(4단계)와 탭 비교</p></div>
+      <div><div class="shot"><img src="screens/05-mms.png" alt="" /></div><p class="cap"><i>4</i><b>앱 화면으로 연결</b>[시연용 상품권 문자 보기] → 바코드 제시 → [안내로 돌아가기], 완료 체크</p></div>
+    </div>
+    <div class="others">
+      <h3>다른 사례도 끝까지 동작</h3>
+      <div class="oth"><div class="shot"><img src="screens/06-result-coupang.png" alt="" /></div><p><b><span class="k">B</span>쿠팡에서 쓸 수 있어?</b>결제창엔 없음 → 쿠팡캐시 전환(수수료 6%, 월 50만원) → 전환 화면·수수료 계산</p></div>
+      <div class="oth"><div class="shot"><img src="screens/08-cgv-compare.png" alt="" /></div><p><b><span class="k">C</span>CGV</b>온라인 바로사용 · 매장 바코드 · 쿠폰을 단계 수·충전 필요 여부로 비교</p></div>
+      <div class="oth"><div class="shot"><img src="screens/09-munsang18.png" alt="" /></div><p><b><span class="k">D</span>문화상품권 18자리 충전되나요?</b>충전 불가 사유(발행사·제휴 종료)와 대안, 16자리라면 충전 안내로</p></div>
+      <div class="oth"><div class="shot"><img src="screens/10-empty.png" alt="" /></div><p><b><span class="k">E</span>닌텐도 / 배달의민족</b>‘확인 필요’ 표시, 결과 없음 → 비슷한 이름·카테고리·공식 목록·고객센터</p></div>
+    </div>
+  </div>
+  <span class="pno">04</span>
+</section>
+
+<!-- 5. 앱/PC 적용 · AI 활용과 검증 · 구현 범위 -->
+<section class="page">
+  <p class="sec">03. 앱·PC 적용 구상 · 04. AI 활용과 검증</p>
+  <h1 class="t">어디에 들어가고, 무엇을 어떻게 검증했나</h1>
+  <div class="ai" style="grid-template-columns: 455px 1fr;">
+    <div>
+      <p class="barhead">앱 진입 위치 (현행 앱 구조 유지)</p>
+      <div class="entries" style="grid-template-columns:1fr;gap:5px">
+        <div class="entry" style="padding:6px 12px"><b style="display:inline"><i>①</i>홈 상단 검색바</b> — 탭 아래·잔액 카드 위, 매장 앞에서 바로 질문</div>
+        <div class="entry" style="padding:6px 12px"><b style="display:inline"><i>②</i>문자 [사용처/잔액안내]</b> — MMS 링크로 진입, 내 상품권 자동 설정</div>
+        <div class="entry" style="padding:6px 12px"><b style="display:inline"><i>③</i>충전 완료 화면</b> — “충전한 캐쉬, 어디서 쓸까요?”</div>
+        <div class="entry" style="padding:6px 12px"><b style="display:inline"><i>④</i>즐겨찾기 사용처</b> — 판정 카드로, 안내 끝에서 즐겨찾기 추가</div>
+      </div>
+      <p class="barhead" style="margin-top:10px">PC 사용처 페이지 적용안</p>
+      <div class="pc"><div class="bar"><i></i><i></i><i></i>&nbsp;cultureland.co.kr/usecash/useCash.do</div>
+        <div class="body"><div class="search">🔍 어디서 쓸 수 있는지 물어보세요 — 기존 로고 목록 위</div>
+          <div class="col"><div class="row">CU <span class="ok">매장 가능</span></div><div class="row">쿠팡 <span class="wn">전환 6%</span></div></div>
+          <div class="col"><div class="row"><b style="color:var(--ink)">안내 패널</b>1 문자 열기 · 2 바코드 제시</div><div class="row">3 잔액 확인 <span class="ok">출처·확인일</span></div></div></div></div>
+      <p class="note">내부 적용 시 사용처 DB에 <b>channel·method·fee·limit·checkedAt·source</b> 필드를 더하면 같은 판정·안내를 운영자가 관리할 수 있어요. 결제·충전·계정 연동은 컬쳐랜드 내부 개발 전제.</p>
+      <div class="srcs" style="columns:1;font-size:10.4px;line-height:1.5;margin-top:8px"><b>정보 출처(확인일 2026-11-06)</b> · 컬쳐랜드상품권 사용처 안내 m.cultureland.co.kr/vchr/culturevoucherUse.do · 컬쳐캐쉬 사용처 www.cultureland.co.kr/usecash/useCash.do(오프라인 팝업 포함) · 사용 방법 /usecash/getCashHow.do · 이용 가이드 /guide/culturecashGuide.do · 상품권 안내 /voucher/mobile.do · 충전 /charge/main.do · 회원 유형 /guide/changeUserType.do · 전환 안내 /conversion/(naverpay·coupang·smilecash·skpaypoint)_bridge.do · 전환·쿠폰·바로사용 목록 m.cultureland.co.kr/(convs·cpn·shp) · Google Play /google/googleBuy.do · 약관·환불 · 넥슨 공지(2차) · 미션 가이드 3·4쪽. 화면마다 해당 출처 링크·신뢰도 배지를 함께 표시.</div>
+    </div>
+    <div>
+      <p class="barhead">AI 활용 과정 — Claude(Anthropic) · Claude Code</p>
+      <div class="ai-steps">
+        <div class="ai-step"><i>1</i><span><b>기획·조사</b> 미션 가이드 분석 → 공식 사이트 조사 에이전트 3회(충전·전환 / 사용처 / 충돌 재검증)</span></div>
+        <div class="ai-step"><i>2</i><span><b>정리·제작</b> 사용처 데이터·안내 문구·화면·규칙 기반 해석기 코드 작성 (실시간 AI 호출 없음)</span></div>
+        <div class="ai-step"><i>3</i><span><b>검증</b> 공식 원문 대조 → 충돌은 재조사, 미확인은 ‘확인 필요’ 표시 / 질의 34개 자동 테스트 / 34개 화면 넘침·깨진 이미지 점검</span></div>
+      </div>
+      <table class="v" style="margin-top:10px">
+        <thead><tr><th>항목</th><th>AI 초안·1차 결과</th><th>대조한 근거</th><th>수정</th></tr></thead>
+        <tbody>
+          <tr><td>쿠팡캐시 한도</td><td>월 10만원(블로그) vs 월 50만원 충돌</td><td>공식 쿠팡캐시 전환 안내 원문</td><td class="fix">월 50만원·일 10회</td></tr>
+          <tr><td>넥슨 한도</td><td>월 15만원</td><td>넥슨 공지(2023-08 변경)</td><td class="fix">월 20만원, 번호 직접 입력 경로 추가</td></tr>
+          <tr><td>카카오페이</td><td>전환 목록에 없음</td><td>가이드 앱 배너 “카카오페이포인트 적립” 반례 → PC·모바일 전환 목록 재확인</td><td class="fix">‘확인 필요’ + 배너는 혜택 광고로 추정 명시</td></tr>
+          <tr><td>다이소</td><td>배너 “다이소 결제 OPEN” → 매장 가능 오해</td><td>공식 매장 사용처 28곳에 없음, 다이소몰만 확인</td><td class="fix">매장 ‘확인 필요’ → 다이소몰로 연결</td></tr>
+          <tr><td>매장 사용법</td><td>충전 → 앱 바코드(4단계)만</td><td>가이드 4쪽 MMS 상품권 예시</td><td class="fix">충전 없는 문자 바코드(3단계)를 기본 경로로</td></tr>
+          <tr><td>CGV</td><td>상품권 바로 결제</td><td>공식 유의사항 “충전 후 사용”</td><td class="fix">온라인은 충전 단계 포함</td></tr>
+          <tr><td>‘문화상품권’</td><td>해석기가 18자리로 단정</td><td>16자리 옛 이름 ‘모바일문화상품권’</td><td class="fix">모호하면 자릿수 다시 묻기</td></tr>
+          <tr><td>해석기</td><td>“쿠팡캐시로 전환” 미인식, ‘ㅋㅍ’ 오매칭</td><td>자동 테스트 실패 2건</td><td class="fix">별칭·초성 정확일치 우선 → 91/91</td></tr>
+        </tbody>
+      </table>
+      <p class="note" style="margin-top:10px"><b>실제 정보와 시연 데이터 구분</b> — 사용처·수수료·한도·절차는 공식 확인 정보(data/merchants.js 등, 항목마다 출처·확인일·신뢰도). 잔액·바코드·상품권 번호·회원 이름은 가상 시연 데이터(data/demo.js)로 분리하고 화면에 ‘시연용’ 띠를 붙였어요. 개인정보·실제 PIN·API 키는 쓰지 않았어요.</p>
+    </div>
+  </div>
+  <span class="pno">05</span>
+</section>
+
+</body>
+</html>
