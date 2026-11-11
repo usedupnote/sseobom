@@ -1,5 +1,5 @@
 // [0 진입] 컬쳐랜드 앱 홈 모형 — 미션 가이드 3쪽 화면 구조를 따르고, 검색바·자주 묻는 질문만 새로 제안
-import { icon, esc, won, mark } from '../ui.js';
+import { icon, esc, won, mark, a11yBtn } from '../ui.js';
 import { MERCHANT_BY_ID } from '../../data/merchants.js';
 import { DEMO } from '../../data/demo.js';
 
@@ -18,6 +18,7 @@ export function homeView({ state }) {
     <div class="home-head">
       <img src="assets/brand/logo-wordmark.svg" alt="CULTURE LAND" />
       <div class="hh-right">
+        <span class="proposal">${a11yBtn()}</span>
         <button type="button" aria-label="출석체크">${icon('calendar', 18)}출첵</button>
         <button type="button" aria-label="전체 메뉴">${icon('menu', 22)}</button>
       </div>
@@ -29,7 +30,7 @@ export function homeView({ state }) {
       <div class="home-body">
         <button class="finder-bar proposal" data-go="#/search">
           ${icon('search', 22)}
-          <span><strong>어디서 쓸 수 있는지 물어보세요</strong><small>예) 편의점에서 써도 돼? · 쿠팡 · CGV</small></span>
+          <span><small class="brand">써봄 SSEOBOM</small><strong>상품권, 어디서 어떻게 쓸까?</strong><small>예) 편의점에서 써도 돼? · 쿠팡 · CGV</small></span>
           ${icon('chev', 18)}
         </button>
 
@@ -43,7 +44,7 @@ export function homeView({ state }) {
         </section>
 
         <section class="quick" aria-label="빠른 메뉴">
-          <button class="q-main" data-go="#/mock/charge">컬쳐랜드상품권<br />충전하기<span class="q-ic">${icon('card', 22)}</span></button>
+          <button class="q-main" data-go="#/mock/charge">컬쳐랜드<br />상품권<br />충전하기<span class="q-ic">${icon('card', 22)}</span></button>
           <button data-go="#/mock/barcode"><span class="q-ic">${icon('barcode', 20)}</span>바코드 결제</button>
           <button data-go="#/c/point"><span class="q-ic">${icon('coin', 20)}</span>전환</button>
           <button data-go="#/c/shopping"><span class="q-ic">${icon('bag', 20)}</span>쇼핑</button>

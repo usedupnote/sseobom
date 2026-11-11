@@ -1,5 +1,5 @@
 // [3 사용 안내] 보유 상품권에 맞춘 단계 안내 — 결과 화면에서 바로 이어짐
-import { icon, esc, fill, won, pct, sourceList } from '../ui.js';
+import { icon, esc, fill, won, pct, sourceList, topbar, speakBtn } from '../ui.js';
 import { MERCHANT_BY_ID, laneVerdict } from '../../data/merchants.js';
 import { METHODS, CHARGE_STEP, routesForLane } from '../../data/methods.js';
 import { VOUCHERS } from '../../data/vouchers.js';
@@ -31,13 +31,13 @@ function laneOf(m, routeId) {
   return { key: METHODS[routeId]?.channel || 'online', lane: null };
 }
 
-export function guideView({ segs, state }) {
+export function guideView({ segs, query, state }) {
   const isChargeOnly = segs[1] === '_charge';
   const m = isChargeOnly ? { id: '_charge', name: '컬쳐캐쉬 충전', sources: [] } : MERCHANT_BY_ID[segs[1]];
   const routeId = isChargeOnly ? 'charge' : segs[2];
   const method = isChargeOnly ? CHARGE_ONLY : METHODS[routeId];
   if (!m || !method) {
-    return { title: '안내', html: `<header class="topbar"><button class="icon-btn" data-back>${icon('back', 22)}</button><h1 class="topbar-title">안내를 찾지 못했어요</h1><span></span></header>` };
+    return { title: '안내', html: topbar('안내를 찾지 못했어요') };
   }
   const { key: chKey, lane } = isChargeOnly ? { key: 'online', lane: null } : laneOf(m, routeId);
   const vars = { name: m.name, target: lane?.target || '', fee: lane && typeof lane.fee === 'number' ? pct(lane.fee) : '' };
@@ -57,6 +57,13 @@ export function guideView({ segs, state }) {
   const doneCount = steps.filter((_, i) => isDone(i)).length;
   const allDone = doneCount === steps.length;
   const backHash = location.hash;
+  const listHash = `#/g/${segs[1]}/${segs[2] || ''}`.replace(/\/$/, '');
+  const title = isChargeOnly ? '컬쳐캐쉬 충전 방법' : `${m.name} ${CH_LABEL[chKey]}에서 쓰는 방법`;
+
+  // 한 단계씩 크게 보기(?s=1부터) — 시야장애·저시력 이용자를 위해 한 화면에 한 단계만 가운데 크게
+  if (query?.get('s')) {
+    return focusScreen({ m, steps, isDone, doneKey, lane, listHash, backHash, title, s: parseInt(query.get('s'), 10) || 1 });
+  }
 
   // 같은 사용처의 다른 방법(비교)
   const alts = [];
@@ -72,7 +79,7 @@ export function guideView({ segs, state }) {
     }
   }
   const tabs = alts.length > 1 ? `<div class="route-tabs" role="tablist" aria-label="이용 방법">${alts
-    .map((a) => `<button role="tab" aria-selected="${a.r === routeId}" class="${a.r === routeId ? 'on' : ''}" data-go="#/g/${m.id}/${a.r}">${esc(CH_LABEL[a.key])} · ${esc(fill(a.mt.short, { target: a.l.target || '' }))}<small>${a.n}단계${a.needCharge ? ' · 충전 필요' : ''}</small></button>`)
+    .map((a) => `<button role="tab" aria-selected="${a.r === routeId}" class="${a.r === routeId ? 'on' : ''}" data-go="#/g/${m.id}/${a.r}"><span>${a.r === routeId ? '✓ ' : ''}${esc(CH_LABEL[a.key])} · ${esc(fill(a.mt.short, { target: a.l.target || '' }))}</span><small>${a.n}단계${a.needCharge ? ' · 충전 필요' : ''}${a.r === routeId ? ' · 보는 중' : ''}</small></button>`)
     .join('')}</div>` : '';
 
   // 보유 상품권 확인 줄
@@ -120,20 +127,27 @@ export function guideView({ segs, state }) {
 
   const cautions = [...(method.cautions || []), ...(lane?.notes || [])];
   const srcKeys = [...(method.sources || []), ...(method.needsCash ? CHARGE_STEP.sources : []), ...(m.sources || [])];
-  const title = isChargeOnly ? '컬쳐캐쉬 충전 방법' : `${m.name} ${CH_LABEL[chKey]}에서 쓰는 방법`;
   const fav = state.favorites.includes(m.id);
+  const firstOpen = steps.findIndex((s, i) => !s.skip && !isDone(i));
+  const visible = steps.filter((s) => !s.skip);
+  const startAt = firstOpen < 0 ? 1 : steps.slice(0, firstOpen + 1).filter((s) => !s.skip).length;
+  const sayAll = `${title}. ${visible.map((s, i) => `${i + 1}단계, ${s.title}. ${s.body}`).join(' ')}`;
 
   return {
     title,
     gray: true,
     html: `
-    <header class="topbar"><button class="icon-btn" data-back aria-label="뒤로">${icon('back', 22)}</button><h1 class="topbar-title">사용 방법</h1><span class="icon-btn"></span></header>
+    ${topbar('사용 방법')}
     <div class="scroll">
       <section class="guide-hero">
         <h2>${esc(title)}</h2>
         <p>${esc(fill(method.summary, vars))}</p>
         ${tabs}
         ${vRow}
+        <div class="focus-entry proposal">
+          <button class="btn" data-go="${listHash}?s=${startAt}">${icon('steps', 18)}한 단계씩 크게 보기</button>
+          ${speakBtn(sayAll, '전체 읽어주기').replace('btn-sm ', '')}
+        </div>
       </section>
       <div class="guide-body">
         ${blocked ? `<div class="callout callout-no"><img src="assets/char/boy-sweat.webp" alt="" /><div><h3>${esc(vinfo.short)}은(는) 이 방법으로 쓸 수 없어요</h3><p>${esc(vinfo.reason)}</p><div class="btns"><button class="btn btn-sm" data-go="#/v?back=${encodeURIComponent(backHash)}">내 상품권 다시 확인</button></div></div></div>` : ''}
@@ -186,17 +200,66 @@ export function guideView({ segs, state }) {
         toast(on ? '홈 즐겨찾기에 추가했어요' : '즐겨찾기에서 뺐어요');
         rerender();
       });
-      const calc = root.querySelector('#calcAmt');
-      if (calc) {
-        const upd = () => {
-          const amt = Math.max(0, parseInt(calc.value.replace(/\D/g, ''), 10) || 0);
-          const fee = Math.round(amt * lane.fee);
-          root.querySelector('#calcFee').textContent = `- ${won(fee)}`;
-          root.querySelector('#calcGet').textContent = `${(amt - fee).toLocaleString('ko-KR')}P`;
-        };
-        calc.addEventListener('input', upd);
-        upd();
-      }
+      bindCalc(root, lane);
+    },
+  };
+}
+
+function bindCalc(root, lane) {
+  const calc = root.querySelector('#calcAmt');
+  if (!calc || !lane) return;
+  const upd = () => {
+    const amt = Math.max(0, parseInt(calc.value.replace(/\D/g, ''), 10) || 0);
+    const fee = Math.round(amt * lane.fee);
+    root.querySelector('#calcFee').textContent = `- ${won(fee)}`;
+    root.querySelector('#calcGet').textContent = `${(amt - fee).toLocaleString('ko-KR')}P`;
+  };
+  calc.addEventListener('input', upd);
+  upd();
+}
+
+// 한 단계씩 크게 보기 — 건너뛴 단계(이미 충전함)는 빼고 보여준다
+function focusScreen({ m, steps, isDone, doneKey, lane, listHash, backHash, title, s }) {
+  const order = steps.map((st, i) => ({ st, i })).filter(({ st }) => !st.skip);
+  const n = order.length;
+  const k = Math.min(Math.max(s, 1), n);
+  const { st, i } = order[k - 1];
+  const d = isDone(i);
+  const act = st.action ? `<button class="btn btn-dark btn-block" data-go="#/${st.action.to}?m=${m.id}&back=${encodeURIComponent(backHash)}">${icon('phone', 18)}${esc(st.action.label)}</button>` : '';
+  const say = `${k}단계. ${st.title}. ${st.body}${st.tip ? ' ' + st.tip : ''}`;
+  return {
+    title: `${title} ${k}/${n}`,
+    html: `
+    ${topbar(`${k} / ${n} 단계`, { backTo: listHash })}
+    <div class="focus-wrap" aria-live="polite">
+      <p class="focus-of">${esc(title)}</p>
+      <div class="focus-n ${d ? 'is-done' : ''}" aria-hidden="true">${d ? icon('check', 36) : k}</div>
+      <h2>${esc(st.title)}</h2>
+      <p class="body">${esc(st.body)}</p>
+      ${st.tip ? `<p class="tip">${esc(st.tip)}</p>` : ''}
+      ${st.calculator && lane ? calcHtml(lane) : ''}
+      <div class="focus-actions">
+        ${act}
+        ${speakBtn(say, '이 단계 읽어주기').replace('btn-sm ', '')}
+        <button class="btn" id="fDone" aria-pressed="${d}">${icon('check', 18)}${d ? '했어요 (다시 누르면 취소)' : '이 단계 했어요'}</button>
+      </div>
+    </div>
+    <div class="cta-bar">
+      <div class="focus-nav">
+        <button class="btn" ${k === 1 ? 'disabled' : `data-go="${listHash}?s=${k - 1}"`}>← 이전</button>
+        <button class="btn btn-primary" id="fNext">${k === n ? '다 했어요 · 목록으로' : '다음 단계 →'}</button>
+      </div>
+    </div>`,
+    mount(root) {
+      bindCalc(root, lane);
+      root.querySelector('#fDone').addEventListener('click', () => {
+        stepDone(doneKey, i, steps.length);
+        rerender();
+      });
+      root.querySelector('#fNext').addEventListener('click', () => {
+        if (!isDone(i)) stepDone(doneKey, i, steps.length);
+        location.hash = k === n ? listHash : `${listHash}?s=${k + 1}`;
+      });
     },
   };
 }

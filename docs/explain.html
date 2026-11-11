@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
 <meta charset="utf-8" />
-<title>컬쳐랜드 쓸곳찾기 — 설명 자료</title>
+<title>컬쳐랜드 써봄(SSEOBOM) — 설명 자료</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" />
 <style>
   @page { size: 1280px 720px; margin: 0; }
@@ -69,7 +69,7 @@
   .st h4 { margin: 0 0 4px; font-size: 16px; }
   .st .req { font-size: 11.5px; color: var(--ink-3); margin: 0 0 8px; }
   .st ul { text-align: left; margin: 0; padding: 10px 12px 10px 26px; background: var(--bg); border-radius: 10px; font-size: 12.5px; line-height: 1.55; color: var(--ink-2); min-height: 150px; }
-  .ideas { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 14px; }
+  .ideas { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-top: 14px; }
   .idea { border: 1.5px dashed var(--red); border-radius: 12px; padding: 10px 12px; font-size: 12.5px; line-height: 1.5; color: var(--ink-2); }
   .idea b { display: block; color: var(--red-deep); font-size: 13.5px; margin-bottom: 2px; }
 
@@ -128,67 +128,83 @@
   .srcs { margin-top: 10px; font-size: 10.8px; line-height: 1.55; color: var(--ink-3); columns: 2; column-gap: 18px; }
   .srcs b { color: var(--ink-2); }
   .note { font-size: 11.5px; color: var(--ink-3); margin-top: 8px; line-height: 1.5; }
+
+  /* 1쪽: 써봄 소개 + 제안 배경 */
+  .intro { display: grid; grid-template-columns: 430px 1fr; gap: 34px; height: 100%; }
+  .brand .eyebrow { font-size: 14px; font-weight: 700; color: var(--ink-3); margin: 4px 0 0; }
+  .brand .eyebrow::after { content: ''; display: block; width: 46px; height: 4px; background: var(--red-deep); margin-top: 12px; }
+  .brand h1 { font-size: 48px; margin: 16px 0 0; letter-spacing: -0.03em; line-height: 1.1; }
+  .brand .en { margin: 4px 0 0; font-size: 14px; letter-spacing: 0.3em; font-weight: 800; color: var(--ink-3); }
+  .brand .slogan { margin: 12px 0 12px; font-size: 22px; font-weight: 800; }
+  .brand .desc { font-size: 13.5px; line-height: 1.65; color: var(--ink-2); margin: 0 0 12px; }
+  .map2 { display: grid; gap: 6px; margin-bottom: 12px; }
+  .map2 div { display: grid; grid-template-columns: 62px 1fr; gap: 8px; align-items: center; background: #fff3f3; border-radius: 10px; padding: 7px 10px; font-size: 12.5px; color: var(--ink-2); line-height: 1.4; }
+  .map2 b { color: var(--red-deep); font-size: 15px; }
+  .persona.p4 { grid-template-columns: 1fr 1fr; }
+  .persona.p4 div { grid-template-columns: 40px 1fr; padding: 7px 10px; font-size: 12px; }
+  .persona.p4 img { width: 40px; height: 40px; }
+  .persona.p4 b { font-size: 12.5px; }
+  .intro ol.prob { gap: 6px; }
+  .intro ol.prob li { font-size: 12.5px; line-height: 1.45; }
+  .intro .intent { margin-top: 10px; padding: 9px 14px; font-size: 12.5px; }
+
+  /* 4쪽: 저시력 대응 */
+  .lv-shots { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; margin-top: 12px; }
+  .lv-shots .shot { aspect-ratio: 780 / 800; border-width: 4px; border-radius: 16px; }
+  .lv-shots .cap { text-align: left; font-size: 11.5px; margin-top: 6px; line-height: 1.4; }
+  .lv-shots .cap b { font-size: 12.5px; }
+  .lv-bottom { display: grid; grid-template-columns: 1fr 300px; gap: 18px; margin-top: 12px; }
+  .lv-bottom table.t { font-size: 11.8px; }
+  .lv-bottom table.t td, .lv-bottom table.t th { padding: 5px 8px; }
+  .metrics { display: grid; gap: 6px; align-content: start; }
+  .metrics div { display: grid; grid-template-columns: 92px 1fr; gap: 8px; align-items: center; border: 1px solid var(--line); border-radius: 10px; padding: 6px 10px; }
+  .metrics b { font-size: 22px; color: var(--ok); font-weight: 900; letter-spacing: -0.02em; }
+  .metrics span { font-size: 12.5px; font-weight: 700; line-height: 1.3; }
+  .metrics small { font-weight: 500; color: var(--ink-3); font-size: 11px; }
 </style>
 </head>
 <body>
 
-<!-- 1. 표지 · 한눈에 -->
+<!-- 1. 써봄 소개 · 제안 배경 · 대상 이용자 -->
 <section class="page">
-  <div class="cover">
-    <div>
+  <div class="intro">
+    <div class="brand">
       <p class="eyebrow">Y-AI 메이커톤 2026 · 컬쳐랜드 사전 미션</p>
-      <h1>컬쳐랜드<br /><span class="red">쓸곳찾기</span></h1>
-      <p class="sub">어디서 쓸 수 있는지 묻고,<br />그 자리에서 쓰는 법까지.</p>
-      <p class="desc">사용처 이름·카테고리·자연어 질문 하나로 <b>온라인/매장별 사용 가능 여부</b>를 확인하고, 같은 화면의 버튼 하나로 <b>내 상품권에 맞춘 충전·바코드·전환 순서</b>까지 이어지는 컬쳐랜드 <b>앱</b> 기능 제안입니다. 모든 정보에 공식 출처와 확인일(2026-11-06)을 붙였습니다.</p>
-      <div class="links">
-        <div><span>클릭형 시제품</span><a href="https://usedupnote.github.io/cultureland-finder/">usedupnote.github.io/cultureland-finder</a></div>
-        <div><span>소스 코드</span><a href="https://github.com/usedupnote/cultureland-finder">github.com/usedupnote/cultureland-finder</a></div>
-        <div><span>시연 방법</span><span style="color:var(--ink-2);font-weight:500">PC에서 열면 왼쪽 패널의 시나리오 A~E·M 버튼으로 바로 시연</span></div>
+      <h1>컬쳐랜드 <span class="red">써봄</span></h1>
+      <p class="en">SSEOBOM</p>
+      <p class="slogan">상품권, 어디서 어떻게 쓸까?</p>
+      <p class="desc"><b>써봄(SSEOBOM)</b>은 상품권을 어디서 사용할 수 있는지 확인하고, 실제 사용하기까지 필요한 절차를 단계별로 안내하는 <b>상품권 이용정보 서비스</b>입니다. 온라인·오프라인 사용처를 검색하고, 상품권 종류와 사용처에 따른 이용 방법을 한 흐름으로 확인합니다. 컬쳐랜드상품권·컬쳐캐쉬에서 시작해 교환소 상품권·스마트문상·제휴 쿠폰으로 넓혀 갈 수 있는 컬쳐랜드 <b>앱</b> 기능 제안입니다.</p>
+      <div class="map2">
+        <div><b>어디서</b><span>사용처 확인 — 이름·카테고리·자연어 → 온라인/매장별 사용 가능 여부</span></div>
+        <div><b>어떻게</b><span>사용 안내 — 내 상품권에 맞춘 충전·바코드·전환 순서</span></div>
       </div>
-      <div class="tagrow"><span class="tag r">앱 적용 우선</span><span class="tag">PC 적용 구상 포함</span><span class="tag">서버·API 없이 동작</span><span class="tag">결제·계정은 시연용 데이터</span></div>
+      <div class="links">
+        <div><span>클릭형 시제품</span><a href="https://usedupnote.github.io/sseobom/">usedupnote.github.io/sseobom</a></div>
+        <div><span>소스 코드</span><a href="https://github.com/usedupnote/sseobom">github.com/usedupnote/sseobom</a></div>
+        <div><span>시연 방법</span><span style="color:var(--ink-2);font-weight:500">PC에서 열면 왼쪽 패널의 시나리오 A~E·M·L 버튼으로 바로 시연</span></div>
+      </div>
+      <div class="tagrow"><span class="tag r">앱 적용 우선</span><span class="tag r">저시력 대응</span><span class="tag">PC 적용 구상</span><span class="tag">서버·API 없이 동작</span><span class="tag">결제·계정은 시연용 데이터</span></div>
     </div>
-    <div class="flow3">
-      <div><div class="shot"><img src="screens/02-search.png" alt="입력 화면" /></div><p class="cap"><b>① 입력</b>이름·카테고리·자연어<br />+ 내 상품권 선택</p></div>
-      <div class="arrow">→</div>
-      <div><div class="shot"><img src="screens/03-result-conv.png" alt="결과 화면" /></div><p class="cap"><b>② 결과</b>사용 가능 여부<br />온라인·매장 구분 + 출처</p></div>
-      <div class="arrow">→</div>
-      <div><div class="shot"><img src="screens/04-guide-conv.png" alt="사용 안내 화면" /></div><p class="cap"><b>③ 사용 안내</b>내 상품권에 맞춘 단계<br />앱 기능 화면으로 바로 연결</p></div>
+    <div>
+      <p class="barhead">01. 제안 배경 — 공식 사이트 조사로 확인한 문제 (확인일 2026-11-06)</p>
+      <ol class="prob">
+        <li><i>1</i><span><b>이름이 같아 보이는 다른 상품권.</b> 18자리 ‘문화상품권’은 ㈜문화상품권 발행으로 2023-01-01 제휴 종료 후 충전 불가, 컬쳐랜드상품권은 옛 ‘모바일문화상품권’(16자리). <span class="src">— 컬쳐랜드 FAQ, 넥슨 공지</span></span></li>
+        <li><i>2</i><span><b>쓰는 방법이 네 갈래로 흩어짐.</b> 결제창 바로사용 · 포인트 전환(수수료 4.5~8%) · 모바일 쿠폰 · 매장 바코드. “스타벅스 돼요?”의 정답은 ‘바로는 안 되고 쿠폰으로 가능’. <span class="src">— 사용처 안내·사용 방법</span></span></li>
+        <li><i>3</i><span><b>온라인/매장 구분과 확인일이 없음.</b> PC 사용처 154곳은 로고 위주로 나열, 매장 사용처(28곳)는 별도 팝업. <span class="src">— 컬쳐캐쉬 사용처(PC)</span></span></li>
+        <li><i>4</i><span><b>조건이 결과를 바꿈.</b> 본인인증(보유한도 50만원), 전환 시 명의 일치·취소 불가, 일부 상품 제외, 매장에선 충전 없이 문자 바코드로도 결제. <span class="src">— 회원 유형·전환 안내</span></span></li>
+        <li><i>5</i><span><b>작은 글씨·연한 회색·색으로만 구분.</b> 시제품 1차안도 대비 미달 7종, 13px 미만 글자가 절반에 가까웠고, 컬쳐랜드 PC 메인에서도 글자 크기·고대비 기능은 확인되지 않았어요. <span class="src">— 자동 대비 점검, 컬쳐랜드 메인</span></span></li>
+      </ol>
+      <p class="barhead" style="margin-top:12px">대상 이용자와 사용 상황</p>
+      <div class="persona p4">
+        <div><img src="../assets/char/boy-please.webp" alt="" /><span><b>선물·경품으로 처음 받은 이용자</b>컬쳐캐쉬·전환이 낯섦(중장년 포함)</span></div>
+        <div><img src="../assets/char/boy-thumb.webp" alt="" /><span><b>계산대 앞에서 지금 쓰려는 이용자</b>충전 없이 끝나는 경로가 필요</span></div>
+        <div><img src="../assets/char/catsh-cash.webp" alt="" /><span><b>온라인 결제·게임 충전(10~20대)</b>전환 수수료·한도가 궁금</span></div>
+        <div><img src="../assets/char/catsh-safe.webp" alt="" /><span><b>저시력·색각 이상 이용자</b>확대·고대비로도 끝까지 쓸 수 있어야</span></div>
+      </div>
+      <div class="intent"><b>기획 의도</b> — 사용처 검색과 사용 안내를 따로 찾는 두 메뉴가 아니라 <b>하나의 답</b>으로(가능 여부 + 내 상황에 맞는 순서 + 근거). 그리고 <b>“누구라도”</b>: 가장 불편한 사람도 가장 편하게 쓸 수 있게.</div>
     </div>
   </div>
   <span class="pno">01</span>
-</section>
-
-<!-- 2. 제안 배경 · 대상 이용자 · 주요 기능 -->
-<section class="page">
-  <p class="sec">01. 제안 배경과 대상 이용자</p>
-  <h1 class="t">“여기서 돼요?”에 한 번에 답하지 못하는 이유</h1>
-  <div class="grid2" style="grid-template-columns: 1.25fr 1fr;">
-    <div>
-      <p class="barhead">공식 사이트를 조사하며 확인한 문제 (확인일 2026-11-06)</p>
-      <ol class="prob">
-        <li><i>1</i><span><b>이름이 같아 보이는 다른 상품권.</b> 18자리 ‘문화상품권’은 ㈜문화상품권 발행으로 2023-01-01 제휴 종료 후 충전 불가, 컬쳐랜드상품권은 옛 ‘모바일문화상품권’(16자리). 이용자는 이 차이를 모른 채 질문합니다. <span class="src">— 컬쳐랜드 FAQ, 넥슨 공지</span></span></li>
-        <li><i>2</i><span><b>쓰는 방법이 네 갈래로 흩어짐.</b> 결제창 바로사용 · 포인트 전환(수수료 4.5~8%) · 모바일 쿠폰 구매 · 매장 바코드. “스타벅스 돼요?”의 정답은 ‘바로는 안 되고 쿠폰으로 가능’입니다. <span class="src">— 사용처 안내(모바일)·사용 방법</span></span></li>
-        <li><i>3</i><span><b>사용처 페이지에 온라인/매장 구분과 확인일이 없음.</b> PC 사용처 154곳은 로고 이미지로만 나열되고, 매장 사용처(28곳)는 별도 팝업에 있습니다. <span class="src">— 컬쳐캐쉬 사용처(PC)</span></span></li>
-        <li><i>4</i><span><b>조건이 결과를 바꿈.</b> 본인인증 회원(보유한도 50만원), 전환 시 명의 일치·취소 불가, 일부 상품 제외(CGV·YES24), 매장에선 충전 없이 문자 바코드로도 결제 가능. <span class="src">— 회원 유형 안내, 전환 안내</span></span></li>
-      </ol>
-      <div class="intent"><b>기획 의도</b> — 사용처 검색과 사용 안내를 ‘따로 찾아보는 두 메뉴’가 아니라 <b>하나의 답</b>으로: “가능 여부 + 내 상황에 맞는 순서 + 근거”를 한 화면에서 이어 줍니다.</div>
-    </div>
-    <div>
-      <p class="barhead">대상 이용자와 사용 상황</p>
-      <div class="persona">
-        <div><img src="../assets/char/boy-please.webp" alt="" /><span><b>선물·경품으로 처음 받은 이용자</b>컬쳐캐쉬·전환 개념이 낯섦. “문화상품권 받았는데 어디서 써요?” — 중장년 포함</span></div>
-        <div><img src="../assets/char/boy-thumb.webp" alt="" /><span><b>계산대 앞에서 지금 쓰려는 이용자</b>편의점·영화관·서점 매장. 충전 없이 문자 바코드로 끝나는 경로가 필요</span></div>
-        <div><img src="../assets/char/catsh-cash.webp" alt="" /><span><b>온라인 결제·게임 충전 이용자(10~20대)</b>쿠팡·네이버페이·넥슨·구글플레이. 전환 수수료와 한도가 궁금</span></div>
-      </div>
-      <p class="barhead" style="margin-top:14px">이용자에게 달라지는 것</p>
-      <ol class="prob">
-        <li><i>✓</i><span>질문 1번 → 가능 여부·장소 구분·수수료를 <b>한 카드</b>에서</span></li>
-        <li><i>✓</i><span>결과 카드의 버튼 1번 → <b>내 상품권 기준</b> 3~4단계 안내 (이미 충전했으면 충전 단계 자동 생략)</span></li>
-        <li><i>✓</i><span>안 되는 경우에도 <b>사유와 대안</b>(전환·쿠폰·다른 채널·고객센터)까지</span></li>
-      </ol>
-    </div>
-  </div>
-  <span class="pno">02</span>
 </section>
 
 <!-- 3. 주요 기능 · 화면 흐름 -->
@@ -210,26 +226,29 @@
     <div class="idea"><b>내 상품권 판별 (PIN 미수집)</b>받은 방식·자릿수만 물어 16/18자리를 가리고, ‘문화상품권’처럼 모호하면 다시 물어요.</div>
     <div class="idea"><b>수수료 계산·방법 비교</b>1만원 → 쿠팡캐시 9,400원처럼 실수령액을 보여주고, 단계 수·충전 필요 여부를 비교해요.</div>
     <div class="idea"><b>문자 상품권에서 시작</b>MMS의 [사용처/잔액안내] 링크로 들어오면 ‘문자로 받은 상품권’이 자동 설정돼요.</div>
+    <div class="idea"><b>누구라도 보기 설정</b>[가] 버튼으로 글자 크게·고대비, 한 단계씩 크게 보기, 바코드 크게, 읽어주기.</div>
   </div>
   <div class="scope" style="margin-top:16px; grid-template-columns: 1fr 1fr; gap: 18px;">
     <div class="box yes"><h4>실제 구현 범위 (클릭형 시제품에서 동작)</h4><ul>
       <li>앱 홈 진입·입력·결과·사용 안내 화면, 해석 칩 수정, 상품권 판별 도우미</li>
       <li>사용처 53곳(공식 154곳 중 선정, 미등재·확인 필요 4곳 포함) · 이용 방식 7종 · 카테고리 8종</li>
       <li>시연용 앱 화면 6종(문자 상품권·충전·바코드 결제·전환·쿠폰·기프트코드), 진행 체크·즐겨찾기 연동</li>
-      <li>규칙 기반 해석기(초성·오타·조사 처리) + 자동 테스트 91건 통과, 모바일·PC 화면 대응</li></ul></div>
+      <li>규칙 기반 해석기(초성·오타·조사 처리) + 자동 테스트 91건 통과, 모바일·PC 화면 대응</li>
+      <li>저시력 대응: 글자 3단계·고대비·한 단계씩 크게 보기·바코드 크게·읽어주기(브라우저 내장 음성)</li></ul></div>
     <div class="box no"><h4>미구현 (컬쳐랜드 내부 검토·개발 전제)</h4><ul>
       <li>실제 결제·충전·전환·로그인·본인인증 연동 — 모두 시연용 가상 데이터</li>
       <li>실제 바코드 발급·상품권 PIN 처리(시제품은 PIN을 받지 않음)</li>
       <li>공식 사용처 154곳 전체·실시간 연동, 쿠폰 수수료 등 로그인 후 정보</li>
-      <li>LLM 기반 자유 질문 해석, 위치 기반 주변 매장, PC 화면(구상만 제시)</li></ul></div>
+      <li>LLM 기반 자유 질문 해석, 위치 기반 주변 매장, PC 화면(구상만 제시)</li>
+      <li>실기기 스크린리더(VoiceOver·TalkBack) 검수, 실제 저시력 이용자 사용성 테스트</li></ul></div>
   </div>
-  <span class="pno">03</span>
+  <span class="pno">02</span>
   <span class="foot">빨간 점선 = 이번 제안에서 새로 만든 아이디어</span>
 </section>
 
 <!-- 4. 단계별 화면 설명 -->
 <section class="page">
-  <p class="sec">02. 단계별 화면 설명</p>
+  <p class="sec">02. 주요 기능과 화면 흐름 — 단계별 화면 설명</p>
   <h1 class="t">사용 사례 A — “편의점에서 컬쳐랜드상품권 써도 돼?”</h1>
   <div class="scenario">
     <div class="flow4">
@@ -246,12 +265,44 @@
       <div class="oth"><div class="shot"><img src="screens/10-empty.png" alt="" /></div><p><b><span class="k">E</span>닌텐도 / 배달의민족</b>‘확인 필요’ 표시, 결과 없음 → 비슷한 이름·카테고리·공식 목록·고객센터</p></div>
     </div>
   </div>
+  <span class="pno">03</span>
+</section>
+
+<!-- 4. 누구라도 — 저시력 대응 -->
+<section class="page">
+  <p class="sec">03. 누구라도 — 저시력·색각 이상 이용자를 위한 써봄</p>
+  <h1 class="t">가장 불편한 사람도 가장 편하게</h1>
+  <p class="lead" style="font-weight:500;line-height:1.55">시각장애라고 하면 전맹을 먼저 떠올리지만, 시각장애인의 대부분은 시력이 일부 남은 <b>저시력</b>입니다(WHO 2010 추정: 시각장애 2억 8,500만 명 중 저시력 2억 4,600만 명, 약 86%). 누구나 선물로 받는 상품권이라면, 화면을 확대하거나 고대비로 보는 이용자도 같은 흐름으로 끝까지 쓸 수 있어야 합니다.</p>
+  <div class="lv-shots">
+    <div><div class="shot"><img src="screens/13-lv-settings.png" alt="" style="object-position: center bottom" /></div><p class="cap"><b>① [가] 보기 설정</b>모든 화면 상단 · 글자 3단계 · 고대비 · 기기 설정 자동 반영</p></div>
+    <div><div class="shot"><img src="screens/14-lv-result-hc.png" alt="" /></div><p class="cap"><b>② 고대비 + 큰 글자 결과</b>검정·흰·노랑, 판정은 색+모양+글자 · 결과 읽어주기</p></div>
+    <div><div class="shot"><img src="screens/15-lv-step-hc.png" alt="" /></div><p class="cap"><b>③ 한 단계씩 크게 보기</b>한 화면에 한 단계 · 가운데 배치 · 큰 이전/다음</p></div>
+    <div><div class="shot"><img src="screens/16-lv-barcode.png" alt="" /></div><p class="cap"><b>④ 바코드 크게 보여주기</b>계산대에 그대로 내밀기 · 큰 숫자 · 항상 흰 바탕</p></div>
+    <div><div class="shot"><img src="screens/19-sim-deutan.png" alt="" /></div><p class="cap"><b>⑤ 적록 색각 시뮬레이션</b>빨강·초록이 비슷해 보여도 체크·글자로 구분</p></div>
+  </div>
+  <div class="lv-bottom">
+    <table class="t">
+      <thead><tr><th>유형 (NAX 저시력 체험 기준)</th><th>어려움</th><th>써봄의 대응</th></tr></thead>
+      <tbody>
+        <tr><td>시력저하</td><td>교정해도 흐릿하게 보임</td><td>글자 3단계(최대 150%) · 최소 13px · 바코드 크게 · 읽어주기</td></tr>
+        <tr><td>시야장애</td><td>시야 일부만 보임(양이측 반맹·터널 시야)</td><td>한 단계씩 크게 보기 — 정보를 가운데로 모으고 큰 버튼</td></tr>
+        <tr><td>적록 색각 이상</td><td>빨강과 초록 구분이 어려움</td><td>판정 = 색 + 아이콘 모양(원·둥근 사각·사각·점선) + 글자, 선택 = 체크·밑줄</td></tr>
+        <tr><td>전색맹</td><td>색 없이 명암으로만 보임</td><td>고대비 테마 글자 대비 7:1 이상, 흑백에서도 상태 구분</td></tr>
+      </tbody>
+    </table>
+    <div class="metrics">
+      <div><b>7 → 0</b><span>글자 대비 미달<br /><small>기본 4.5:1 · 고대비 7:1, 텍스트 957개 자동 점검</small></span></div>
+      <div><b>178 → 0</b><span>13px 미만 글자<br /><small>장식용 아이콘 글자 제외</small></span></div>
+      <div><b>0</b><span>글자 125·150%에서 화면 넘침<br /><small>29개 화면 · 고대비 포함</small></span></div>
+    </div>
+  </div>
+  <p class="note">색각 이상은 국내 법적 시각장애 기준(시력·시야)에는 해당하지 않지만 같은 원칙으로 함께 대응했어요. 실기기 스크린리더(VoiceOver·TalkBack) 검수는 미구현 — 컬쳐랜드 내부 적용 시 진행 권장.</p>
   <span class="pno">04</span>
 </section>
 
 <!-- 5. 앱/PC 적용 · AI 활용과 검증 · 구현 범위 -->
 <section class="page">
-  <p class="sec">03. 앱·PC 적용 구상 · 04. AI 활용과 검증</p>
+  <p class="sec">04. 앱·PC 적용 구상 · 05. AI 활용과 검증</p>
   <h1 class="t">어디에 들어가고, 무엇을 어떻게 검증했나</h1>
   <div class="ai" style="grid-template-columns: 455px 1fr;">
     <div>
@@ -275,7 +326,7 @@
       <div class="ai-steps">
         <div class="ai-step"><i>1</i><span><b>기획·조사</b> 미션 가이드 분석 → 공식 사이트 조사 에이전트 3회(충전·전환 / 사용처 / 충돌 재검증)</span></div>
         <div class="ai-step"><i>2</i><span><b>정리·제작</b> 사용처 데이터·안내 문구·화면·규칙 기반 해석기 코드 작성 (실시간 AI 호출 없음)</span></div>
-        <div class="ai-step"><i>3</i><span><b>검증</b> 공식 원문 대조 → 충돌은 재조사, 미확인은 ‘확인 필요’ 표시 / 질의 34개 자동 테스트 / 34개 화면 넘침·깨진 이미지 점검</span></div>
+        <div class="ai-step"><i>3</i><span><b>검증</b> 공식 원문 대조 → 충돌은 재조사, 미확인은 ‘확인 필요’ 표시 / 질의 34개 자동 테스트 / 화면 넘침·글자 대비 자동 점검(글자 150%·고대비 포함)</span></div>
       </div>
       <table class="v" style="margin-top:10px">
         <thead><tr><th>항목</th><th>AI 초안·1차 결과</th><th>대조한 근거</th><th>수정</th></tr></thead>
@@ -285,7 +336,7 @@
           <tr><td>카카오페이</td><td>전환 목록에 없음</td><td>가이드 앱 배너 “카카오페이포인트 적립” 반례 → PC·모바일 전환 목록 재확인</td><td class="fix">‘확인 필요’ + 배너는 혜택 광고로 추정 명시</td></tr>
           <tr><td>다이소</td><td>배너 “다이소 결제 OPEN” → 매장 가능 오해</td><td>공식 매장 사용처 28곳에 없음, 다이소몰만 확인</td><td class="fix">매장 ‘확인 필요’ → 다이소몰로 연결</td></tr>
           <tr><td>매장 사용법</td><td>충전 → 앱 바코드(4단계)만</td><td>가이드 4쪽 MMS 상품권 예시</td><td class="fix">충전 없는 문자 바코드(3단계)를 기본 경로로</td></tr>
-          <tr><td>CGV</td><td>상품권 바로 결제</td><td>공식 유의사항 “충전 후 사용”</td><td class="fix">온라인은 충전 단계 포함</td></tr>
+          <tr><td>저시력 기획</td><td>적록색맹 = “빨강↔파랑”, “시각장애인 90%” 출처 없음</td><td>색각 이상 정의, WHO 2010 추정, 법적 시각장애 기준</td><td class="fix">빨강↔초록, 출처 단 수치(약 86%), ‘색각 이상’으로 구분</td></tr>
           <tr><td>‘문화상품권’</td><td>해석기가 18자리로 단정</td><td>16자리 옛 이름 ‘모바일문화상품권’</td><td class="fix">모호하면 자릿수 다시 묻기</td></tr>
           <tr><td>해석기</td><td>“쿠팡캐시로 전환” 미인식, ‘ㅋㅍ’ 오매칭</td><td>자동 테스트 실패 2건</td><td class="fix">별칭·초성 정확일치 우선 → 91/91</td></tr>
         </tbody>

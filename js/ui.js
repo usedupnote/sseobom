@@ -48,19 +48,63 @@ const P = {
   user: '<circle cx="12" cy="8.5" r="3.5"/><path d="M5 19.5a7 7 0 0 1 14 0"/>',
   calc: '<rect x="5" y="3.5" width="14" height="17" rx="2"/><path d="M8 7.5h8M8.5 12h.01M12 12h.01M15.5 12h.01M8.5 15.5h.01M12 15.5h.01M15.5 15.5h.01"/>',
   shield: '<path d="M12 3.5 19 6v5.5c0 4.4-3 7.7-7 9-4-1.3-7-4.6-7-9V6z"/><path d="m9 12 2.2 2.2L15.5 10"/>',
+  sound: '<path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z"/><path d="M15.5 9a4 4 0 0 1 0 6M18 6.5a7.5 7.5 0 0 1 0 11"/>',
+  expand: '<path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/>',
+  steps: '<rect x="4" y="4" width="16" height="16" rx="3"/><path d="M8.5 9h7M8.5 12h7M8.5 15h4"/>',
 };
 
 export function icon(name, size = 20, cls = '') {
   return `<svg class="ic ${cls}" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${P[name] || ''}</svg>`;
 }
 
-// 화면 상단 바(뒤로가기 + 제목)
-export function topbar(title, { back = true, right = '' } = {}) {
+// 보기 설정 [가] 버튼 — 글자 크기·고대비
+export const a11yBtn = () => `<button type="button" class="a11y-btn" data-a11y aria-label="보기 설정: 글자 크기와 고대비">가<small aria-hidden="true">가</small></button>`;
+
+// 화면 상단 바(뒤로가기 + 제목 + 오른쪽 버튼 + 보기 설정)
+export function topbar(title, { back = true, right = '', backTo = '' } = {}) {
+  const backBtn = backTo
+    ? `<button class="icon-btn" data-go="${esc(backTo)}" aria-label="뒤로">${icon('back', 22)}</button>`
+    : back
+      ? `<button class="icon-btn" data-back aria-label="뒤로">${icon('back', 22)}</button>`
+      : '<span class="icon-btn"></span>';
   return `<header class="topbar">
-    ${back ? `<button class="icon-btn" data-back aria-label="뒤로">${icon('back', 22)}</button>` : '<span class="icon-btn"></span>'}
+    ${backBtn}
     <h1 class="topbar-title">${esc(title)}</h1>
-    <div class="topbar-right">${right || '<span class="icon-btn"></span>'}</div>
+    <div class="topbar-right">${right}${a11yBtn()}</div>
   </header>`;
+}
+
+// 읽어주기 — 브라우저 내장 음성 합성(서버·키 없음). 지원하지 않으면 버튼을 그리지 않는다.
+export const canSpeak = () => typeof window !== 'undefined' && 'speechSynthesis' in window && 'SpeechSynthesisUtterance' in window;
+export function speakBtn(text, label = '읽어주기') {
+  if (!canSpeak()) return '';
+  return `<button type="button" class="btn btn-sm speak-btn" data-speak="${esc(text)}" aria-pressed="false">${icon('sound', 15)}${esc(label)}</button>`;
+}
+export function speak(text, btn) {
+  if (!canSpeak()) return;
+  const synth = window.speechSynthesis;
+  if (synth.speaking) {
+    synth.cancel();
+    document.querySelectorAll('.speak-btn[aria-pressed="true"]').forEach((b) => b.setAttribute('aria-pressed', 'false'));
+    if (btn?.dataset.playing === '1') {
+      btn.dataset.playing = '0';
+      return;
+    }
+  }
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = 'ko-KR';
+  u.rate = 0.95;
+  const ko = synth.getVoices().find((v) => v.lang && v.lang.startsWith('ko'));
+  if (ko) u.voice = ko;
+  if (btn) {
+    btn.dataset.playing = '1';
+    btn.setAttribute('aria-pressed', 'true');
+    u.onend = u.onerror = () => {
+      btn.dataset.playing = '0';
+      btn.setAttribute('aria-pressed', 'false');
+    };
+  }
+  synth.speak(u);
 }
 
 // 출처 한 줄 묶음

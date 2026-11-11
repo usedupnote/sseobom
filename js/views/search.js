@@ -1,5 +1,5 @@
 // [1 입력] 이름·카테고리·자연어를 한 입력창에서 받는다
-import { icon, esc, mark } from '../ui.js';
+import { icon, esc, mark, a11yBtn } from '../ui.js';
 import { CATEGORIES, MERCHANT_BY_ID } from '../../data/merchants.js';
 import { VOUCHERS } from '../../data/vouchers.js';
 import { autocomplete } from '../parser.js';
@@ -36,6 +36,7 @@ export function searchView({ query, state }) {
         <button type="button" class="clear" id="sclear" aria-label="지우기" ${pre ? '' : 'hidden'}>${icon('x', 16)}</button>
       </label>
       <button class="search-go" type="submit">찾기</button>
+      ${a11yBtn()}
     </form>
     <div class="ac" id="ac" hidden></div>
     <div class="scroll">

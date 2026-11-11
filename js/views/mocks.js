@@ -1,12 +1,29 @@
 // 시연용 앱 화면(문자 상품권·충전·바코드 결제·전환·쿠폰·기프트코드) — 실제 결제·충전 없음
-import { icon, esc, won, pct, demoTag, fakeBarcode } from '../ui.js';
+import { icon, esc, won, pct, demoTag, fakeBarcode, topbar } from '../ui.js';
 import { MERCHANT_BY_ID, MERCHANTS } from '../../data/merchants.js';
 import { DEMO } from '../../data/demo.js';
 import { state, save, setVoucher } from '../state.js';
-import { rerender } from '../app.js';
+import { rerender, openOverlay } from '../app.js';
 
-const bar = (title, back) =>
-  `<header class="topbar">${back ? `<button class="icon-btn" data-go="${esc(back)}" aria-label="안내로 돌아가기">${icon('back', 22)}</button>` : `<button class="icon-btn" data-back aria-label="뒤로">${icon('back', 22)}</button>`}<h1 class="topbar-title">${esc(title)}</h1><span class="icon-btn"></span></header>`;
+const bar = (title, back) => topbar(title, { backTo: back });
+
+// 바코드 크게 보여주기 — 저시력 이용자가 계산대에서 화면을 그대로 내밀 수 있게 전체 화면·큰 숫자로
+const bigBarcodeBtn = (no, place) =>
+  `<button class="btn btn-block proposal" data-big-barcode="${esc(no)}" data-bb-place="${esc(place)}">${icon('expand', 18)}바코드 크게 보여주기</button>`;
+function bindBigBarcode(root) {
+  root.querySelectorAll('[data-big-barcode]').forEach((b) =>
+    b.addEventListener('click', () => {
+      const no = b.dataset.bigBarcode;
+      openOverlay(`
+        <p class="ov-place">${esc(b.dataset.bbPlace || '컬쳐랜드상품권')}</p>
+        <p class="ov-hint">직원에게 이 화면을 보여주세요.<br />화면 밝기를 가장 밝게 올리면 잘 읽혀요.</p>
+        ${fakeBarcode(no, { w: 340, h: 150 })}
+        <p class="ov-no" aria-label="바코드 번호 ${esc(no.replace(/\s/g, ' '))}">${esc(no)}</p>
+        <p class="ov-hint">시연용 가짜 바코드예요.</p>
+        <button class="btn btn-block" data-close-overlay>닫기</button>`);
+    }),
+  );
+}
 
 const backBtn = (back, label = '안내로 돌아가기') => (back ? `<button class="btn btn-primary btn-block" data-go="${esc(back)}">${esc(label)}</button>` : `<button class="btn btn-primary btn-block" data-go="#/home">홈으로</button>`);
 
@@ -41,11 +58,12 @@ function mms({ back }) {
           ${fakeBarcode(DEMO.barcodeNo)}
           <p class="vc-amt">${won(DEMO.voucherAmount)}</p>
         </div>
+        <div style="margin-top:10px">${bigBarcodeBtn(DEMO.barcodeNo, '컬쳐랜드상품권 ' + won(DEMO.voucherAmount))}</div>
         <p class="mms-warn">${icon('info', 13)} 바코드 인식이 안 될 경우, 아래 바코드 번호로 결제하실 수 있습니다.</p>
         <ul class="mms-rows">
           <li><span>바코드번호</span><b>${DEMO.barcodeNo}</b></li>
           <li><span>고객센터</span><b>${DEMO.customerCenter}</b></li>
-          <li><span>사용처/잔액안내</span><button class="hot proposal" data-go="#/search?from=mms">쓸곳찾기${icon('chev', 14)}</button></li>
+          <li><span>사용처/잔액안내</span><button class="hot proposal" data-go="#/search?from=mms">써봄에서 확인${icon('chev', 14)}</button></li>
           <li><span>컬쳐캐쉬 바로충전</span><button data-go="#/mock/charge?back=${encodeURIComponent('#/mock/mms')}">충전하기${icon('chev', 14)}</button></li>
           <li><span>Google Play 기프트 코드 바로충전</span><button data-go="#/m/googleplay">충전하기${icon('chev', 14)}</button></li>
         </ul>
@@ -54,11 +72,12 @@ function mms({ back }) {
           <b>오프라인 사용처</b>CU · GS25 · 세븐일레븐 · 이마트24 · CGV · 교보문고 외
         </div>
       </div>
-      <p class="home-note" style="margin-top:14px">문자의 [사용처/잔액안내] 링크가 쓸곳찾기로 이어지도록 제안해요. 이때 ‘내 상품권’은 자동으로 ‘문자로 받은 상품권’이 돼요.</p>
+      <p class="home-note" style="margin-top:14px">문자의 [사용처/잔액안내] 링크가 써봄으로 이어지도록 제안해요. 이때 ‘내 상품권’은 자동으로 ‘문자로 받은 상품권’이 돼요.</p>
     </div></div>
     <div class="cta-bar">${back ? backBtn(back) : `<button class="btn btn-primary btn-block" data-go="#/search?from=mms">이 상품권, 어디서 쓸 수 있어요?</button>`}</div>`,
-    mount() {
+    mount(root) {
       if (!state.voucher) setVoucher('cl16');
+      bindBigBarcode(root);
     },
   };
 }
@@ -163,11 +182,13 @@ function barcode({ back, m }) {
         <p class="timer" id="timer">유효시간 03:00</p>
         <p class="bal">사용가능 컬쳐캐쉬 ${won(state.cash)}</p>
       </div>
+      ${bigBarcodeBtn('9876 5432 1012 3456', place.name + ' 결제')}
       <button class="btn btn-ghost btn-block" id="chgPlace">사용처 바꾸기</button>
       ${enough ? '' : `<div class="callout callout-warn"><img src="assets/char/boy-please.webp" alt="" /><div><h3>잔액이 부족해요</h3><p>먼저 상품권을 컬쳐캐쉬로 충전해요.</p><div class="btns"><button class="btn btn-sm btn-dark" data-go="#/mock/charge?back=${encodeURIComponent(location.hash)}">충전하기</button></div></div></div>`}
     </div></div>
     <div class="cta-bar"><button class="btn btn-primary btn-block" id="pay" ${enough ? '' : 'disabled'}>직원이 스캔했다고 가정 · ${won(DEMO.purchase)} 결제</button></div>`,
     mount(root) {
+      bindBigBarcode(root);
       clearInterval(timerId);
       let s = 180;
       const t = root.querySelector('#timer');

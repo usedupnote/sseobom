@@ -1,5 +1,7 @@
 // [2 결과] 판정 카드 · 목록 · 결과 없음 · 상품권 주제 안내
-import { icon, esc, mark, sourceList, confidenceBadge } from '../ui.js';
+import { icon, esc, mark, sourceList, confidenceBadge, topbar, speakBtn } from '../ui.js';
+
+const searchBtn = (q) => `<button class="icon-btn" data-go="#/search${q ? `?q=${encodeURIComponent(q)}` : ''}" aria-label="${q ? '다시 검색' : '검색'}">${icon('search', 20)}</button>`;
 import { MERCHANTS, MERCHANT_BY_ID, CATEGORIES, laneVerdict, merchantVerdict } from '../../data/merchants.js';
 import { VOUCHERS } from '../../data/vouchers.js';
 import { TOPICS } from '../../data/topics.js';
@@ -93,17 +95,25 @@ function merchantCard(m, { ch, state }) {
     const usable = route && (v === 'ok' || v === 'indirect');
     const line = lane ? laneLine(lane) : key === 'offline' ? '매장 없음 · 온라인 서비스' : '온라인 결제 없음';
     return `<button class="lane ${focus === key ? 'is-focus' : ''}" ${usable ? `data-go="#/g/${m.id}/${route}"` : 'disabled'}>
-      <span class="lane-ch">${icon(key === 'online' ? 'online' : 'store', 20)}${CH_LABEL[key]}</span>
+      <span class="lane-ch">${icon(key === 'online' ? 'online' : 'store', 20)}${CH_LABEL[key]}${focus === key ? '<span class="lane-tag">질문한 곳</span>' : ''}</span>
       <span class="lane-main">${lanePill(lane)}<small>${esc(line)}</small></span>
-      <span class="lane-go">방법${icon('chev', 16)}</span>
+      <span class="lane-go">방법 보기${icon('chev', 16)}</span>
     </button>`;
   };
   const notes = [...(m[focus]?.notes || []), ...(m.extra || []).map((x) => x.label)];
   const members = m.group ? `<div class="members">${m.group.map((id) => `<span>${esc(MERCHANT_BY_ID[id].name)}</span>`).join('')}</div><p class="typo-note">4곳 모두 이용 방법이 같아요.</p>` : '';
+  // 읽어주기용 문장: 판정 + 온라인·매장 요약
+  const laneSay = (key) => {
+    const l = m[key];
+    if (!l) return `${CH_LABEL[key]}은 해당 없음.`;
+    return `${CH_LABEL[key]}: ${laneLine(l)}.`;
+  };
+  const sayText = `${m.group ? m.name : m.full || m.name}. ${copy.title}. ${copy.body} ${laneSay('online')} ${laneSay('offline')}`;
   return `<article class="card">
     <div class="m-head">${mark(m, 48)}<div><h2>${esc(m.group ? m.name : m.full || m.name)}</h2><p>${esc(CAT_LABEL[m.cat] || '')} ${confidenceBadge(m.confidence)}</p></div></div>
     ${members}
     ${verdictBox(copy)}
+    ${speakBtn(sayText, '결과 읽어주기') ? `<div style="margin-top:8px">${speakBtn(sayText, '결과 읽어주기')}</div>` : ''}
     <div class="lanes" role="list" aria-label="온라인·매장 구분">${laneRow('online')}${laneRow('offline')}</div>
     ${notes.length ? `<ul class="notes">${notes.map((n) => `<li>${icon('info', 14)}<span>${esc(n)}</span></li>`).join('')}</ul>` : ''}
   </article>`;
@@ -136,8 +146,7 @@ function merchantScreen(m, { q, p, ch, state, back }) {
     title: m.name,
     gray: true,
     html: `
-    ${q ? '' : `<header class="topbar"><button class="icon-btn" data-back aria-label="뒤로">${icon('back', 22)}</button><h1 class="topbar-title">사용 가능 여부</h1><span class="icon-btn"></span></header>`}
-    ${q ? `<header class="topbar"><button class="icon-btn" data-back aria-label="뒤로">${icon('back', 22)}</button><h1 class="topbar-title">확인 결과</h1><button class="icon-btn" data-go="#/search?q=${encodeURIComponent(q)}" aria-label="다시 검색">${icon('search', 20)}</button></header>` : ''}
+    ${topbar(q ? '확인 결과' : '사용 가능 여부', { right: searchBtn(q) })}
     <div class="scroll">
       ${interpBar(p || { merchants: [m.id], matchedBy: 'name' }, { q, state, ch })}
       <div class="result-body">
@@ -187,7 +196,7 @@ function listScreen({ title, sub, ids, q, p, ch, state, back }) {
   return {
     title,
     html: `
-    <header class="topbar"><button class="icon-btn" data-back aria-label="뒤로">${icon('back', 22)}</button><h1 class="topbar-title">${esc(title)}</h1><button class="icon-btn" data-go="#/search" aria-label="검색">${icon('search', 20)}</button></header>
+    ${topbar(title, { right: searchBtn('') })}
     <div class="scroll">
       ${q ? interpBar(p, { q, state, ch }) : ''}
       <div class="list-head"><h2>${esc(title)} ${filtered.length}곳</h2><p>${esc(sub)}</p></div>
@@ -221,7 +230,7 @@ function emptyScreen({ q, p, state }) {
   return {
     title: '결과 없음',
     html: `
-    <header class="topbar"><button class="icon-btn" data-back aria-label="뒤로">${icon('back', 22)}</button><h1 class="topbar-title">확인 결과</h1><button class="icon-btn" data-go="#/search?q=${encodeURIComponent(q)}" aria-label="다시 검색">${icon('search', 20)}</button></header>
+    ${topbar('확인 결과', { right: searchBtn(q) })}
     <div class="scroll">
       ${interpBar(p, { q, state, ch: null })}
       <div class="empty">
@@ -254,7 +263,7 @@ export function topicScreen(topicId, { q, p, state }) {
     title: t.title,
     gray: true,
     html: `
-    <header class="topbar"><button class="icon-btn" data-back aria-label="뒤로">${icon('back', 22)}</button><h1 class="topbar-title">${esc(t.title)}</h1><span class="icon-btn"></span></header>
+    ${topbar(t.title)}
     <div class="scroll">
       ${q ? interpBar(p, { q, state, ch: null }) : ''}
       <div class="result-body">
