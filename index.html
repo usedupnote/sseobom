@@ -16,7 +16,7 @@
       <p class="panel-eyebrow">Y-AI 메이커톤 2026 · 컬쳐랜드 사전 미션</p>
       <h1>컬쳐랜드 <em>써봄</em><small class="panel-en">SSEOBOM</small></h1>
       <p class="panel-slogan">상품권, 어디서 어떻게 쓸까?</p>
-      <p class="panel-lead">써봄은 상품권을 <b>어디서</b> 쓸 수 있는지 확인하고, 실제로 <b>어떻게</b> 쓰는지 단계별로 안내하는 상품권 이용정보 서비스예요. 사용처를 이름·카테고리·자연어로 물으면 온라인/매장별 사용 가능 여부를 보여주고, 버튼 하나로 충전·바코드·전환 순서까지 이어져요. 가장 불편한 사람도 편하게 쓰도록 <b>글자 크게·고대비·한 단계씩 보기</b>를 함께 넣었어요.</p>
+      <p class="panel-lead">상품권을 <b>어디서</b> 쓸 수 있는지 확인하고 <b>어떻게</b> 쓰는지 단계별로 안내하는 상품권 이용정보 서비스 시제품이에요. 가장 불편한 사람도 편하게 쓰도록 <b>글자 크게·고대비·한 단계씩 보기</b>를 넣었어요.</p>
 
       <h2>심사용 시나리오 — 눌러서 바로 시연</h2>
       <div class="scn">
@@ -27,6 +27,35 @@
         <button data-scn="#/r?q=닌텐도"><b>E</b><span>닌텐도 / 배달의민족<small>공식 목록 미등재 · 검색 결과 없음 안내</small></span></button>
         <button data-scn="#/mock/mms"><b>M</b><span>문자로 받은 상품권에서 시작<small>MMS의 [사용처/잔액안내] 링크 → 써봄</small></span></button>
         <button data-scn="#/g/conv-all/barcode-mms?v=cl16&s=1" data-view-preset="lowvision"><b>L</b><span>저시력 이용자로 보기<small>글자 크게 + 고대비 + 한 단계씩 크게 보기</small></span></button>
+      </div>
+
+      <h2>저시력 관점으로 함께 보기</h2>
+      <div class="lv-box">
+        <label class="toggle"><input type="checkbox" id="lvToggle" /> 오른쪽에 저시력 관점 화면 띄우기</label>
+        <div class="lv-opts" id="lvOpts" hidden>
+          <div class="lv-row">
+            <span id="lvBlurLabel">흐림</span>
+            <input type="range" id="lvBlur" min="0" max="4" step="1" value="2" aria-labelledby="lvBlurLabel" />
+            <output id="lvBlurOut" for="lvBlur">중간</output>
+          </div>
+          <div class="lv-row">
+            <span>시야</span>
+            <div class="lv-seg" role="group" aria-label="시야 시뮬레이션">
+              <button type="button" data-lv-field="none">전체</button>
+              <button type="button" data-lv-field="hemi">양이측 반맹</button>
+              <button type="button" data-lv-field="tunnel">터널 시야</button>
+            </div>
+          </div>
+          <div class="lv-row">
+            <span>색</span>
+            <div class="lv-seg" role="group" aria-label="색각 시뮬레이션">
+              <button type="button" data-lv-color="none">그대로</button>
+              <button type="button" data-lv-color="deutan">적록 색각</button>
+              <button type="button" data-lv-color="gray">전색맹</button>
+            </div>
+          </div>
+          <p class="lv-note">왼쪽 폰을 조작하면 같은 화면이 오른쪽에 저시력 관점으로 보여요. 시야는 마우스 위치가 시선이에요. 켜 둔 채로 [가] 보기 설정이나 시나리오 L과 비교해 보세요. 이해를 돕는 시뮬레이션이며, 실제 보이는 모습은 사람마다 달라요.</p>
+        </div>
       </div>
 
       <h2>표시 규칙</h2>
@@ -47,16 +76,34 @@
       <p class="panel-note">컬쳐랜드 공식 서비스가 아닌 대회 제출용 시제품이에요. 결제·충전·계정은 모두 시연용 가상 데이터이며, 브랜드 에셋은 미션 제공 범위에서 사용했어요.</p>
     </aside>
 
-    <div class="phone">
-      <div class="screen" id="screen">
-        <div class="statusbar" aria-hidden="true"><span>9:30</span><span class="sb-icons">
-          <svg width="18" height="12" viewBox="0 0 18 12" fill="currentColor"><rect x="0" y="8" width="3" height="4" rx="1"/><rect x="5" y="5" width="3" height="7" rx="1"/><rect x="10" y="2.5" width="3" height="9.5" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></svg>
-          <svg width="26" height="12" viewBox="0 0 26 12" fill="currentColor"><rect x=".5" y=".5" width="22" height="11" rx="3" fill="none" stroke="currentColor"/><rect x="2" y="2" width="17" height="8" rx="2"/><rect x="23.5" y="4" width="2" height="4" rx="1"/></svg>
-        </span></div>
-        <main id="app" class="view" aria-live="polite"></main>
+    <div class="phone-col">
+      <p class="phone-cap"><b>기본 화면</b><span>여기를 눌러 조작해요</span></p>
+      <div class="phone" id="mainPhone">
+        <div class="screen" id="screen">
+          <div class="statusbar" aria-hidden="true"><span>9:30</span><span class="sb-icons">
+            <svg width="18" height="12" viewBox="0 0 18 12" fill="currentColor"><rect x="0" y="8" width="3" height="4" rx="1"/><rect x="5" y="5" width="3" height="7" rx="1"/><rect x="10" y="2.5" width="3" height="9.5" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></svg>
+            <svg width="26" height="12" viewBox="0 0 26 12" fill="currentColor"><rect x=".5" y=".5" width="22" height="11" rx="3" fill="none" stroke="currentColor"/><rect x="2" y="2" width="17" height="8" rx="2"/><rect x="23.5" y="4" width="2" height="4" rx="1"/></svg>
+          </span></div>
+          <main id="app" class="view" aria-live="polite"></main>
+        </div>
+      </div>
+    </div>
+
+    <!-- 저시력 관점 미러: 왼쪽 폰과 같은 화면을 흐림·시야·색각 시뮬레이션으로 비춘다(조작 불가, 시연용) -->
+    <div class="phone-col mirror-col" id="mirrorCol" aria-hidden="true">
+      <p class="phone-cap"><b>저시력 관점</b><span id="lvCap">시뮬레이션</span></p>
+      <div class="phone">
+        <div class="sim-wrap" id="simWrap">
+          <div class="screen" id="mirror" inert></div>
+          <div class="sim-mask" id="simMask" data-field="none"></div>
+        </div>
       </div>
     </div>
   </div>
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+    <!-- 적록 색각 이상(제2색각 이상) 근사 행렬 -->
+    <filter id="lv-deutan" color-interpolation-filters="linearRGB"><feColorMatrix type="matrix" values="0.367 0.861 -0.228 0 0  0.280 0.673 0.047 0 0  -0.012 0.043 0.969 0 0  0 0 0 1 0"/></filter>
+  </svg>
   <button class="mobile-fab" id="mobileFab" type="button">시연 시나리오</button>
   <script type="module" src="js/app.js"></script>
 </body>

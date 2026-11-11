@@ -2,6 +2,7 @@
 import { state, save, resetDemo, view, saveView, applyView, restoreView } from './state.js';
 import { VOUCHERS } from '../data/vouchers.js';
 import { speak } from './ui.js';
+import { initLowVision, applyLowVision } from './lowvision.js';
 import { homeView } from './views/home.js';
 import { searchView } from './views/search.js';
 import { resultView, merchantRoute, categoryRoute, topicRoute } from './views/result.js';
@@ -225,6 +226,7 @@ export function toast(msg) {
 // 설명 자료용 캡처 모드(?capture): 떠 있는 시연 버튼 숨김. ?ts=l|xl&hc=1 로 보기 설정을 저장 없이 지정
 const pageParams = new URLSearchParams(location.search);
 if (pageParams.has('capture')) document.body.classList.add('capture');
+if (pageParams.get('capture') === 'lv') document.body.classList.add('capture-lv'); // 두 폰만 나란히(패널 숨김)
 if (pageParams.has('ts') || pageParams.has('hc')) {
   saveView({ ts: pageParams.get('ts') || view.ts, hc: pageParams.get('hc') === '1' }, { persist: false });
 }
@@ -255,6 +257,7 @@ document.getElementById('resetDemo')?.addEventListener('click', (e) => {
   e.preventDefault();
   resetDemo();
   saveView({ ts: 'm', hc: false });
+  applyLowVision();
   toast('시연 상태와 보기 설정을 처음으로 되돌렸어요');
   go('#/home');
 });
@@ -267,3 +270,4 @@ document.getElementById('mobileFab')?.addEventListener('click', () => {
 });
 
 render();
+initLowVision(pageParams); // 첫 화면을 그린 뒤 오른쪽 저시력 관점 폰을 연결

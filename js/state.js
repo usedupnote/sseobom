@@ -10,12 +10,17 @@ const DEFAULT = {
   cash: DEMO.cashBalance,
   charged: false,
   proposal: true,
+  // 저시력 관점 미러(시연용): 흐림 0~4, 시야 none|hemi|tunnel, 색 none|deutan|gray
+  lv: { on: false, blur: 2, field: 'none', color: 'none' },
 };
 
 function load() {
   try {
     const raw = sessionStorage.getItem(KEY);
-    if (raw) return { ...DEFAULT, ...JSON.parse(raw) };
+    if (raw) {
+      const saved = JSON.parse(raw);
+      return { ...structuredClone(DEFAULT), ...saved, lv: { ...DEFAULT.lv, ...(saved.lv || {}) } };
+    }
   } catch (_) {
     /* 저장소 사용 불가 */
   }

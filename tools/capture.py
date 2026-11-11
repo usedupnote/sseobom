@@ -41,6 +41,31 @@ SHOTS = [
 ]
 
 SCALE = 2
+
+# 데스크톱: 기본 화면과 저시력 관점 폰을 나란히(패널 숨김) — 1200x900 창에서 두 폰 영역만 잘라낸다
+DESKTOP_SHOTS = [
+    ("20-lv-mirror", "?capture=lv&lv=1&lvblur=3", f"#/r?q={Q_CONV}", (1200, 900), (200, 20, 1000, 840)),
+    ("21-lv-mirror-hc", "?capture=lv&lv=1&lvblur=3&ts=l&hc=1", f"#/r?q={Q_CONV}", (1200, 900), (200, 20, 1000, 840)),
+]
+ORIGIN = BASE.split("?")[0]
+for name, params, route, (w, h), box in DESKTOP_SHOTS:
+    target = OUT / f"{name}.png"
+    cmd = [
+        EDGE,
+        "--headless=new",
+        "--disable-gpu",
+        "--hide-scrollbars",
+        f"--force-device-scale-factor={SCALE}",
+        f"--window-size={w},{h}",
+        "--virtual-time-budget=4000",
+        f"--screenshot={target}",
+        ORIGIN + params + route,
+    ]
+    subprocess.run(cmd, check=True, capture_output=True, timeout=60)
+    im = Image.open(target)
+    im.crop(tuple(v * SCALE for v in box)).save(target, optimize=True)
+    print(name, target.stat().st_size // 1024, "KB")
+
 for name, params, route, h in SHOTS:
     target = OUT / f"{name}.png"
     url = BASE + params + route
