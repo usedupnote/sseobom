@@ -46,9 +46,9 @@ export function homeView({ state }) {
         <section class="quick" aria-label="빠른 메뉴">
           <button class="q-main" data-go="#/mock/charge">컬쳐랜드<br />상품권<br />충전하기<span class="q-ic">${icon('card', 22)}</span></button>
           <button data-go="#/mock/barcode"><span class="q-ic">${icon('barcode', 20)}</span>바코드 결제</button>
-          <button data-go="#/c/point"><span class="q-ic">${icon('coin', 20)}</span>전환</button>
-          <button data-go="#/c/shopping"><span class="q-ic">${icon('bag', 20)}</span>쇼핑</button>
-          <button data-go="#/c/food"><span class="q-ic">${icon('ticket', 20)}</span>쿠폰</button>
+          <button data-go="#/c/convert"><span class="q-ic">${icon('coin', 20)}</span>전환</button>
+          <button data-go="#/c/direct"><span class="q-ic">${icon('bag', 20)}</span>쇼핑</button>
+          <button data-go="#/c/coupon"><span class="q-ic">${icon('ticket', 20)}</span>쿠폰</button>
           <button data-go="#/m/googleplay"><span class="q-ic">${icon('google', 20)}</span>Google</button>
           <button data-go="#/mock/mms"><span class="q-ic">${icon('wallet', 20)}</span>상품권지갑</button>
         </section>

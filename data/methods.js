@@ -133,7 +133,9 @@ export const METHODS = {
     short: '포인트 전환',
     channel: 'online',
     needsCash: true,
-    summary: '컬쳐캐쉬를 {target}(으)로 바꿔서 {name}에서 결제 · 수수료 {fee}',
+    // {feeNote}·{feeBody}: 수수료가 공개된 곳은 "수수료 6%", 아닌 곳은 "전환 화면에서 확인"으로 채운다(guide.js)
+    // {payWhere}·{payTitle}·{payBody}: 쇼핑몰 전환(쿠팡 등)은 "{name}에서", 포인트 자체가 사용처면 "{target}을 받는 곳에서"
+    summary: '컬쳐캐쉬를 {target}(으)로 바꿔서 {payWhere} 결제 · {feeNote}',
     prep: ['휴대폰 본인인증 회원', '컬쳐랜드와 {name} 계정 명의가 같을 것', '컬쳐캐쉬 잔액'],
     steps: [
       {
@@ -143,12 +145,12 @@ export const METHODS = {
       },
       {
         title: '전환 금액 입력 → [전환하기]',
-        body: '수수료 {fee}가 빠진 만큼 {target}이(가) 들어와요. 결제 금액을 확인하고 완료해요.',
+        body: '{feeBody} 결제 금액을 확인하고 완료해요.',
         calculator: true,
       },
       {
-        title: '{name}에서 {target}로 결제',
-        body: '{name} 결제 화면에서 {target}을(를) 결제수단으로 써요.',
+        title: '{payTitle}',
+        body: '{payBody}',
       },
     ],
     cautions: ['전환 후에는 취소할 수 없어요.', '하루에 전환할 수 있는 금액이 정해져 있어요.'],

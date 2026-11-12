@@ -9,7 +9,7 @@ export const SOURCES = {
     kind: 'official',
   },
   useCash: {
-    label: '컬쳐캐쉬 사용처(PC, 총 154곳)',
+    label: '컬쳐캐쉬 사용처(PC, 2026-11-12 기준 153곳)',
     url: 'https://www.cultureland.co.kr/usecash/useCash.do',
     kind: 'official',
   },
@@ -117,6 +117,11 @@ export const SOURCES = {
     label: '다이소몰 FAQ(결제수단: 문화상품권(컬처랜드))',
     url: 'https://www.daiso.co.kr/cs/faq?cid=21',
     kind: 'secondary',
+  },
+  gln: {
+    label: 'G앱머니 전환 안내',
+    url: 'https://www.cultureland.co.kr/conversion/gln_bridge.do',
+    kind: 'official',
   },
   exchange: {
     label: '상품권 교환소(로그인 필요)',

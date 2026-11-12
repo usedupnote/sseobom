@@ -83,7 +83,12 @@ export function verdictCopy(m, ch) {
   if (v === 'ok')
     return { tone: 'ok', icon: 'check', title: `${where}에서 바로 사용 가능`, body: lane.pin ? `${name} 충전창에 상품권 번호를 바로 넣거나, 결제수단에서 컬쳐캐쉬를 고르면 돼요.` : `${name} 결제 화면에서 결제수단으로 ‘컬쳐랜드 컬쳐캐쉬’를 고르면 돼요. 상품권은 먼저 컬쳐캐쉬로 충전해요.` };
   if (v === 'indirect' && lane.kind === 'convert')
-    return { tone: 'warn', icon: 'swap', title: `${lane.target}로 바꾸면 사용 가능`, body: `${name} 결제창에는 컬쳐캐쉬가 없어요. 컬쳐캐쉬를 ${lane.target}로 전환하면 써요. 전환 수수료 ${pct(lane.fee)}가 빠져요.` };
+  {
+    const feeLine = typeof lane.fee === 'number' ? `전환 수수료 ${pct(lane.fee)}가 빠져요.` : '전환 수수료는 전환 화면에서 확인해 주세요.';
+    // shop: 결제창에 컬쳐캐쉬가 없는 쇼핑몰(쿠팡 등) / 그 밖에는 포인트 자체가 사용처
+    const lead = lane.shop ? `${name} 결제창에는 컬쳐캐쉬가 없어요. 컬쳐캐쉬를 ${lane.target}로 전환하면 써요.` : `컬쳐캐쉬를 ${lane.target}(으)로 전환해서, ${lane.target}을(를) 받는 곳에서 결제해요.`;
+    return { tone: 'warn', icon: 'swap', title: `${lane.target}로 바꾸면 사용 가능`, body: `${lead} ${feeLine}` };
+  }
   if (v === 'indirect' && lane.kind === 'coupon')
     return { tone: 'warn', icon: 'swap', title: '모바일 쿠폰으로 사용 가능', body: `${name} 계산대에서 컬쳐캐쉬로 바로 결제할 수는 없어요. 컬쳐랜드 앱 [쿠폰]에서 ${name} 쿠폰을 사서 써요.` };
   if (v === 'indirect' && lane.kind === 'giftcode')

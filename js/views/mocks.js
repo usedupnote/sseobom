@@ -278,24 +278,30 @@ function barcode({ back, m }) {
 
 // ── 포인트 전환 ──
 function convert({ back, m }) {
-  const partners = MERCHANTS.filter((x) => x.online?.kind === 'convert');
-  const p = MERCHANT_BY_ID[local.partner] || (m?.online?.kind === 'convert' ? m : partners[0]);
+  // 수수료가 공개된 전환처를 먼저 보여주고, 안내에서 넘어온 전환처는 목록에 없더라도 맨 앞에 둔다
+  const all = MERCHANTS.filter((x) => x.online?.kind === 'convert');
+  const p = MERCHANT_BY_ID[local.partner]?.online?.kind === 'convert' ? MERCHANT_BY_ID[local.partner] : m?.online?.kind === 'convert' ? m : all[0];
+  const partners = [p, ...all.filter((x) => x !== p && typeof x.online.fee === 'number')].slice(0, 6);
   const lane = p.online;
-  const fee = Math.round(local.amount * lane.fee);
+  const known = typeof lane.fee === 'number'; // 수수료가 공개 페이지에 없는 전환처는 금액을 계산하지 않는다
+  const fee = known ? Math.round(local.amount * lane.fee) : 0;
   const get = local.amount - fee;
+  const feeLabel = (x) => (typeof x.fee === 'number' ? `수수료 ${pct(x.fee)}` : '수수료 확인 필요');
+  const feeRow = known ? `<div><span>수수료 ${pct(lane.fee)}</span><b>- ${won(fee)}</b></div>` : `<div><span>수수료</span><b>전환 화면에서 확인</b></div>`;
+  const getText = known ? `${get.toLocaleString('ko-KR')}P` : '수수료를 뺀 금액';
   if (local.step === 'done') {
     return {
       title: '전환 완료',
       html: `${bar('캐쉬 전환', back)}${demoTag()}
       <div class="scroll"><div class="mock-body success">
         <img src="assets/char/catsh-cash.webp" alt="" />
-        <h2>${esc(lane.target)} ${get.toLocaleString('ko-KR')}P 전환 완료</h2>
+        <h2>${esc(lane.target)} ${known ? `${get.toLocaleString('ko-KR')}P ` : ''}전환 완료</h2>
         <div class="receipt">
           <div><span>차감 컬쳐캐쉬</span><b>${won(local.amount)}</b></div>
-          <div><span>전환 수수료 ${pct(lane.fee)}</span><b>- ${won(fee)}</b></div>
-          <div class="total"><span>받은 ${esc(lane.target)}</span><span>${get.toLocaleString('ko-KR')}P</span></div>
+          ${feeRow}
+          <div class="total"><span>받은 ${esc(lane.target)}</span><span>${getText}</span></div>
         </div>
-        <p>이제 ${esc(p.name)} 결제 화면에서 ${esc(lane.target)}로 결제해요.</p>
+        <p>${lane.shop ? `이제 ${esc(p.name)} 결제 화면에서 ${esc(lane.target)}로 결제해요.` : `이제 ${esc(lane.target)}을(를) 받는 곳에서 결제할 수 있어요.`}</p>
       </div></div>
       <div class="cta-bar">${backBtn(back)}</div>`,
     };
@@ -306,8 +312,7 @@ function convert({ back, m }) {
     <div class="scroll"><div class="mock-body">
       <div><p class="field-label">전환할 곳</p>
         <div class="optlist">${partners
-          .slice(0, 6)
-          .map((x) => `<button class="opt ${x.id === p.id ? 'on' : ''}" data-partner="${x.id}">${icon('coin', 18)}${esc(x.online.target)}<small>수수료 ${pct(x.online.fee)}</small></button>`)
+          .map((x) => `<button class="opt ${x.id === p.id ? 'on' : ''}" data-partner="${x.id}">${icon('coin', 18)}${esc(x.online.target)}<small>${feeLabel(x.online)}</small></button>`)
           .join('')}</div>
       </div>
       <div><p class="field-label">전환 금액 <small style="font-weight:500;color:var(--ink-3)">(사용가능 ${won(state.cash)})</small></p>
@@ -315,8 +320,8 @@ function convert({ back, m }) {
       </div>
       <div class="receipt">
         <div><span>차감 컬쳐캐쉬</span><b>${won(local.amount)}</b></div>
-        <div><span>수수료 ${pct(lane.fee)}</span><b>- ${won(fee)}</b></div>
-        <div class="total"><span>받는 ${esc(lane.target)}</span><span>${get.toLocaleString('ko-KR')}P</span></div>
+        ${feeRow}
+        <div class="total"><span>받는 ${esc(lane.target)}</span><span>${getText}</span></div>
       </div>
       ${state.cash >= local.amount ? '' : `<div class="callout callout-warn"><img src="assets/char/boy-please.webp" alt="" /><div><h3>컬쳐캐쉬가 부족해요</h3><p>전환할 금액만큼 먼저 충전해요.</p><div class="btns"><button class="btn btn-sm btn-dark" data-go="#/mock/charge?back=${encodeURIComponent(location.hash)}">충전하기</button></div></div></div>`}
       <label class="consent"><input type="checkbox" id="consent" ${local.consent ? 'checked' : ''} /><span>(최초 1회) 제3자 정보제공에 동의하고, 컬쳐랜드와 ${esc(p.name)} 계정의 명의가 같은지 확인했어요. 전환 후에는 취소할 수 없어요.</span></label>

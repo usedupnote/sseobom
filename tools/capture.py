@@ -46,6 +46,9 @@ SHOTS = [
     # 다음 동작 버튼: 선물·경품 상품권 → 교환소
     ("25-gift-result", "", "#/r?q=" + quote("카톡 선물로 받은 상품권 쿠팡에서 쓸 수 있어?"), 844),
     ("26-exchange", "", "#/mock/exchange", 844),
+    # 공식 목록 전체 반영: 분야 목록
+    ("27-category-finance", "", "#/c/finance", 844),
+    ("28-category-offline", "", "#/c/offline", 844),
 ]
 
 # 일부만 다시 찍기: python tools/capture.py <기본 URL> 04,25,26  (파일명 앞 번호)
@@ -64,16 +67,35 @@ ORIGIN = BASE.split("?")[0]
 
 
 def shoot(cmd, target):
-    """Edge가 끝난 뒤에야 파일이 써지는 경우가 있어, 이전 파일을 지우고 새 파일이 생길 때까지 기다린다(실패하면 한 번 더)."""
+    """Edge가 끝난 뒤에야 파일이 써지는 경우가 있어, 이전 파일을 지우고 새 파일이 다 써질 때까지 기다려 메모리로 읽는다(실패하면 한 번 더)."""
     for attempt in range(2):
         target.unlink(missing_ok=True)
         subprocess.run(cmd, check=True, capture_output=True, timeout=60)
-        for _ in range(40):
-            if target.exists() and target.stat().st_size > 0:
-                time.sleep(0.3)  # 쓰기가 끝나도록 잠깐 더
-                return Image.open(target)
+        last = -1
+        for _ in range(60):
+            if target.exists():
+                size = target.stat().st_size
+                if size > 0 and size == last:  # 크기가 더 늘지 않으면 다 쓴 것
+                    try:
+                        with Image.open(target) as im:
+                            im.load()
+                            return im.copy()
+                    except OSError:
+                        pass
+                last = size
             time.sleep(0.25)
     raise RuntimeError(f"캡처 실패: {target.name}")
+
+
+def save(im, target):
+    """Edge가 파일을 아직 잡고 있으면 저장이 실패할 수 있어 몇 번 다시 시도한다."""
+    for _ in range(20):
+        try:
+            im.save(target, optimize=True)
+            return
+        except OSError:
+            time.sleep(0.3)
+    im.save(target, optimize=True)
 
 
 if ONLY:
@@ -92,7 +114,7 @@ for name, params, route, (w, h), box in DESKTOP_SHOTS:
         ORIGIN + params + route,
     ]
     im = shoot(cmd, target)
-    im.crop(tuple(v * SCALE for v in box)).save(target, optimize=True)
+    save(im.crop(tuple(v * SCALE for v in box)), target)
     print(name, target.stat().st_size // 1024, "KB")
 
 for name, params, route, h in SHOTS:
@@ -110,5 +132,5 @@ for name, params, route, h in SHOTS:
         url,
     ]
     im = shoot(cmd, target)
-    im.crop((0, 0, 390 * SCALE, im.height)).save(target, optimize=True)
+    save(im.crop((0, 0, 390 * SCALE, im.height)), target)
     print(name, target.stat().st_size // 1024, "KB")

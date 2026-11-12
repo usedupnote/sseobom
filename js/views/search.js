@@ -54,7 +54,7 @@ export function searchView({ query, state }) {
           <div class="chips">${EXAMPLES.map((q) => `<button type="button" class="chip ex" data-go="#/r?q=${encodeURIComponent(q)}">${esc(q)}</button>`).join('')}</div>
         </section>
         <section>
-          <p class="label">카테고리로 찾기</p>
+          <p class="label">분야로 찾기</p>
           <div class="cats">${CATEGORIES.map((c) => `<button type="button" data-go="#/c/${c.id}">${icon(c.icon, 24)}${esc(c.label)}</button>`).join('')}</div>
         </section>
         ${recent}

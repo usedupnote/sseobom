@@ -109,7 +109,7 @@ export function speak(text, btn) {
 }
 
 // 출처 한 줄 묶음
-export function sourceList(keys = [], { compact = false } = {}) {
+export function sourceList(keys = [], { compact = false, checkedAt = CHECKED_AT } = {}) {
   const uniq = [...new Set(keys)].filter((k) => SOURCES[k]);
   if (!uniq.length) return '';
   const items = uniq
@@ -123,7 +123,7 @@ export function sourceList(keys = [], { compact = false } = {}) {
     })
     .join('');
   return `<div class="sources ${compact ? 'is-compact' : ''}">
-    <p class="sources-head">${icon('info', 14)}정보 출처 · 확인일 ${CHECKED_AT}</p>
+    <p class="sources-head">${icon('info', 14)}정보 출처 · 확인일 ${esc(checkedAt)}</p>
     <ul>${items}</ul>
   </div>`;
 }

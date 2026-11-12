@@ -2,7 +2,7 @@
 import { icon, esc, mark, sourceList, confidenceBadge, topbar, speakBtn } from '../ui.js';
 
 const searchBtn = (q) => `<button class="icon-btn" data-go="#/search${q ? `?q=${encodeURIComponent(q)}` : ''}" aria-label="${q ? '다시 검색' : '검색'}">${icon('search', 20)}</button>`;
-import { MERCHANTS, MERCHANT_BY_ID, CATEGORIES, laneVerdict, merchantVerdict } from '../../data/merchants.js';
+import { MERCHANTS, MERCHANT_BY_ID, CATEGORIES, laneVerdict, merchantVerdict, inCategory, placeCount, OFFICIAL_TOTAL, OFFLINE_TOTAL, OFFICIAL_CHECKED_AT } from '../../data/merchants.js';
 import { VOUCHERS } from '../../data/vouchers.js';
 import { TOPICS } from '../../data/topics.js';
 import { parseQuery, suggest } from '../parser.js';
@@ -12,7 +12,14 @@ import { CH_LABEL, lanePill, laneLine, routeFor, pickLane, verdictCopy, verdictB
 import { SOURCES } from '../../data/sources.js';
 
 const CAT_LABEL = Object.fromEntries(CATEGORIES.map((c) => [c.id, c.label]));
-const TOTAL_OFFICIAL = 154;
+// 이용 방식별 목록(홈의 전환·쇼핑·쿠폰 메뉴) — 분야가 아니라 방식으로 묶는다
+const listed = (m) => !m.group && m.confidence !== 'unverified';
+const KIND_LISTS = {
+  convert: { title: '포인트 전환', sub: '컬쳐캐쉬를 제휴 포인트로 바꿔 써요. 수수료는 전환처마다 달라요.', test: (m) => m.online?.kind === 'convert' },
+  coupon: { title: '쿠폰 구매', sub: '컬쳐캐쉬로 모바일 쿠폰을 사서 써요.', test: (m) => [m.online, m.offline].some((l) => l?.kind === 'coupon') || (m.extra || []).some((x) => x.kind === 'coupon') },
+  direct: { title: '바로 사용', sub: '결제 화면에서 컬쳐캐쉬를 골라 바로 결제해요.', test: (m) => m.online?.kind === 'direct' },
+};
+const kindIds = (k) => MERCHANTS.filter((m) => listed(m) && KIND_LISTS[k].test(m)).map((m) => m.id);
 
 // ── 해석 칩: "이렇게 이해했어요" ──────────────────────────
 function interpBar(p, { q, state, ch }) {
@@ -157,7 +164,7 @@ function merchantScreen(m, { q, p, ch, state, back }) {
       <div class="result-body">
         ${voucherCallout(calloutVoucher(p, state), back, state.voucher)}
         ${merchantCard(m, { ch, state })}
-        ${sourceList(m.sources)}
+        ${sourceList(m.sources, { checkedAt: m.checkedAt })}
       </div>
     </div>
     <div class="cta-bar">
@@ -204,13 +211,13 @@ function listScreen({ title, sub, ids, q, p, ch, state, back }) {
     ${topbar(title, { right: searchBtn('') })}
     <div class="scroll">
       ${q ? interpBar(p, { q, state, ch }) : ''}
-      <div class="list-head"><h2>${esc(title)} ${filtered.length}곳</h2><p>${esc(sub)}</p></div>
+      <div class="list-head"><h2>${esc(title)} ${placeCount(filtered)}곳</h2><p>${esc(sub)}</p></div>
       <div class="seg" role="tablist" aria-label="장소 필터">
         ${[[null, '전체'], ['online', '온라인'], ['offline', '매장']].map(([k, l]) => `<button role="tab" aria-selected="${ch === k}" class="${ch === k ? 'on' : ''}" data-ch="${k || ''}">${l}</button>`).join('')}
       </div>
       <div style="padding:0 16px">${voucherCallout(calloutVoucher(p, state), back, state.voucher)}</div>
       <ul class="mlist">${rows || `<li class="list-foot">이 조건에 맞는 사용처가 없어요.</li>`}</ul>
-      <p class="list-foot">공식 사용처 ${TOTAL_OFFICIAL}곳 중 대표 사용처를 담은 시제품이에요. <a href="https://www.cultureland.co.kr/usecash/useCash.do" target="_blank" rel="noopener">공식 전체 목록 보기</a></p>
+      <p class="list-foot">공식 사용처 목록 ${OFFICIAL_TOTAL}곳(${OFFICIAL_CHECKED_AT} 기준)과 오프라인 사용처 ${OFFLINE_TOTAL}곳을 모두 담았어요. 사용처는 바뀔 수 있어요. <a href="https://www.cultureland.co.kr/usecash/useCash.do" target="_blank" rel="noopener">공식 목록 보기</a></p>
     </div>`,
     mount(root) {
       bindInterp(root, { q, ch, onCh: (next) => setCh(next) });
@@ -241,7 +248,7 @@ function emptyScreen({ q, p, state }) {
       <div class="empty">
         <img src="assets/char/catsh-wink.webp" alt="" />
         <h2>‘${esc(q)}’은(는) 찾지 못했어요</h2>
-        <p>이 시제품에 담긴 사용처(공식 ${TOTAL_OFFICIAL}곳 중 ${MERCHANTS.filter((m) => !m.group).length}곳)에서 찾지 못했어요.<br />사용처는 바뀔 수 있으니 공식 목록이나 고객센터에서 한 번 더 확인해 주세요.</p>
+        <p>공식 사용처 목록 ${OFFICIAL_TOTAL}곳(${OFFICIAL_CHECKED_AT} 기준)과 오프라인 사용처 ${OFFLINE_TOTAL}곳에서 찾지 못했어요.<br />사용처는 바뀔 수 있으니 공식 목록이나 고객센터에서 한 번 더 확인해 주세요.</p>
         ${sugg.length ? `<p class="label" style="margin-top:8px">혹시 이곳인가요?</p><div class="chips">${sugg.map((m) => `<button class="chip" data-go="#/m/${m.id}">${esc(m.name)}</button>`).join('')}</div>` : ''}
         <div class="empty-actions">
           <button class="btn btn-dark btn-block" data-go="#/search">카테고리로 찾기</button>
@@ -304,9 +311,9 @@ export function resultView({ query, state }) {
   if (p.merchants.length > 1) return listScreen({ title: '찾은 사용처', sub: '여러 곳이 해당돼요. 하나를 골라 확인하세요.', ids: p.merchants, q, p, ch, state, back });
   if (p.category) {
     const c = CATEGORIES.find((x) => x.id === p.category);
-    return listScreen({ title: c.label, sub: c.hint, ids: MERCHANTS.filter((m) => m.cat === p.category).map((m) => m.id), q, p, ch, state, back });
+    return listScreen({ title: c.label, sub: c.hint, ids: MERCHANTS.filter((m) => inCategory(m, p.category)).map((m) => m.id), q, p, ch, state, back });
   }
-  if (p.topic === 'convert') return listScreen({ title: '포인트·페이 전환', sub: '컬쳐캐쉬를 제휴 포인트로 바꿔 써요(수수료 4.5~8%).', ids: MERCHANTS.filter((m) => m.online?.kind === 'convert').map((m) => m.id), q, p, ch, state, back });
+  if (p.topic === 'convert') return listScreen({ ...KIND_LISTS.convert, ids: kindIds('convert'), q, p, ch, state, back });
   if (p.topic || p.voucher) return topicScreen(p.topic || 'charge', { q, p, state });
   return emptyScreen({ q, p, state });
 }
@@ -318,8 +325,9 @@ export function merchantRoute({ segs, query, state }) {
 }
 
 export function categoryRoute({ segs, query, state }) {
+  if (KIND_LISTS[segs[1]]) return listScreen({ ...KIND_LISTS[segs[1]], ids: kindIds(segs[1]), q: '', p: null, ch: query.get('ch'), state, back: location.hash });
   const c = CATEGORIES.find((x) => x.id === segs[1]) || CATEGORIES[0];
-  const ids = MERCHANTS.filter((m) => m.cat === c.id).map((m) => m.id);
+  const ids = MERCHANTS.filter((m) => inCategory(m, c.id)).map((m) => m.id);
   return listScreen({ title: c.label, sub: c.hint, ids, q: '', p: null, ch: query.get('ch'), state, back: location.hash });
 }
 

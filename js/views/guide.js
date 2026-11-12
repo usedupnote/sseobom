@@ -40,7 +40,19 @@ export function guideView({ segs, query, state }) {
     return { title: '안내', html: topbar('안내를 찾지 못했어요') };
   }
   const { key: chKey, lane } = isChargeOnly ? { key: 'online', lane: null } : laneOf(m, routeId);
-  const vars = { name: m.name, target: lane?.target || '', fee: lane && typeof lane.fee === 'number' ? pct(lane.fee) : '' };
+  const feeKnown = lane && typeof lane.fee === 'number';
+  const target = lane?.target || '';
+  const vars = {
+    name: m.name,
+    target,
+    fee: feeKnown ? pct(lane.fee) : '',
+    feeNote: feeKnown ? `수수료 ${pct(lane.fee)}` : '수수료는 전환 화면에서 확인',
+    feeBody: feeKnown ? `수수료 ${pct(lane.fee)}가 빠진 만큼 ${target}이(가) 들어와요.` : '전환 수수료는 전환 화면에서 확인해요.',
+    // 전환한 포인트를 쓰는 곳: 쇼핑몰 전환(쿠팡 등)은 그 쇼핑몰, 포인트 자체가 사용처면 그 포인트를 받는 곳
+    payWhere: lane?.shop ? `${m.name}에서` : `${target}을(를) 받는 곳에서`,
+    payTitle: lane?.shop ? `${m.name}에서 ${target}로 결제` : `${target}(으)로 결제하기`,
+    payBody: lane?.shop ? `${m.name} 결제 화면에서 ${target}을(를) 결제수단으로 써요.` : `${target}을(를) 받는 결제 화면에서 결제수단으로 골라요. 쓸 수 있는 곳은 ${target} 안내를 따라요.`,
+  };
   const voucher = state.voucher;
   const vinfo = VOUCHERS[voucher];
   const blocked = vinfo?.blocked;
@@ -102,7 +114,7 @@ export function guideView({ segs, query, state }) {
       const cls = s.skip ? 'is-skip' : d ? 'is-done' : '';
       const act = s.action ? `<button class="btn btn-sm btn-dark" data-go="#/${s.action.to}?m=${m.id}&back=${encodeURIComponent(backHash)}">${icon('phone', 15)}${esc(s.action.label)}</button>` : '';
       const check = s.skip ? '' : `<button class="step-check" data-step="${i}" aria-pressed="${d}">${icon('check', 14)}${d ? '했어요' : '완료 표시'}</button>`;
-      const calc = s.calculator && lane ? calcHtml(lane) : '';
+      const calc = s.calculator && feeKnown ? calcHtml(lane) : '';
       return `<li class="step ${cls}">
         <span class="step-n">${d && !s.skip ? icon('check', 18) : i + 1}</span>
         <div>
@@ -238,7 +250,7 @@ function focusScreen({ m, steps, isDone, doneKey, lane, listHash, backHash, titl
       <h2>${esc(st.title)}</h2>
       <p class="body">${esc(st.body)}</p>
       ${st.tip ? `<p class="tip">${esc(st.tip)}</p>` : ''}
-      ${st.calculator && lane ? calcHtml(lane) : ''}
+      ${st.calculator && lane && typeof lane.fee === 'number' ? calcHtml(lane) : ''}
       <div class="focus-actions">
         ${act}
         ${speakBtn(say, '이 단계 읽어주기').replace('btn-sm ', '')}

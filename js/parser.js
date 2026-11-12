@@ -21,7 +21,7 @@ export function compact(s) {
   return s
     .toLowerCase()
     .replace(/7\s*-?\s*(eleven|일레븐)/g, '세븐일레븐')
-    .replace(/[\s.,!?~'"“”‘’()·\-_/]/g, '');
+    .replace(/[\s.,!?~'"“”‘’()[\]:·\-_/]/g, '');
 }
 
 // 토큰 끝의 조사·어미 떼기
@@ -57,15 +57,16 @@ const TOPIC_RULES = [
   { id: 'convert', re: /전환|포인트로\s*바꾸|바꿔/ },
 ];
 
+// 분야는 공식 사용처 페이지의 탭과 같다(쇼핑·게임·콘텐츠·금융·외식·문화생활) + 오프라인 사용처
 const CATEGORY_RULES = [
-  { id: 'conv', re: /편의점/ },
-  { id: 'culture', re: /영화|극장|시네마|관람/ },
-  { id: 'book', re: /서점|도서|책|문구/ },
+  { id: 'offline', re: /편의점/, merchants: ['conv-all'] }, // 편의점은 4사가 같은 방법이라 묶음 결과 하나로 바로 연결
+  { id: 'offline', re: /문구점|오프라인\s*사용처|매장\s*목록/ },
+  { id: 'culture', re: /영화|극장|시네마|관람|서점|도서|책|문화\s*생활/ },
   { id: 'game', re: /게임|겜|아이템|현질/ },
-  { id: 'content', re: /웹툰|웹소설|음악|ott|이모티콘|전자책/ },
-  { id: 'shopping', re: /쇼핑|온라인\s*몰|택배|생필품/ },
-  { id: 'food', re: /카페|커피|외식|식당|빵|디저트|화장품/ },
-  { id: 'point', re: /포인트|페이(?!지)/ },
+  { id: 'content', re: /웹툰|웹소설|음악|ott|이모티콘|전자책|콘텐츠|컨텐츠/ },
+  { id: 'shopping', re: /쇼핑|온라인\s*몰|택배|생필품|화장품/ },
+  { id: 'food', re: /카페|커피|외식|식당|빵|디저트/ },
+  { id: 'finance', re: /포인트|페이(?!지)|금융/ },
 ];
 
 // ── 사용처 색인 ─────────────────────────────────────────
@@ -77,7 +78,8 @@ for (const m of MERCHANTS) {
     INDEX.push({ id: m.id, term: t, short: t.length <= 2, latin: /^[a-z0-9+]+$/.test(t) });
   }
 }
-INDEX.sort((a, b) => b.term.length - a.term.length);
+// 긴 이름부터 맞춰 보고, 같은 낱말(예: '신세계상품권'이 가리키는 세 곳)은 붙어 있게 한다
+INDEX.sort((a, b) => b.term.length - a.term.length || (a.term < b.term ? -1 : a.term > b.term ? 1 : 0));
 
 // 한글 음절을 자모로 풀어 오타 거리를 잰다('쿠펑'→'쿠팡'은 1, '쿠펑'→'쿠키'는 3)
 const JUNG = 'ㅏㅐㅑㅒㅓㅔㅕㅖㅗㅘㅙㅚㅛㅜㅝㅞㅟㅠㅡㅢㅣ';
@@ -115,13 +117,20 @@ function matchMerchants(raw) {
   const tokens = tokenize(raw).map(compact);
   const found = [];
   let rest = text;
+  let used = null; // 방금 맞은 낱말 — 같은 낱말을 쓰는 다른 사용처까지 본 뒤에 문장에서 지운다
+  const flush = () => {
+    if (used) rest = rest.split(used).join('·');
+    used = null;
+  };
   for (const e of INDEX) {
+    if (used && e.term !== used) flush();
     if (found.includes(e.id)) continue;
-    // 짧은 별칭·영문 별칭은 토큰 단위로만(예: 'cu'가 'culture' 안에서 잡히지 않게)
-    const hit = e.short || e.latin ? tokens.includes(e.term) : rest.includes(e.term);
+    // 짧은 별칭·영문 별칭은 토큰 단위로만(예: 'cu'가 'culture' 안에서 잡히지 않게).
+    // 다섯 글자 이상 영문 이름은 띄어 쓴 경우도 잡는다('star conflict', 'cj one').
+    const hit = e.short ? tokens.includes(e.term) : e.latin ? tokens.includes(e.term) || (e.term.length >= 5 && text.includes(e.term)) : rest.includes(e.term);
     if (hit) {
       found.push(e.id);
-      if (!e.short && !e.latin) rest = rest.split(e.term).join('·');
+      if (!e.short && !e.latin) used = e.term;
     }
   }
   // 그룹(편의점 4사)과 그 구성원이 함께 잡히면 구성원 우선
@@ -191,12 +200,12 @@ export function parseQuery(raw = '') {
   }
 
   // 2) 카테고리 키워드 (단독 카테고리 id 입력 포함)
-  const cat = CATEGORIES.find((c) => c.label === q || c.id === q)?.id || CATEGORY_RULES.find((r) => r.re.test(q))?.id;
-  if (cat && !(res.topic && cat === 'point')) {
+  const rule = CATEGORY_RULES.find((r) => r.re.test(q));
+  const cat = CATEGORIES.find((c) => c.label === q || c.id === q)?.id || rule?.id;
+  if (cat && !(res.topic && cat === 'finance')) {
     res.category = cat;
     res.matchedBy = 'category';
-    // 편의점은 4사가 같은 방법이라 묶음 결과 하나로 바로 연결
-    if (cat === 'conv') res.merchants = ['conv-all'];
+    if (rule?.merchants) res.merchants = rule.merchants;
     return res;
   }
 
