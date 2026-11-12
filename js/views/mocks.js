@@ -43,7 +43,7 @@ export function mockView({ segs, query }) {
   return fn({ back, m });
 }
 
-// ── 문자로 받은 상품권(MMS) — 미션 가이드 4쪽 예시 구성 ──
+// ── 문자로 받은 상품권(MMS) — 실제 상품권 문자의 구성(바코드·번호·바로가기 링크)을 본뜬 시연 화면 ──
 function mms({ back }) {
   return {
     title: '문자로 받은 상품권',
@@ -108,6 +108,7 @@ function charge({ back }) {
       </div>
       <div><p class="field-label">상품권 번호 16자리 <small style="font-weight:500;color:var(--ink-3)">(시연용 번호가 채워져 있어요)</small></p>
         <div class="pin-row">${DEMO.pinDemo.map((p, i) => `<input value="${p}" readonly aria-label="번호 ${i + 1}번째 4자리" />`).join('')}</div>
+        <button class="btn btn-block proposal" style="margin-top:10px" data-go="#/bulk">${icon('photo', 18)}여러 장이면 사진에서 한 번에 등록</button>
       </div>
       <ul class="notes">
         <li>${icon('info', 14)}<span>상품권 충전 한도는 없어요. 보유한도(본인인증 50만원)를 넘으면 대기 캐쉬로 보관돼요.</span></li>

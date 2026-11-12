@@ -36,6 +36,6 @@ export const TOPICS = {
       ['컬쳐캐쉬', '앱 홈의 사용가능 금액 · 보관중인 금액(안심금고)'],
       ['안심금고', '보관 중인 캐쉬는 [사용 가능]으로 꺼내야 결제에 쓸 수 있음'],
     ],
-    sources: ['voucherUse', 'missionGuide', 'faq'],
+    sources: ['voucherUse', 'faq'],
   },
 };

@@ -9,6 +9,7 @@ const DEFAULT = {
   recent: [],
   cash: DEMO.cashBalance,
   charged: false,
+  bulk: [], // 일괄등록으로 이미 등록한 가상 사진 id — 같은 상품권을 두 번 등록하지 않게
   proposal: true,
   // 저시력 관점 미러(시연용): 흐림 0~4, 시야 none|hemi|tunnel, 색 none|deutan|gray
   lv: { on: false, blur: 2, field: 'none', color: 'none' },

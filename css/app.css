@@ -1,4 +1,4 @@
-/* 컬쳐랜드 써봄(SSEOBOM) — 브랜드 토큰은 미션 가이드·BI PDF에서 추출
+/* 컬쳐랜드 써봄(SSEOBOM) — 브랜드 토큰은 제공받은 BI 자료에서 추출
    저시력 대응: 기본 화면도 글자 대비 4.5:1 이상·최소 13px, 고대비(.hc)는 7:1 이상 목표 */
 :root {
   --red: #ff3838;
@@ -670,3 +670,67 @@ body.capture-lv.lv-on .stage { grid-template-columns: auto auto; }
 .step { grid-template-columns: 34px minmax(0, 1fr); }
 .calc-input input { width: 100%; }
 .search-field { min-width: 0; }
+
+/* ── 사진에서 상품권 한 번에 등록(일괄등록) ─────────────── */
+.bulk-entry { display: flex; align-items: center; gap: 12px; width: 100%; padding: 12px 14px; border-radius: 16px; border: 1px solid var(--line); background: var(--surface); text-align: left; }
+.bulk-entry .q-ic { width: 40px; height: 40px; border-radius: 12px; display: grid; place-items: center; background: var(--red-50); color: var(--red-deep); flex: none; }
+.bulk-entry .be-text { flex: 1; display: grid; gap: 2px; min-width: 0; }
+.bulk-entry strong { font-size: calc(14.5px * var(--ts, 1)); }
+.bulk-entry small { font-size: calc(13px * var(--ts, 1)); color: var(--ink-3); }
+.bulk-entry > .ic { color: var(--ink-4); }
+
+.bulk-body { padding-bottom: 150px; }
+.bulk-hero { text-align: center; display: grid; justify-items: center; gap: 8px; padding-top: 6px; }
+.bulk-hero-ic { width: 64px; height: 64px; border-radius: 20px; display: grid; place-items: center; background: var(--red-50); color: var(--red-deep); }
+.bulk-hero h2 { margin: 0; font-size: calc(20px * var(--ts, 1)); line-height: 1.35; }
+.bulk-hero p { margin: 0; font-size: calc(14px * var(--ts, 1)); line-height: 1.6; color: var(--ink-2); }
+.bulk-how { margin: 0; padding: 0; list-style: none; display: grid; gap: 8px; }
+.bulk-how li { display: flex; gap: 10px; align-items: flex-start; padding: 12px; border-radius: 12px; background: var(--bg); }
+.bulk-how li > b { flex: none; width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; background: var(--ink); color: var(--surface); font-size: calc(13px * var(--ts, 1)); }
+.bulk-how span { display: grid; gap: 2px; font-size: calc(13.5px * var(--ts, 1)); line-height: 1.5; color: var(--ink-2); min-width: 0; }
+.bulk-how strong { font-size: calc(14.5px * var(--ts, 1)); color: var(--ink); }
+.bulk-privacy .bulk-shield { color: var(--ok); flex: none; margin-top: 1px; }
+.bulk-privacy ul { margin: 0; padding-left: 18px; display: grid; gap: 3px; font-size: calc(13.5px * var(--ts, 1)); line-height: 1.5; color: var(--ink-2); }
+
+.bulk-scan { text-align: center; justify-items: center; padding-top: 28px; }
+.bulk-tiles { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; width: 100%; max-width: 264px; }
+.bulk-tiles i { position: relative; aspect-ratio: 1; border-radius: 8px; background: var(--surface); border: 1px solid var(--line-2); }
+.bulk-tiles i.seen { background: var(--line-2); }
+.bulk-tiles i.hit { background: var(--red-50); border: 2px solid var(--red-deep); }
+.bulk-tiles i.hit::after { content: '✓'; position: absolute; inset: 0; display: grid; place-items: center; font-style: normal; font-weight: 800; font-size: 20px; color: var(--red-text); }
+.bulk-scan h2 { margin: 8px 0 0; font-size: calc(19px * var(--ts, 1)); }
+.bulk-bar { width: 100%; height: 12px; border-radius: 999px; background: var(--bg); border: 1px solid var(--line-2); overflow: hidden; }
+.bulk-bar span { display: block; height: 100%; width: 0; background: var(--red-deep); transition: width 0.15s linear; }
+.bulk-count, .bulk-found, .bulk-hint, .bulk-rest { margin: 0; font-size: calc(14px * var(--ts, 1)); color: var(--ink-2); }
+.bulk-found { display: inline-flex; align-items: center; gap: 6px; font-weight: 700; color: var(--ink); }
+.bulk-hint, .bulk-rest { font-size: calc(13px * var(--ts, 1)); color: var(--ink-3); }
+
+.bulk-sum h2 { margin: 0 0 8px; font-size: calc(18px * var(--ts, 1)); line-height: 1.4; }
+.bulk-sum p { margin: 0; display: flex; flex-wrap: wrap; gap: 6px; }
+.bk-head { margin: 0 0 8px; font-size: calc(14.5px * var(--ts, 1)); display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+.bk-head small { font-size: calc(13px * var(--ts, 1)); font-weight: 500; color: var(--ink-3); }
+.bk-list { display: grid; gap: 8px; }
+.bk-item { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 14px; border: 1px solid var(--line-2); background: var(--surface); min-height: 64px; cursor: pointer; }
+.bk-item:has(input:checked) { border: 2px solid var(--red-deep); background: var(--red-50); padding: 9px 11px; }
+.bk-item input { width: 22px; height: 22px; accent-color: var(--red-deep); flex: none; margin: 0; }
+.bk-item.is-static { cursor: default; align-items: flex-start; }
+.bk-item.is-reg { background: var(--bg); cursor: default; }
+.bk-main { flex: 1 1 130px; min-width: 0; display: grid; gap: 2px; }
+.bk-main strong { font-size: calc(14.5px * var(--ts, 1)); }
+.bk-no { font-size: calc(13px * var(--ts, 1)); font-variant-numeric: tabular-nums; letter-spacing: 0.04em; color: var(--ink-2); }
+.bk-main small { font-size: calc(13px * var(--ts, 1)); color: var(--ink-3); line-height: 1.45; }
+.bk-main .btn { justify-self: start; margin-top: 6px; }
+.bk-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; }
+/* 사진 썸네일(상품권 사진을 흉내 낸 그림) — 사진이라 어떤 테마에서도 흰 바탕 */
+.bk-thumb { flex: none; width: 44px; height: 56px; border-radius: 7px; border: 1px solid #c9c9cf; background: #fff; display: grid; grid-template-rows: 12px 1fr; overflow: hidden; }
+.bk-thumb i { background: #ff3838; }
+.bk-thumb b { margin: 9px 6px; background: repeating-linear-gradient(90deg, #222 0 2px, transparent 2px 4px, #222 4px 5px, transparent 5px 8px); }
+.bk-thumb.bk-munsang18 i { background: #7b8494; }
+.bk-thumb.bk-check b { filter: blur(1.4px); margin-right: 20px; }
+
+.screen.ts-l .bk-item, .screen.ts-xl .bk-item { flex-wrap: wrap; }
+.screen.ts-l .bulk-body, .screen.ts-xl .bulk-body { padding-bottom: 230px; }
+.screen.hc .bulk-entry, .screen.hc .bulk-how li, .screen.hc .bk-item, .screen.hc .bulk-bar { border: 2px solid #fff; }
+.screen.hc .bk-item:has(input:checked) { border-color: var(--red-deep); }
+.screen.hc .bulk-tiles i.seen { background: #8a8a8a; }
+.home-body .bulk-entry { box-shadow: none; }

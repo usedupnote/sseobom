@@ -9,6 +9,7 @@ import { resultView, merchantRoute, categoryRoute, topicRoute } from './views/re
 import { guideView } from './views/guide.js';
 import { mockView } from './views/mocks.js';
 import { voucherView } from './views/voucher.js';
+import { bulkView } from './views/bulk.js';
 
 const app = document.getElementById('app');
 const screen = document.getElementById('screen');
@@ -32,12 +33,19 @@ const ROUTES = {
   g: guideView, // 사용 안내(?s=n 이면 한 단계씩 크게 보기)
   mock: mockView, // 시연용 앱 화면
   v: voucherView, // 내 상품권 판별
+  bulk: bulkView, // 사진에서 상품권 한 번에 등록(?st=scan|result|done)
 };
 
 let depth = 0;
 export function go(hash) {
   if (location.hash === hash) render();
   else location.hash = hash;
+}
+
+// 한 화면 안에서 단계만 바꿀 때: 뒤로가기 기록을 늘리지 않고 주소만 바꿔 다시 그린다
+export function swap(hash) {
+  history.replaceState(null, '', hash);
+  render();
 }
 
 export function rerender() {

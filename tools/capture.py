@@ -38,6 +38,10 @@ SHOTS = [
     ("17-lv-result-xl", "&ts=xl", f"#/r?q={Q_CONV}", 844),
     ("18-sim-gray", "&sim=gray", "#/g/cgv/barcode-mms?v=cl16", 844),
     ("19-sim-deutan", "&sim=deutan", "#/r?q=CGV", 844),
+    # 사진에서 상품권 한 번에 등록(일괄등록)
+    ("22-bulk-intro", "", "#/bulk", 844),
+    ("23-bulk-result", "", "#/bulk?st=result", 844),
+    ("24-bulk-result-hc", "&ts=l&hc=1", "#/bulk?st=result", 844),
 ]
 
 SCALE = 2

@@ -11,7 +11,7 @@ export const VOUCHERS = {
     storeDirect: true,
     validity: '구매일로부터 5년(이벤트·제휴 판매분은 더 짧을 수 있음)',
     summary: '문자(MMS)로 받은 상품권 그대로 편의점·서점·영화관 매장에서 바코드로 쓸 수 있고, 컬쳐캐쉬로 충전하면 온라인·전환·쿠폰까지 쓸 수 있어요.',
-    sources: ['mobileVoucher', 'policyMobile', 'missionGuide'],
+    sources: ['mobileVoucher', 'policyMobile', 'nexonNotice'], // 16자리 표기는 넥슨 공지 원문에서 확인
   },
   cash: {
     id: 'cash',

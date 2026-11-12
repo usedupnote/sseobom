@@ -54,13 +54,13 @@ const M = [
     online: null,
     offline: BARCODE,
     confidence: 'official',
-    sources: ['voucherUse', 'offlinePopup', 'mobileVoucher', 'missionGuide'],
+    sources: ['voucherUse', 'offlinePopup', 'mobileVoucher'],
     note: '공식 안내 원문: "전국 오프라인 편의점(CU, GS25, 7-Eleven, Emart24)"',
   },
-  { id: 'cu', name: 'CU', aliases: ['씨유', 'cu편의점', '씨유편의점', 'bgf'], cat: 'conv', online: null, offline: BARCODE, confidence: 'official', sources: ['voucherUse', 'missionGuide'] },
-  { id: 'gs25', name: 'GS25', aliases: ['지에스', '지에스25', 'gs편의점', '지에스편의점', 'gs 25'], cat: 'conv', online: null, offline: BARCODE, confidence: 'official', sources: ['voucherUse', 'missionGuide'] },
-  { id: 'seven', name: '세븐일레븐', aliases: ['7-eleven', '7eleven', '7일레븐', '세븐', '세븐일레븐편의점', 'seveneleven', '7-11'], cat: 'conv', online: null, offline: BARCODE, confidence: 'official', sources: ['voucherUse', 'missionGuide'] },
-  { id: 'emart24', name: '이마트24', aliases: ['emart24', '이마트 24', '이마트편의점'], cat: 'conv', online: null, offline: BARCODE, confidence: 'official', sources: ['voucherUse', 'missionGuide'] },
+  { id: 'cu', name: 'CU', aliases: ['씨유', 'cu편의점', '씨유편의점', 'bgf'], cat: 'conv', online: null, offline: BARCODE, confidence: 'official', sources: ['voucherUse'] },
+  { id: 'gs25', name: 'GS25', aliases: ['지에스', '지에스25', 'gs편의점', '지에스편의점', 'gs 25'], cat: 'conv', online: null, offline: BARCODE, confidence: 'official', sources: ['voucherUse'] },
+  { id: 'seven', name: '세븐일레븐', aliases: ['7-eleven', '7eleven', '7일레븐', '세븐', '세븐일레븐편의점', 'seveneleven', '7-11'], cat: 'conv', online: null, offline: BARCODE, confidence: 'official', sources: ['voucherUse'] },
+  { id: 'emart24', name: '이마트24', aliases: ['emart24', '이마트 24', '이마트편의점'], cat: 'conv', online: null, offline: BARCODE, confidence: 'official', sources: ['voucherUse'] },
 
   // ── 영화·문화 ────────────────────────────────────────
   {
@@ -75,7 +75,7 @@ const M = [
     offline: BARCODE,
     extra: [{ kind: 'coupon', label: 'CGV 모바일 쿠폰(관람권)도 컬쳐캐쉬로 구매 가능' }],
     confidence: 'official',
-    sources: ['useCash', 'offlinePopup', 'voucherUse', 'missionGuide'],
+    sources: ['useCash', 'offlinePopup', 'voucherUse'],
   },
   { id: 'megabox', name: '메가박스', aliases: ['megabox', '메박'], cat: 'culture', online: ON('direct'), offline: BARCODE, confidence: 'official', sources: ['voucherUse', 'offlinePopup'] },
   { id: 'lottecinema', name: '롯데시네마', aliases: ['lottecinema', '롯시', '롯데 시네마'], cat: 'culture', online: ON('direct'), offline: BARCODE, confidence: 'official', sources: ['voucherUse', 'offlinePopup'] },
@@ -85,7 +85,7 @@ const M = [
   { id: 'alpha', name: '알파문구', aliases: ['알파', '알파 문구', 'alpha'], cat: 'book', online: null, offline: BARCODE, confidence: 'official', sources: ['offlinePopup'] },
 
   // ── 도서 ─────────────────────────────────────────────
-  { id: 'kyobo', name: '교보문고', aliases: ['교보', 'kyobo', '교보 문고'], cat: 'book', online: ON('direct'), offline: BARCODE, confidence: 'official', sources: ['voucherUse', 'offlinePopup', 'missionGuide'] },
+  { id: 'kyobo', name: '교보문고', aliases: ['교보', 'kyobo', '교보 문고'], cat: 'book', online: ON('direct'), offline: BARCODE, confidence: 'official', sources: ['voucherUse', 'offlinePopup'] },
   { id: 'aladin', name: '알라딘', aliases: ['aladin', '알라딘중고서점', '알라딘 중고서점'], cat: 'book', online: ON('direct'), offline: BARCODE, confidence: 'official', sources: ['voucherUse', 'offlinePopup'] },
   { id: 'youngpoong', name: '영풍문고', aliases: ['영풍', '영풍 문고'], cat: 'book', online: ON('unknown'), offline: OFF('unknown'), confidence: 'unverified', sources: ['offlinePopup', 'shpMain'], note: '공식 오프라인 사용처(28곳)와 바로사용 목록에서 찾지 못했어요(2026-11-06 기준).' },
   { id: 'yes24', name: 'YES24', aliases: ['예스24', 'yes 24', '예스이십사'], cat: 'book', online: ON('direct', { notes: ['YES24 정책상 컬쳐캐쉬로 살 수 없는 상품이 있어요.'] }), offline: null, confidence: 'official', sources: ['voucherUse', 'getCashHow'] },
@@ -118,7 +118,7 @@ const M = [
     online: ON('giftcode', { fee: 0.03, limit: '5천원~20만원(8종)' }),
     offline: null,
     confidence: 'official',
-    sources: ['googleBuy', 'missionGuide'],
+    sources: ['googleBuy'],
   },
   { id: 'nintendo', name: '닌텐도 eShop', aliases: ['닌텐도', 'nintendo', 'eshop', '닌텐도이숍', '스위치'], cat: 'game', online: ON('unknown'), offline: null, confidence: 'unverified', sources: ['useCash', 'voucherUse'], note: '공식 사용처·쿠폰 목록에서 찾지 못했어요(2026-11-06 기준).' },
 
@@ -130,7 +130,7 @@ const M = [
   { id: 'bugs', name: '벅스', aliases: ['bugs', '벅스뮤직'], cat: 'content', online: ON('direct'), offline: null, confidence: 'official', sources: ['useCash'] },
 
   // ── 쇼핑 ─────────────────────────────────────────────
-  { id: 'coupang', name: '쿠팡', aliases: ['coupang', '쿠팡캐시', '쿠팡이츠', '로켓배송'], cat: 'shopping', online: conv('coupang'), offline: null, confidence: 'official', sources: ['getCashHow', 'useCash', 'missionGuide'], note: '쿠팡 결제창에는 컬쳐캐쉬가 없어요. 쿠팡캐시로 전환해서 써요.' },
+  { id: 'coupang', name: '쿠팡', aliases: ['coupang', '쿠팡캐시', '쿠팡이츠', '로켓배송'], cat: 'shopping', online: conv('coupang'), offline: null, confidence: 'official', sources: ['getCashHow', 'useCash'], note: '쿠팡 결제창에는 컬쳐캐쉬가 없어요. 쿠팡캐시로 전환해서 써요.' },
   { id: 'gmarket', name: 'G마켓·옥션', aliases: ['g마켓', '지마켓', 'gmarket', '옥션', 'auction', '스마일캐시', '스마일페이'], cat: 'shopping', online: conv('smile'), offline: null, confidence: 'official', sources: ['smile', 'getCashHow'] },
   { id: '11st', name: '11번가', aliases: ['11번가', '십일번가', '11st', '11pay'], cat: 'shopping', online: conv('pay11'), offline: null, confidence: 'official', sources: ['pay11', 'getCashHow'] },
   { id: 'ssg', name: 'SSG.COM', aliases: ['ssg', '쓱', '쓱닷컴', '이마트몰', 'ssgmoney', 'ssg머니', '신세계몰'], cat: 'shopping', online: conv('ssg'), offline: null, confidence: 'official', sources: ['getCashHow'] },
@@ -145,7 +145,7 @@ const M = [
     online: ON('direct', { notes: ['다이소몰 결제창에서 컬쳐캐쉬를 선택해요.', '이용 수수료는 공식 안내에서 확인되지 않았어요(앱 배너: 오픈 기념 수수료 지원).'] }),
     offline: OFF('unknown'),
     confidence: 'official',
-    sources: ['shpMain', 'daisoFaq', 'offlinePopup', 'missionGuide'],
+    sources: ['shpMain', 'daisoFaq', 'offlinePopup'],
     note: '다이소 매장은 공식 오프라인 사용처(28곳)에 없어요. 다이소몰(온라인)에서 쓰세요.',
   },
 
@@ -170,7 +170,7 @@ const M = [
   { id: 'nyburger', name: '뉴욕버거', aliases: ['뉴욕 버거'], cat: 'food', online: null, offline: BARCODE, confidence: 'official', sources: ['offlinePopup'] },
 
   // ── 포인트·페이 ──────────────────────────────────────
-  { id: 'naverpay', name: '네이버페이', aliases: ['npay', '엔페이', '네이버포인트', '네이버 페이', '네이버쇼핑', '네이버 쇼핑', '스마트스토어', '네이버'], cat: 'point', online: conv('npay', { notes: ['전환한 포인트는 취소·현금영수증이 안 돼요.'] }), offline: null, confidence: 'official', sources: ['npay', 'getCashHow', 'missionGuide'] },
+  { id: 'naverpay', name: '네이버페이', aliases: ['npay', '엔페이', '네이버포인트', '네이버 페이', '네이버쇼핑', '네이버 쇼핑', '스마트스토어', '네이버'], cat: 'point', online: conv('npay', { notes: ['전환한 포인트는 취소·현금영수증이 안 돼요.'] }), offline: null, confidence: 'official', sources: ['npay', 'getCashHow'] },
   { id: 'payco', name: 'PAYCO', aliases: ['페이코', 'payco포인트'], cat: 'point', online: conv('payco'), offline: null, confidence: 'official', sources: ['getCashHow'] },
   { id: 'lpoint', name: 'L.POINT', aliases: ['엘포인트', 'lpoint', 'l포인트', '롯데포인트'], cat: 'point', online: conv('lpoint', { notes: ['롯데카드 사용처에서는 쓸 수 없어요.'] }), offline: null, confidence: 'official', sources: ['getCashHow'] },
   { id: 'hpoint', name: 'H.Point', aliases: ['에이치포인트', 'hpoint', 'h포인트', '현대포인트'], cat: 'point', online: conv('hpoint'), offline: null, confidence: 'official', sources: ['getCashHow'] },
@@ -183,7 +183,7 @@ const M = [
     online: ON('unknown'),
     offline: null,
     confidence: 'unverified',
-    sources: ['convsMain', 'missionGuide'],
+    sources: ['convsMain'],
     note: '공식 전환 목록(모바일·PC)에 카카오페이는 없어요. 앱 홈의 "카카오페이포인트 적립" 배너는 전환이 아닌 혜택 배너로 보여요. 앱에서 확인이 필요해요.',
   },
   { id: 'toss', name: '토스', aliases: ['toss', '토스페이', '토스포인트'], cat: 'point', online: ON('unknown'), offline: null, confidence: 'unverified', sources: ['getCashHow'], note: '공식 사용처·전환 목록에서 찾지 못했어요(2026-11-06 기준).' },

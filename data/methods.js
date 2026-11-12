@@ -37,7 +37,7 @@ export const METHODS = {
       },
     ],
     cautions: ['오프라인 전용으로 발행된 상품권은 컬쳐캐쉬 충전이 안 돼요(매장에서만 사용).'],
-    sources: ['voucherUse', 'mobileVoucher', 'missionGuide'],
+    sources: ['voucherUse', 'mobileVoucher'],
   },
   'barcode-app': {
     id: 'barcode-app',
@@ -63,7 +63,7 @@ export const METHODS = {
       },
     ],
     cautions: ['본인인증 회원이 아니면 일부 사용처 이용이 제한될 수 있어요.'],
-    sources: ['voucherUse', 'missionGuide'],
+    sources: ['voucherUse', 'appStore'],
   },
   direct: {
     id: 'direct',

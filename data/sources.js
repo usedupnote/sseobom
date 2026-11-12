@@ -1,5 +1,5 @@
 // 정보 출처 목록. 모든 사용처·안내 문구는 이 키로 출처를 단다.
-// kind: official(컬쳐랜드 공식) · guide(대회 가이드에 실린 컬쳐랜드 자료) · secondary(제휴사 공지·언론·블로그)
+// kind: official(컬쳐랜드 공식) · secondary(제휴사 공지·언론·블로그). 누구나 열어 볼 수 있는 공개 자료만 쓴다.
 export const CHECKED_AT = '2026-11-06';
 
 export const SOURCES = {
@@ -118,10 +118,10 @@ export const SOURCES = {
     url: 'https://www.daiso.co.kr/cs/faq?cid=21',
     kind: 'secondary',
   },
-  missionGuide: {
-    label: '컬쳐랜드 Y-AI 사전 미션 가이드 3·4쪽(앱 화면·MMS 상품권 예시)',
-    url: '',
-    kind: 'guide',
+  appStore: {
+    label: '컬쳐랜드 앱 소개(App Store): 편의점·CGV·교보문고 오프라인 사용',
+    url: 'https://apps.apple.com/kr/app/id383539271',
+    kind: 'official',
   },
   nexonNotice: {
     label: '넥슨 공지: 컬쳐랜드상품권 결제 안내(2023-01-12)',
@@ -132,7 +132,6 @@ export const SOURCES = {
 
 export const KIND_LABEL = {
   official: '공식',
-  guide: '공식 자료',
   secondary: '2차 출처',
   unverified: '확인 필요',
 };

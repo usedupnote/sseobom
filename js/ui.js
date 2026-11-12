@@ -51,6 +51,7 @@ const P = {
   sound: '<path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z"/><path d="M15.5 9a4 4 0 0 1 0 6M18 6.5a7.5 7.5 0 0 1 0 11"/>',
   expand: '<path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/>',
   steps: '<rect x="4" y="4" width="16" height="16" rx="3"/><path d="M8.5 9h7M8.5 12h7M8.5 15h4"/>',
+  photo: '<rect x="3.5" y="5" width="17" height="14" rx="2.5"/><circle cx="9" cy="10" r="1.6"/><path d="m4.5 17 5-4.5 3.5 3 2.5-2 4 3.5"/>',
 };
 
 export function icon(name, size = 20, cls = '') {
