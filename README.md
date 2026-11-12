@@ -7,7 +7,8 @@
 Y-AI 메이커톤 2026 **컬쳐랜드 사전 미션** 제출용 클릭형 시제품입니다. 사용처 확인(어디서)과 상품권 사용 안내(어떻게)를 **하나의 이용 흐름**으로 잇는 컬쳐랜드 **앱** 기능을 제안합니다. 그리고 “누구라도” — 가장 불편한 사람도 가장 편하게 쓸 수 있도록 **저시력·색각 이상 이용자**를 위한 보기 설정을 함께 넣었습니다.
 
 - **클릭형 시제품**: https://usedupnote.github.io/sseobom/
-- **설명 자료(PDF, 5쪽)**: [docs/explain.pdf](docs/explain.pdf)
+- **설명 자료(PDF, 5쪽)**: [docs/explain.pdf](docs/explain.pdf) — 기능·구현 범위·검증을 정리한 제출용 문서
+- **발표자료(PDF, 15장)**: [docs/pitch.pdf](docs/pitch.pdf) — 서비스를 소개하는 발표용 슬라이드(상황 → 원인 → 해결 → 시연 → 정확성 → 적용)
 
 PC에서 열면 왼쪽 패널의 **상황별 시나리오 A~E·M·P·L** 버튼으로 바로 시연할 수 있습니다. 휴대폰에서는 앱 화면이 전체로 열리고, 오른쪽 아래 **시연 시나리오** 버튼을 쓰면 됩니다.
 
@@ -178,7 +179,7 @@ node tests/parser.test.mjs
 | `tools/build_official_list.py` | 공식 사용처 페이지를 분야별로 받아 `data/official-list.js`를 다시 만듦 |
 | `tools/capture.py` | 설명 자료용 화면 캡처(Edge 헤드리스). 페이지 매개변수 `ts=l\|xl`(글자), `hc=1`(고대비), `sim=gray\|deutan`(색각 시뮬레이션). 두 번째 인자로 `04,25`처럼 번호를 주면 그 화면만 다시 찍음 |
 | `tools/a11y_css.py` | 저시력 대응 1회 변환: 최소 13px + 글자 배율 변수, 흰 바탕을 테마 변수로 |
-| `tools/make_pdf.py` | 설명 자료 HTML을 PDF로 변환 |
+| `tools/make_pdf.py` | 설명 자료·발표자료 HTML을 PDF로 변환. 발표자료는 `python tools/make_pdf.py http://localhost:8650/docs/pitch.html` |
 | `tools/convert_assets.py`, `tools/extract_logo.py` | 제공받은 캐릭터 PNG를 webp로 변환하고, BI PDF에서 로고 SVG를 추출 |
 
 ## 폴더 구조
@@ -191,7 +192,7 @@ js/parser.js        규칙 기반 질문 해석기
 js/views/           홈·입력·결과·안내·판별·시연 앱 화면
 data/               사용처·방식·상품권·출처·시연 데이터
 assets/             로고(SVG), 캐릭터(webp)
-docs/               설명 자료(HTML/PDF), 화면 캡처
+docs/               설명 자료(explain)·발표자료(pitch)의 HTML/PDF, 화면 캡처
 tools/ tests/       개발 서버·캡처·PDF·에셋 변환, 테스트
 ```
 

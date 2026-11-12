@@ -1,0 +1,513 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<title>컬쳐랜드 써봄(SSEOBOM) — 발표자료</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" />
+<style>
+  /* 발표자료(16:9, 15장) — 한 장에 한 가지 메시지. 인쇄: python tools/make_pdf.py http://localhost:8650/docs/pitch.html */
+  @page { size: 1280px 720px; margin: 0; }
+  :root { --red: #ff3838; --red-deep: #e60011; --red-50: #fff1f1; --ink: #1f1f1f; --ink-2: #4b4b4b; --ink-3: #6b6b6b; --line: #e3e3e6; --bg: #f5f6f8; --navy: #34405f; --ok: #067a4b; --ok-bg: #e5f6ee; --warn: #9a5200; --warn-bg: #fff3df; --no: #c4121f; --no-bg: #fdebec; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: #d9dbe0; }
+  body { font-family: 'Pretendard Variable', Pretendard, 'Malgun Gothic', sans-serif; color: var(--ink); word-break: keep-all; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .slide { width: 1280px; height: 720px; background: #fff; margin: 20px auto; position: relative; overflow: hidden; padding: 52px 72px 60px; page-break-after: always; break-after: page; display: flex; flex-direction: column; }
+  /* 제목 아래 내용은 남는 높이의 가운데에 둔다(위에 몰리지 않게) */
+  .slide > .scenes, .slide > .facts, .slide > .flow, .slide > .row4, .slide > .split, .slide > .row3, .slide > .a11y, .slide > .trust, .slide > .apply, .slide > .ai, .slide > .scope { margin-top: auto; }
+  .slide > .punch, .slide > .vs, .slide > .hope, .slide > .facts, .slide > .row4, .slide > .split, .slide > .row3, .slide > .a11y, .slide > .trust, .slide > .apply, .slide > .ai { margin-bottom: auto; }
+  @media print { html, body { background: #fff; } .slide { margin: 0; } }
+  b, strong { font-weight: 800; }
+  .red { color: var(--red-deep); }
+  .kicker { margin: 0; font-size: 16px; font-weight: 800; color: var(--red-deep); letter-spacing: 0.02em; }
+  h1 { margin: 8px 0 18px; font-size: 40px; line-height: 1.22; letter-spacing: -0.03em; }
+  .lead { margin: 12px 0 0; font-size: 20px; line-height: 1.5; color: var(--ink-2); }
+  .foot { position: absolute; left: 72px; right: 72px; bottom: 22px; display: flex; justify-content: space-between; font-size: 12px; color: var(--ink-3); }
+  .foot b { font-weight: 700; color: var(--ink-2); }
+  .src { position: absolute; left: 72px; right: 72px; bottom: 44px; font-size: 12px; color: var(--ink-3); }
+
+  /* 폰 화면 */
+  .ph { --w: 200px; width: var(--w); height: calc(var(--w) * 844 / 390); border: 5px solid #111; border-radius: calc(var(--w) * 0.12); overflow: hidden; background: #fff; box-shadow: 0 12px 28px rgba(20, 24, 40, 0.16); flex: none; }
+  .ph img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: top; }
+  .cap { margin: 10px 0 0; font-size: 14.5px; line-height: 1.45; color: var(--ink-2); }
+  .cap b { display: block; font-size: 16px; color: var(--ink); margin-bottom: 2px; }
+  .num { display: inline-grid; place-items: center; min-width: 24px; height: 24px; padding: 0 6px; border-radius: 8px; background: var(--red-deep); color: #fff; font-size: 13px; font-weight: 800; margin-bottom: 6px; }
+  .tag { display: inline-block; font-size: 13px; font-weight: 800; padding: 4px 10px; border-radius: 999px; background: var(--red-50); color: var(--red-deep); }
+  .pill { display: inline-block; font-size: 13.5px; font-weight: 800; padding: 3px 10px; border-radius: 999px; }
+  .pill.ok { background: var(--ok-bg); color: var(--ok); } .pill.warn { background: var(--warn-bg); color: var(--warn); } .pill.no { background: var(--no-bg); color: var(--no); } .pill.mut { background: #eef0f3; color: #565c68; }
+  ul.pts { margin: 0; padding: 0; list-style: none; display: grid; gap: 12px; }
+  ul.pts li { display: grid; grid-template-columns: 26px 1fr; gap: 10px; font-size: 18.5px; line-height: 1.5; color: var(--ink-2); }
+  ul.pts li::before { content: ''; width: 10px; height: 10px; border-radius: 50%; background: var(--red-deep); margin: 9px 0 0 6px; }
+  ul.pts li b { color: var(--ink); }
+
+  /* 1 표지 */
+  .cover { display: grid; grid-template-columns: 1fr 470px; gap: 40px; height: 100%; align-items: center; }
+  .cover .eyebrow { margin: 0; font-size: 17px; font-weight: 700; color: var(--ink-3); }
+  .cover .eyebrow::after { content: ''; display: block; width: 52px; height: 5px; background: var(--red-deep); margin-top: 16px; }
+  .cover h1 { font-size: 76px; margin: 26px 0 0; line-height: 1.05; }
+  .cover .en { margin: 8px 0 0; font-size: 18px; letter-spacing: 0.34em; font-weight: 800; color: var(--ink-3); }
+  .cover .slogan { margin: 26px 0 0; font-size: 34px; font-weight: 800; letter-spacing: -0.02em; }
+  .cover .one { margin: 14px 0 0; font-size: 20px; line-height: 1.55; color: var(--ink-2); }
+  .cover .links { margin-top: 30px; display: grid; gap: 6px; font-size: 15px; color: var(--ink-2); }
+  .cover .links b { display: inline-block; width: 76px; color: var(--ink-3); font-weight: 700; }
+  .cover .links a { color: var(--ink); font-weight: 700; text-decoration: none; border-bottom: 1px solid var(--line); }
+  .cover .phones { position: relative; height: 560px; }
+  .cover .phones .ph { position: absolute; }
+  .cover .phones .ph:nth-child(1) { --w: 232px; left: 0; top: 40px; }
+  .cover .phones .ph:nth-child(2) { --w: 232px; right: 0; top: 0; }
+
+  /* 2 상황 */
+  .scenes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+  .scene { background: var(--bg); border-radius: 24px; padding: 26px 28px 28px; display: grid; gap: 12px; align-content: start; }
+  .scene img { width: 116px; height: 116px; object-fit: contain; }
+  .scene .where { font-size: 17px; font-weight: 800; color: var(--red-deep); margin: 0; }
+  .scene q { display: block; font-size: 29px; font-weight: 800; line-height: 1.35; letter-spacing: -0.02em; quotes: '“' '”'; }
+  .scene p.why { margin: 0; font-size: 18.5px; line-height: 1.5; color: var(--ink-2); }
+  .punch { margin: 30px 0 0; font-size: 30px; font-weight: 800; text-align: center; letter-spacing: -0.02em; }
+
+  /* 3 원인 */
+  .facts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+  .fact { border: 1.5px solid var(--line); border-radius: 24px; padding: 30px 30px 32px; }
+  .fact .big { font-size: 84px; font-weight: 900; letter-spacing: -0.04em; color: var(--red-deep); line-height: 1; }
+  .fact .big small { font-size: 30px; font-weight: 800; letter-spacing: -0.02em; }
+  .fact h3 { margin: 20px 0 8px; font-size: 26px; letter-spacing: -0.02em; }
+  .fact p { margin: 0; font-size: 18.5px; line-height: 1.58; color: var(--ink-2); }
+
+  /* 4 해결 */
+  .flow { display: grid; grid-template-columns: 1fr 34px 1fr 34px 1fr 34px 1fr; align-items: stretch; }
+  .step { border-radius: 22px; padding: 26px 22px 28px; background: var(--red-50); }
+  .step .n { font-size: 16px; font-weight: 800; color: var(--red-deep); }
+  .step h3 { margin: 8px 0 10px; font-size: 31px; letter-spacing: -0.02em; }
+  .step p { margin: 0; font-size: 18px; line-height: 1.55; color: var(--ink-2); }
+  .arrow { display: grid; place-items: center; font-size: 28px; font-weight: 900; color: var(--red-deep); }
+  .vs { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; margin-top: 28px; }
+  .vs div { border-radius: 20px; padding: 22px 26px; font-size: 20px; line-height: 1.6; }
+  .vs .before { background: var(--bg); color: var(--ink-2); }
+  .vs .after { background: var(--navy); color: #fff; }
+  .vs b { display: block; font-size: 14px; letter-spacing: 0.04em; margin-bottom: 4px; opacity: 0.85; }
+
+  /* 5~9 시연 */
+  .row4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 26px; }
+  .row4 > div { display: grid; justify-items: start; }
+  .row4 .ph { --w: 196px; }
+  .split { display: grid; grid-template-columns: auto 1fr; gap: 44px; align-items: center; }
+  .split .phs { display: flex; gap: 22px; }
+  .split .ph { --w: 222px; }
+  .bigline { font-size: 46px; font-weight: 900; letter-spacing: -0.03em; line-height: 1.15; margin: 0 0 18px; }
+  .bigline small { display: block; font-size: 18px; font-weight: 700; color: var(--ink-3); letter-spacing: 0; margin-bottom: 6px; }
+  .row3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; }
+  .row3 > div { display: grid; justify-items: center; text-align: center; gap: 14px; align-content: start; }
+  .row3 .ph { --w: 172px; }
+  .row3 .cap { margin-top: 0; font-size: 16.5px; line-height: 1.5; max-width: 320px; }
+  .row3 .cap b { font-size: 20px; margin: 8px 0 4px; }
+  table.next { width: 100%; border-collapse: collapse; font-size: 16.5px; }
+  table.next th { text-align: left; font-size: 13.5px; color: var(--ink-3); font-weight: 700; padding: 0 0 8px; border-bottom: 2px solid var(--ink); }
+  table.next td { padding: 11px 0; border-bottom: 1px solid var(--line); vertical-align: top; line-height: 1.4; color: var(--ink-2); }
+  table.next td:first-child { width: 46%; padding-right: 14px; }
+  table.next td b { color: var(--ink); }
+  .btnchip { display: inline-block; border: 1.5px solid var(--ink); border-radius: 9px; padding: 1px 8px; font-size: 14.5px; font-weight: 800; color: var(--ink); margin: 0 4px 4px 0; }
+  .safe { margin-top: 18px; padding: 14px 18px; border-radius: 16px; background: var(--ok-bg); font-size: 16px; line-height: 1.55; color: var(--ink-2); }
+  .safe b { color: var(--ok); }
+
+  /* 10 누구라도 */
+  .a11y { display: grid; grid-template-columns: 438px 1fr; gap: 40px; align-items: center; }
+  .a11y .pair { border-radius: 22px; overflow: hidden; border: 5px solid #111; height: 448px; }
+  .a11y .pair img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: top; }
+  .metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 0 0 18px; }
+  .metric { border: 1.5px solid var(--line); border-radius: 16px; padding: 12px 14px; }
+  .metric b { display: block; font-size: 32px; font-weight: 900; color: var(--ok); letter-spacing: -0.03em; }
+  .metric span { font-size: 14px; line-height: 1.4; color: var(--ink-2); display: block; margin-top: 2px; }
+
+  /* 11 믿을 수 있는 답 */
+  .trust { display: grid; grid-template-columns: 1fr auto; gap: 44px; align-items: center; }
+  .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 22px; }
+  .stat { background: var(--bg); border-radius: 18px; padding: 16px 18px; }
+  .stat b { display: block; font-size: 44px; font-weight: 900; letter-spacing: -0.04em; line-height: 1.05; }
+  .stat span { display: block; font-size: 14.5px; color: var(--ink-2); margin-top: 6px; line-height: 1.4; }
+  .trust .phs { display: flex; gap: 20px; }
+  .trust .ph { --w: 206px; }
+
+  /* 12 적용 */
+  .apply { display: grid; grid-template-columns: 1fr 1fr; gap: 36px; align-items: start; }
+  .apply h3 { margin: 0 0 14px; font-size: 24px; letter-spacing: -0.02em; }
+  .entry { display: grid; grid-template-columns: 38px 1fr; gap: 14px; align-items: center; background: var(--bg); border-radius: 16px; padding: 15px 18px; font-size: 18px; line-height: 1.45; color: var(--ink-2); margin-bottom: 10px; }
+  .entry i { font-style: normal; width: 36px; height: 36px; border-radius: 50%; background: var(--red-deep); color: #fff; font-weight: 800; display: grid; place-items: center; font-size: 17px; }
+  .entry b { color: var(--ink); display: block; font-size: 20px; }
+  .pc { border: 1.5px solid var(--line); border-radius: 16px; overflow: hidden; font-size: 16px; color: var(--ink-3); }
+  .pc .bar { background: #f1f1f1; padding: 10px 14px; display: flex; gap: 6px; align-items: center; }
+  .pc .bar i { width: 10px; height: 10px; border-radius: 50%; background: #ccc; display: inline-block; }
+  .pc .body { display: grid; grid-template-columns: 1fr 1.25fr; gap: 10px; padding: 14px; }
+  .pc .search { grid-column: 1 / -1; border: 2px solid var(--red); border-radius: 12px; padding: 13px 14px; color: var(--ink-2); font-weight: 700; font-size: 18px; }
+  .pc .col { border-radius: 12px; background: var(--bg); padding: 12px; display: grid; gap: 8px; }
+  .pc .rowx { background: #fff; border-radius: 9px; padding: 10px 12px; display: flex; justify-content: space-between; gap: 8px; }
+  .pc .okc { color: var(--ok); font-weight: 800; } .pc .wn { color: var(--warn); font-weight: 800; }
+  .ops { margin: 16px 0 0; font-size: 18px; line-height: 1.6; color: var(--ink-2); }
+
+  /* 13 AI */
+  .ai { display: grid; grid-template-columns: 350px 1fr; gap: 40px; align-items: center; }
+  .aistep { display: grid; grid-template-columns: 44px 1fr; gap: 14px; margin-bottom: 22px; font-size: 18px; line-height: 1.5; color: var(--ink-2); }
+  .aistep i { font-style: normal; width: 40px; height: 40px; border-radius: 50%; background: var(--red-deep); color: #fff; font-weight: 800; display: grid; place-items: center; font-size: 18px; }
+  .aistep b { display: block; color: var(--ink); font-size: 22px; }
+  table.fix { width: 100%; border-collapse: collapse; font-size: 17.5px; }
+  table.fix th { background: #4b4b4b; color: #fff; font-weight: 700; padding: 11px 14px; text-align: left; font-size: 15px; }
+  table.fix td { padding: 14px 14px; border-bottom: 1px solid var(--line); vertical-align: top; line-height: 1.45; color: var(--ink-2); }
+  table.fix td:first-child { font-weight: 800; color: var(--ink); white-space: nowrap; }
+  table.fix td.to { color: var(--ok); font-weight: 800; }
+
+  /* 14 범위 */
+  .scope { display: grid; grid-template-columns: 1fr 1fr; gap: 26px; }
+  .box { border-radius: 24px; padding: 28px 30px 30px; }
+  .box.yes { background: #f3fbf7; border: 1.5px solid #cfeadc; } .box.next { background: var(--bg); border: 1.5px solid var(--line); }
+  .box h3 { margin: 0 0 14px; font-size: 25px; letter-spacing: -0.02em; } .box.yes h3 { color: var(--ok); }
+  .box ul { margin: 0; padding-left: 22px; font-size: 18.5px; line-height: 1.75; color: var(--ink-2); }
+  .hope { margin: 26px 0 0; font-size: 22px; line-height: 1.55; color: var(--ink-2); text-align: center; }
+  .hope b { color: var(--ink); }
+
+  /* 15 맺음 */
+  .end { display: grid; place-content: center; justify-items: center; height: 100%; text-align: center; gap: 0; }
+  .end img.friends { width: 300px; height: auto; }
+  .end .q { font-size: 30px; font-weight: 800; color: var(--ink-2); margin: 18px 0 0; }
+  .end h1 { font-size: 72px; margin-top: 10px; }
+  .end .links { margin-top: 28px; display: grid; gap: 8px; font-size: 18px; color: var(--ink-2); }
+  .end .links a { color: var(--ink); font-weight: 800; text-decoration: none; border-bottom: 1.5px solid var(--line); }
+  .end .thanks { margin-top: 26px; font-size: 20px; font-weight: 700; color: var(--ink-3); }
+</style>
+</head>
+<body>
+
+<!-- 1 표지 -->
+<section class="slide">
+  <div class="cover">
+    <div>
+      <p class="eyebrow">Y-AI 메이커톤 2026 · 컬쳐랜드 사전 미션</p>
+      <h1>컬쳐랜드 <span class="red">써봄</span></h1>
+      <p class="en">SSEOBOM</p>
+      <p class="slogan">상품권, 어디서 어떻게 쓸까?</p>
+      <p class="one">어디서 쓸 수 있는지 묻고, 그 자리에서 쓰는 법까지.<br />사용처 확인과 사용 안내를 하나로 잇는 상품권 이용정보 서비스</p>
+      <div class="links">
+        <div><b>시제품</b><a href="https://usedupnote.github.io/sseobom/">usedupnote.github.io/sseobom</a></div>
+        <div><b>소스 코드</b><a href="https://github.com/usedupnote/sseobom">github.com/usedupnote/sseobom</a></div>
+      </div>
+    </div>
+    <div class="phones">
+      <div class="ph"><img src="screens/01-home.png" alt="" /></div>
+      <div class="ph"><img src="screens/03-result-conv.png" alt="" /></div>
+    </div>
+  </div>
+</section>
+
+<!-- 2 상황 -->
+<section class="slide">
+  <p class="kicker">이런 순간</p>
+  <h1>상품권을 받았는데, 막상 쓰려니</h1>
+  <div class="scenes">
+    <div class="scene">
+      <img src="../assets/char/boy-please.webp" alt="" />
+      <p class="where">편의점 계산대 앞에서</p>
+      <q>이 상품권, 여기서 쓸 수 있어요?</q>
+      <p class="why">매장에서 되는 곳은 28곳. 충전을 해야 하는지도 헷갈립니다.</p>
+    </div>
+    <div class="scene">
+      <img src="../assets/char/catsh-wink.webp" alt="" />
+      <p class="where">쇼핑몰 결제창 앞에서</p>
+      <q>결제수단에 컬쳐캐쉬가 없는데요?</q>
+      <p class="why">포인트로 바꾸면 쓸 수 있지만, 수수료와 한도를 알기 어렵습니다.</p>
+    </div>
+    <div class="scene">
+      <img src="../assets/char/boy-sweat.webp" alt="" />
+      <p class="where">선물로 받은 날</p>
+      <q>문화상품권인데 왜 충전이 안 되죠?</q>
+      <p class="why">이름이 비슷하지만 다른 회사가 발행한 상품권입니다.</p>
+    </div>
+  </div>
+  <p class="punch">답은 이미 있습니다. 다만 <span class="red">여러 곳에 흩어져</span> 있습니다.</p>
+  <div class="foot"><span><b>컬쳐랜드 써봄</b> · Y-AI 메이커톤 2026</span><span>02 / 15</span></div>
+</section>
+
+<!-- 3 원인 -->
+<section class="slide">
+  <p class="kicker">왜 어려운가</p>
+  <h1>공식 사이트에서 확인한 세 가지</h1>
+  <div class="facts">
+    <div class="fact">
+      <div class="big">4<small>갈래</small></div>
+      <h3>쓰는 방법이 네 가지</h3>
+      <p>결제창에서 바로 사용, 포인트 전환(수수료 4.5~8%), 쿠폰 구매, 매장 바코드. “스타벅스 돼요?”의 답은 ‘바로는 안 되고 쿠폰으로 가능’입니다.</p>
+    </div>
+    <div class="fact">
+      <div class="big">153<small> + 28</small></div>
+      <h3>목록과 방법이 따로</h3>
+      <p>온라인 사용처 153곳은 로고 목록, 매장 28곳은 별도 팝업, 쓰는 방법은 또 다른 메뉴에 있습니다. 온라인·매장 구분과 확인일도 없습니다.</p>
+    </div>
+    <div class="fact">
+      <div class="big">2<small>종류</small></div>
+      <h3>이름이 비슷한 상품권</h3>
+      <p>지류·온라인 ‘문화상품권’은 ㈜문화상품권 발행입니다. 제휴 종료로 충전 서비스가 끝났습니다(온라인 2025-08-11, 지류 2026-02-06).</p>
+    </div>
+  </div>
+  <p class="src">출처: 컬쳐랜드 컬쳐캐쉬 사용처·사용 방법, 공지 「지류상품권 충전 서비스 종료 안내」(2026-01-09) · 확인일 2026-11-06, 11-12</p>
+  <div class="foot"><span><b>컬쳐랜드 써봄</b> · Y-AI 메이커톤 2026</span><span>03 / 15</span></div>
+</section>
+
+<!-- 4 해결 -->
+<section class="slide">
+  <p class="kicker">써봄이 하는 일</p>
+  <h1>묻는 곳과 쓰는 법을 <span class="red">한 흐름</span>으로</h1>
+  <div class="flow">
+    <div class="step"><span class="n">01 묻기</span><h3>어디서 써요?</h3><p>이름, 분야, 평소 말투의 질문을 입력창 하나로. 초성과 오타도 알아봅니다.</p></div>
+    <div class="arrow">→</div>
+    <div class="step"><span class="n">02 판정</span><h3>여기서 돼요</h3><p>온라인과 매장을 나눠 가능 여부를 답하고, 출처와 확인일을 함께 보여줍니다.</p></div>
+    <div class="arrow">→</div>
+    <div class="step"><span class="n">03 안내</span><h3>이렇게 써요</h3><p>내가 가진 상품권에 맞춰 충전·바코드·전환 순서를 단계로 안내합니다.</p></div>
+    <div class="arrow">→</div>
+    <div class="step"><span class="n">04 실행</span><h3>바로 해요</h3><p>단계마다 해당 앱 화면으로 이동하고, 끝나면 안내로 돌아옵니다.</p></div>
+  </div>
+  <div class="vs">
+    <div class="before"><b>지금</b>사용처 페이지에서 찾고 → 사용 방법 페이지에서 다시 찾고 → 앱에서 메뉴를 찾아갑니다.</div>
+    <div class="after"><b>써봄</b>질문 한 번 → 버튼 한 번 → 단계를 따라 하면 끝. 추가 검색은 0회입니다.</div>
+  </div>
+  <div class="foot"><span><b>컬쳐랜드 써봄</b> · Y-AI 메이커톤 2026</span><span>04 / 15</span></div>
+</section>
+
+<!-- 5 상황 1 -->
+<section class="slide">
+  <p class="kicker">상황 ① 매장 계산대에서 지금 바로 쓰고 싶을 때</p>
+  <h1>“편의점에서 컬쳐랜드상품권 써도 돼?”</h1>
+  <div class="row4">
+    <div><div class="ph"><img src="screens/01-home.png" alt="" /></div><p class="cap"><span class="num">1</span><b>앱 홈에서 묻기</b>잔액 카드 위 검색바</p></div>
+    <div><div class="ph"><img src="screens/03-result-conv.png" alt="" /></div><p class="cap"><span class="num">2</span><b>매장에서 바로 가능</b>편의점 4사로 이해 · 공식 출처</p></div>
+    <div><div class="ph"><img src="screens/04-guide-conv.png" alt="" /></div><p class="cap"><span class="num">3</span><b>3단계 안내</b>충전 없이 문자 바코드로</p></div>
+    <div><div class="ph"><img src="screens/05-mms.png" alt="" /></div><p class="cap"><span class="num">4</span><b>바코드 보여주기</b>받은 문자 그대로 계산대에</p></div>
+  </div>
+  <div class="foot"><span><b>컬쳐랜드 써봄</b> · Y-AI 메이커톤 2026</span><span>05 / 15</span></div>
+</section>
+
+<!-- 6 상황 2 -->
+<section class="slide">
+  <p class="kicker">상황 ② 결제창에 컬쳐캐쉬가 없는 곳에서 쓰고 싶을 때</p>
+  <h1>“쿠팡에서 쓸 수 있어?”</h1>
+  <div class="split">
+    <div class="phs">
+      <div class="ph"><img src="screens/06-result-coupang.png" alt="" /></div>
+      <div class="ph"><img src="screens/29-coupang-calc.png" alt="" /></div>
+    </div>
+    <div>
+      <p class="bigline"><small>‘안 돼요’로 끝내지 않습니다</small>1만원 → <span class="red">9,400원</span></p>
+      <ul class="pts">
+        <li><span>결제창에는 없지만 <b>쿠팡캐시로 전환하면 사용 가능</b>하다고 답합니다.</span></li>
+        <li><span>수수료 6%, 월 50만원 한도를 알려주고 <b>받을 금액을 바로 계산</b>합니다.</span></li>
+        <li><span>전환 화면으로 이어지고, 끝나면 안내로 돌아옵니다.</span></li>
+      </ul>
+    </div>
+  </div>
+  <div class="foot"><span><b>컬쳐랜드 써봄</b> · Y-AI 메이커톤 2026</span><span>06 / 15</span></div>
+</section>
+
+<!-- 7 상황 3 -->
+<section class="slide">
+  <p class="kicker">상황 ③ 쓸 수 없거나, 확인되지 않을 때</p>
+  <h1>모르는 것은 모른다고 말하고, 확인할 곳으로 잇습니다</h1>
+  <div class="row3">
+    <div><div class="ph"><img src="screens/09-munsang18.png" alt="" /></div><p class="cap"><span class="pill no">충전 불가</span><b>다른 회사 상품권 — “지류 상품권 충전되나요?”</b>충전 종료일과 이유, 발행사 문의처를 안내</p></div>
+    <div><div class="ph"><img src="screens/30-unknown.png" alt="" /></div><p class="cap"><span class="pill mut">확인 필요</span><b>공식 목록에 없는 곳 — “닌텐도”</b>추측하지 않고, 공식 목록과 고객센터 버튼을 제시</p></div>
+    <div><div class="ph"><img src="screens/10-empty.png" alt="" /></div><p class="cap"><span class="pill mut">결과 없음</span><b>찾지 못한 곳 — “배달의민족”</b>비슷한 이름, 분야로 찾기, 추가 요청으로 연결</p></div>
+  </div>
+  <div class="foot"><span><b>컬쳐랜드 써봄</b> · Y-AI 메이커톤 2026</span><span>07 / 15</span></div>
+</section>
+
+<!-- 8 다음 동작 -->
+<section class="slide">
+  <p class="kicker">연결 ① 다음 동작</p>
+  <h1>말로 끝내지 않고, 그 동작으로 데려갑니다</h1>
+  <div class="split">
+    <div class="phs">
+      <div class="ph"><img src="screens/25-gift-result.png" alt="" /></div>
+      <div class="ph"><img src="screens/26-exchange.png" alt="" /></div>
+    </div>
+    <div>
+      <table class="next">
+        <thead><tr><th>이렇게 안내하면</th><th>이 버튼이 붙습니다</th></tr></thead>
+        <tbody>
+          <tr><td><b>먼저 교환소에서 교환해요</b><br />선물·경품으로 받은 상품권</td><td><span class="btnchip">교환소 열기</span> 교환 뒤 원래 화면으로 복귀</td></tr>
+          <tr><td><b>충전이 종료됐어요</b><br />지류 상품권</td><td><span class="btnchip">충전 종료 공지 보기</span><span class="btnchip">㈜문화상품권 전화</span></td></tr>
+          <tr><td><b>확인이 필요해요</b><br />공식 목록에 없는 곳</td><td><span class="btnchip">공식 사용처 목록</span><span class="btnchip">고객센터 전화</span></td></tr>
+          <tr><td><b>잔액이 부족해요</b><br />전환·바코드 결제 중</td><td><span class="btnchip">충전하기</span> 충전 뒤 하던 화면으로</td></tr>
+          <tr><td><b>충전을 마쳤어요</b></td><td><span class="btnchip">충전한 캐쉬, 어디서 쓸까요?</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="foot"><span><b>컬쳐랜드 써봄</b> · Y-AI 메이커톤 2026</span><span>08 / 15</span></div>
+</section>
+
+<!-- 9 일괄등록 -->
+<section class="slide">
+  <p class="kicker">연결 ② 받은 상품권이 사진첩에 흩어져 있을 때</p>
+  <h1>사진에서 찾아, 확인한 것만 한 번에 등록</h1>
+  <div class="split">
+    <div class="phs">
+      <div class="ph"><img src="screens/22-bulk-intro.png" alt="" /></div>
+      <div class="ph"><img src="screens/23-bulk-result.png" alt="" /></div>
+    </div>
+    <div>
+      <ul class="pts">
+        <li><span><b>사진첩 전체를 살펴</b> 상품권으로 보이는 사진만 골라냅니다.</span></li>
+        <li><span><span class="pill ok">등록 가능</span> <span class="pill warn">확인 필요</span> <span class="pill no">등록 불가</span> 로 나눠 보여줍니다.</span></li>
+        <li><span><b>체크한 상품권만</b> 등록하고, 이미 등록한 것은 다시 등록하지 않습니다.</span></li>
+        <li><span>끝나면 <b>“충전한 캐쉬, 어디서 쓸까요?”</b>로 이어집니다.</span></li>
+      </ul>
+      <p class="safe"><b>제안하는 안전장치</b> — 사진은 기기 안에서만 분석, 번호는 앞뒤 4자리만 표시, 누르기 전에는 충전하지 않음. 시제품은 가상 사진첩으로 흐름만 보여줍니다.</p>
+    </div>
+  </div>
+  <div class="foot"><span><b>컬쳐랜드 써봄</b> · Y-AI 메이커톤 2026</span><span>09 / 15</span></div>
+</section>
+
+<!-- 10 누구라도 -->
+<section class="slide">
+  <p class="kicker">누구라도</p>
+  <h1>가장 불편한 사람도 가장 편하게</h1>
+  <div class="a11y">
+    <div>
+      <div class="pair"><img src="screens/21-lv-mirror-hc.png" alt="" /></div>
+      <p class="cap">왼쪽은 글자 크게 + 고대비 화면, 오른쪽은 같은 화면을 저시력 관점(흐림)으로 본 모습</p>
+    </div>
+    <div>
+      <div class="metrics">
+        <div class="metric"><b>7 → 0</b><span>글자 대비 미달<br />(기본 4.5:1 · 고대비 7:1)</span></div>
+        <div class="metric"><b>178 → 0</b><span>13px보다 작은 글자</span></div>
+        <div class="metric"><b>0</b><span>글자 150% 확대 시<br />화면 넘침</span></div>
+      </div>
+      <ul class="pts">
+        <li><span><b>[가] 보기 설정</b> — 글자 3단계와 고대비를 모든 화면 위쪽에서</span></li>
+        <li><span><b>한 단계씩 크게 보기</b> — 한 화면에 한 단계, 큰 이전·다음 버튼</span></li>
+        <li><span><b>바코드 크게 보여주기 · 읽어주기</b> — 계산대에 그대로 내밀고, 소리로 듣기</span></li>
+        <li><span><b>색에만 기대지 않기</b> — 판정을 색 + 모양 + 글자로 구분</span></li>
+      </ul>
+    </div>
+  </div>
+  <div class="foot"><span><b>컬쳐랜드 써봄</b> · Y-AI 메이커톤 2026</span><span>10 / 15</span></div>
+</section>
+
+<!-- 11 믿을 수 있는 답 -->
+<section class="slide">
+  <p class="kicker">정확성</p>
+  <h1>모든 답에 근거를 붙였습니다</h1>
+  <div class="trust">
+    <div>
+      <div class="stats">
+        <div class="stat"><b>153</b><span>공식 사용처 목록 전체<br />(분야별 곳 수 일치)</span></div>
+        <div class="stat"><b>28</b><span>오프라인 사용처<br />(공식 팝업 기준)</span></div>
+        <div class="stat"><b>237</b><span>자동 테스트 통과<br />(질문 해석 · 데이터 대조)</span></div>
+      </div>
+      <ul class="pts">
+        <li><span>답마다 <b>공식 출처 링크와 확인일, 신뢰도 표시</b>를 함께 보여줍니다.</span></li>
+        <li><span>공개 페이지에 없는 수수료는 숫자를 지어내지 않고 <b>‘전환 화면에서 확인’</b>으로 표시합니다.</span></li>
+        <li><span>목록에서 빠진 곳(디즈니+)은 <b>‘확인 필요’</b>로 바꿨습니다.</span></li>
+        <li><span>실제 정보와 시연용 데이터(잔액·바코드·번호)를 <b>파일과 화면에서 분리</b>했습니다.</span></li>
+      </ul>
+    </div>
+    <div class="phs">
+      <div class="ph"><img src="screens/27-category-finance.png" alt="" /></div>
+      <div class="ph"><img src="screens/28-category-offline.png" alt="" /></div>
+    </div>
+  </div>
+  <div class="foot"><span><b>컬쳐랜드 써봄</b> · Y-AI 메이커톤 2026</span><span>11 / 15</span></div>
+</section>
+
+<!-- 12 적용 -->
+<section class="slide">
+  <p class="kicker">적용 구상</p>
+  <h1>컬쳐랜드 앱과 PC에 이렇게 들어갑니다</h1>
+  <div class="apply">
+    <div>
+      <h3>앱 — 지금 구조는 그대로, 진입점 네 곳</h3>
+      <div class="entry"><i>1</i><span><b>홈 상단 검색바</b>매장 앞에서 바로 묻기</span></div>
+      <div class="entry"><i>2</i><span><b>상품권 문자의 [사용처/잔액안내]</b>들어오면 내 상품권이 자동 설정</span></div>
+      <div class="entry"><i>3</i><span><b>충전·일괄등록 완료 화면</b>“충전한 캐쉬, 어디서 쓸까요?”</span></div>
+      <div class="entry"><i>4</i><span><b>즐겨찾기 사용처</b>누르면 판정과 안내로</span></div>
+    </div>
+    <div>
+      <h3>PC — 사용처 페이지 위에 한 줄</h3>
+      <div class="pc"><div class="bar"><i></i><i></i><i></i>&nbsp;cultureland.co.kr/usecash/useCash.do</div>
+        <div class="body"><div class="search">🔍 어디서 쓸 수 있는지 물어보세요</div>
+          <div class="col"><div class="rowx">CU <span class="okc">매장 가능</span></div><div class="rowx">쿠팡 <span class="wn">전환 6%</span></div></div>
+          <div class="col"><div class="rowx"><b style="color:var(--ink)">안내</b>1 문자 열기 · 2 바코드 제시</div><div class="rowx">3 잔액 확인 <span class="okc">출처·확인일</span></div></div></div></div>
+      <p class="ops"><b>운영</b> — 사용처 DB에 채널·방식·수수료·한도·확인일·출처 필드를 더하면 같은 판정과 안내를 운영자가 관리할 수 있습니다.</p>
+    </div>
+  </div>
+  <div class="foot"><span><b>컬쳐랜드 써봄</b> · Y-AI 메이커톤 2026</span><span>12 / 15</span></div>
+</section>
+
+<!-- 13 AI -->
+<section class="slide">
+  <p class="kicker">AI 활용과 검증</p>
+  <h1>AI가 쓰고, 공식 원문으로 고쳤습니다</h1>
+  <div class="ai">
+    <div>
+      <div class="aistep"><i>1</i><span><b>조사</b>Claude Code로 공식 사이트를 조사하고 충돌하는 정보를 다시 확인</span></div>
+      <div class="aistep"><i>2</i><span><b>제작</b>사용처 데이터, 안내 문구, 화면, 규칙 기반 해석기 작성</span></div>
+      <div class="aistep"><i>3</i><span><b>검증</b>공식 원문과 대조, 자동 테스트, 글자 대비·화면 넘침 자동 점검</span></div>
+      <p class="ops" style="margin-top:6px">시제품 안에서는 AI를 호출하지 않습니다. 서버와 API 없이 브라우저에서 동작합니다.</p>
+    </div>
+    <div>
+      <table class="fix">
+        <thead><tr><th>항목</th><th>AI 초안</th><th>원문과 대조해 고친 결과</th></tr></thead>
+        <tbody>
+          <tr><td>쿠팡캐시 한도</td><td>월 10만원(블로그)</td><td class="to">월 50만원 · 일 10회</td></tr>
+          <tr><td>매장 사용법</td><td>충전 후 앱 바코드만(4단계)</td><td class="to">충전 없는 문자 바코드(3단계)를 기본으로</td></tr>
+          <tr><td>지류 상품권</td><td>‘확인 필요’</td><td class="to">공지 원문 확인: 2026-02-06 충전 종료</td></tr>
+          <tr><td>사용처 목록</td><td>대표 53곳 선별</td><td class="to">공식 목록 153곳 전체, 분야별 수 대조</td></tr>
+          <tr><td>넥슨 한도</td><td>월 15만원</td><td class="to">넥슨 공지 확인: 월 20만원</td></tr>
+          <tr><td>카카오페이</td><td>전환 목록에 없어 ‘불가’로 단정</td><td class="to">앱 배너와 어긋나 다시 확인 → ‘확인 필요’</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="foot"><span><b>컬쳐랜드 써봄</b> · Y-AI 메이커톤 2026</span><span>13 / 15</span></div>
+</section>
+
+<!-- 14 범위 -->
+<section class="slide">
+  <p class="kicker">구현 범위와 다음 단계</p>
+  <h1>지금 되는 것, 함께 만들 것</h1>
+  <div class="scope">
+    <div class="box yes">
+      <h3>클릭형 시제품에서 동작합니다</h3>
+      <ul>
+        <li>질문 입력 → 판정 → 사용 안내 → 앱 화면까지 이어지는 흐름</li>
+        <li>공식 사용처 153곳 전체와 오프라인 28곳, 분야 7종</li>
+        <li>규칙 기반 질문 해석(초성·오타·말투), 자동 테스트 237건</li>
+        <li>다음 동작 버튼, 교환소, 사진 일괄등록(가상 사진첩)</li>
+        <li>글자 크게·고대비·한 단계씩 보기·읽어주기, 저시력 관점 나란히 보기</li>
+      </ul>
+    </div>
+    <div class="box next">
+      <h3>컬쳐랜드와 함께 만들 부분</h3>
+      <ul>
+        <li>실제 결제·충전·전환·로그인 연동(지금은 시연용 가상 데이터)</li>
+        <li>사용처 목록 실시간 연동, 로그인 뒤에만 보이는 수수료</li>
+        <li>사진첩 접근과 문자 인식, 상품권 번호 처리</li>
+        <li>실기기 스크린리더 검수와 저시력 이용자 사용성 테스트</li>
+        <li>PC 화면, 위치 기반 주변 매장, 자유 질문 해석 고도화</li>
+      </ul>
+    </div>
+  </div>
+  <p class="hope"><b>기대하는 변화</b> — “어디서 써요?” 문의와 잘못된 번호 입력을 줄이고, 받은 상품권이 실제 사용으로 이어지게 합니다.</p>
+  <div class="foot"><span><b>컬쳐랜드 써봄</b> · Y-AI 메이커톤 2026</span><span>14 / 15</span></div>
+</section>
+
+<!-- 15 맺음 -->
+<section class="slide">
+  <div class="end">
+    <img class="friends" src="../assets/char/friends-hello.webp" alt="" />
+    <p class="q">상품권, 어디서 어떻게 쓸까?</p>
+    <h1>이제 <span class="red">써봄</span>에 물어보세요</h1>
+    <div class="links">
+      <div>시제품 <a href="https://usedupnote.github.io/sseobom/">usedupnote.github.io/sseobom</a></div>
+      <div>소스 코드 <a href="https://github.com/usedupnote/sseobom">github.com/usedupnote/sseobom</a></div>
+    </div>
+    <p class="thanks">감사합니다</p>
+  </div>
+</section>
+
+</body>
+</html>

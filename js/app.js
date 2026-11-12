@@ -274,7 +274,7 @@ document.getElementById('resetDemo')?.addEventListener('click', (e) => {
 document.getElementById('mobileFab')?.addEventListener('click', () => {
   const items = [...document.querySelectorAll('.scn button')].map((b) => b.outerHTML).join('');
   openSheet(`<h3>심사용 시나리오</h3><div class="scn">${items}</div>
-    <div class="panel-links"><a href="#/home" data-scn="#/home">앱 홈에서 시작</a><a href="docs/explain.pdf" target="_blank" rel="noopener">설명 자료(PDF)</a></div>`);
+    <div class="panel-links"><a href="#/home" data-scn="#/home">앱 홈에서 시작</a><a href="docs/explain.pdf" target="_blank" rel="noopener">설명 자료(PDF)</a><a href="docs/pitch.pdf" target="_blank" rel="noopener">발표자료(PDF)</a></div>`);
 });
 
 render();

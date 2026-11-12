@@ -49,6 +49,9 @@ SHOTS = [
     # 공식 목록 전체 반영: 분야 목록
     ("27-category-finance", "", "#/c/finance", 844),
     ("28-category-offline", "", "#/c/offline", 844),
+    # 발표자료용: 수수료 계산(한 단계씩 크게 보기), 공식 목록에 없는 곳
+    ("29-coupang-calc", "", "#/g/coupang/convert?v=cl16&s=3", 844),
+    ("30-unknown", "", "#/r?q=" + quote("닌텐도"), 844),
 ]
 
 # 일부만 다시 찍기: python tools/capture.py <기본 URL> 04,25,26  (파일명 앞 번호)
