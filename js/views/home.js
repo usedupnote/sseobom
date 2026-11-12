@@ -24,7 +24,7 @@ export function homeView({ state }) {
       </div>
     </div>
     <nav class="home-tabs" aria-label="홈 탭">
-      <button class="on">컬쳐캐쉬</button><button>충전</button><button>선물</button><button>교환소</button>
+      <button class="on">컬쳐캐쉬</button><button data-go="#/mock/charge">충전</button><button>선물</button><button data-go="#/mock/exchange">교환소</button>
     </nav>
     <div class="scroll">
       <div class="home-body">

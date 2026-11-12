@@ -5,6 +5,7 @@
 """
 import subprocess
 import sys
+import time
 from pathlib import Path
 from urllib.parse import quote
 
@@ -42,7 +43,15 @@ SHOTS = [
     ("22-bulk-intro", "", "#/bulk", 844),
     ("23-bulk-result", "", "#/bulk?st=result", 844),
     ("24-bulk-result-hc", "&ts=l&hc=1", "#/bulk?st=result", 844),
+    # 다음 동작 버튼: 선물·경품 상품권 → 교환소
+    ("25-gift-result", "", "#/r?q=" + quote("카톡 선물로 받은 상품권 쿠팡에서 쓸 수 있어?"), 844),
+    ("26-exchange", "", "#/mock/exchange", 844),
 ]
+
+# 일부만 다시 찍기: python tools/capture.py <기본 URL> 04,25,26  (파일명 앞 번호)
+ONLY = set(sys.argv[2].split(",")) if len(sys.argv) > 2 else None
+if ONLY:
+    SHOTS = [s for s in SHOTS if s[0].split("-")[0] in ONLY]
 
 SCALE = 2
 
@@ -52,6 +61,23 @@ DESKTOP_SHOTS = [
     ("21-lv-mirror-hc", "?capture=lv&lv=1&lvblur=3&ts=l&hc=1", f"#/r?q={Q_CONV}", (1200, 900), (200, 20, 1000, 840)),
 ]
 ORIGIN = BASE.split("?")[0]
+
+
+def shoot(cmd, target):
+    """Edge가 끝난 뒤에야 파일이 써지는 경우가 있어, 이전 파일을 지우고 새 파일이 생길 때까지 기다린다(실패하면 한 번 더)."""
+    for attempt in range(2):
+        target.unlink(missing_ok=True)
+        subprocess.run(cmd, check=True, capture_output=True, timeout=60)
+        for _ in range(40):
+            if target.exists() and target.stat().st_size > 0:
+                time.sleep(0.3)  # 쓰기가 끝나도록 잠깐 더
+                return Image.open(target)
+            time.sleep(0.25)
+    raise RuntimeError(f"캡처 실패: {target.name}")
+
+
+if ONLY:
+    DESKTOP_SHOTS = [s for s in DESKTOP_SHOTS if s[0].split("-")[0] in ONLY]
 for name, params, route, (w, h), box in DESKTOP_SHOTS:
     target = OUT / f"{name}.png"
     cmd = [
@@ -65,8 +91,7 @@ for name, params, route, (w, h), box in DESKTOP_SHOTS:
         f"--screenshot={target}",
         ORIGIN + params + route,
     ]
-    subprocess.run(cmd, check=True, capture_output=True, timeout=60)
-    im = Image.open(target)
+    im = shoot(cmd, target)
     im.crop(tuple(v * SCALE for v in box)).save(target, optimize=True)
     print(name, target.stat().st_size // 1024, "KB")
 
@@ -84,7 +109,6 @@ for name, params, route, h in SHOTS:
         f"--screenshot={target}",
         url,
     ]
-    subprocess.run(cmd, check=True, capture_output=True, timeout=60)
-    im = Image.open(target)
+    im = shoot(cmd, target)
     im.crop((0, 0, 390 * SCALE, im.height)).save(target, optimize=True)
     print(name, target.stat().st_size // 1024, "KB")

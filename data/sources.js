@@ -118,6 +118,11 @@ export const SOURCES = {
     url: 'https://www.daiso.co.kr/cs/faq?cid=21',
     kind: 'secondary',
   },
+  exchange: {
+    label: '상품권 교환소(로그인 필요)',
+    url: 'https://www.cultureland.co.kr/purchase/exchange/couponExchange.do',
+    kind: 'official',
+  },
   appStore: {
     label: '컬쳐랜드 앱 소개(App Store): 편의점·CGV·교보문고 오프라인 사용',
     url: 'https://apps.apple.com/kr/app/id383539271',

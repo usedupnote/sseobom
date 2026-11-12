@@ -1,5 +1,5 @@
-// 시연용 앱 화면(문자 상품권·충전·바코드 결제·전환·쿠폰·기프트코드) — 실제 결제·충전 없음
-import { icon, esc, won, pct, demoTag, fakeBarcode, topbar } from '../ui.js';
+// 시연용 앱 화면(문자 상품권·충전·교환소·바코드 결제·전환·쿠폰·기프트코드) — 실제 결제·충전 없음
+import { icon, esc, won, pct, demoTag, fakeBarcode, topbar, sourceList } from '../ui.js';
 import { MERCHANT_BY_ID, MERCHANTS } from '../../data/merchants.js';
 import { DEMO } from '../../data/demo.js';
 import { state, save, setVoucher } from '../state.js';
@@ -39,7 +39,7 @@ export function mockView({ segs, query }) {
     Object.assign(local, { step: 'form', amount: 10000, place: null, partner: null, denom: 10000, consent: false, forcePick: false });
     lastKey = key;
   }
-  const fn = { mms, charge, barcode, convert, coupon, giftcode }[type] || mms;
+  const fn = { mms, charge, exchange, barcode, convert, coupon, giftcode }[type] || mms;
   return fn({ back, m });
 }
 
@@ -93,17 +93,21 @@ function charge({ back }) {
         <h2>${won(DEMO.voucherAmount)} 충전 완료</h2>
         <p>컬쳐캐쉬 사용가능 금액이 <b>${won(state.cash)}</b>이 됐어요.<br />이제 온라인 결제·전환·쿠폰·앱 바코드에 쓸 수 있어요.</p>
       </div></div>
-      <div class="cta-bar">${backBtn(back)}</div>`,
+      <div class="cta-bar">${back ? backBtn(back) : `<button class="btn btn-primary btn-block" data-go="#/search">충전한 캐쉬, 어디서 쓸까요?</button>`}
+        <div class="cta-sub">${back ? `<button class="btn" data-go="#/search">어디서 쓸지 찾기</button>` : `<button class="btn" data-go="#/home">홈으로</button>`}</div></div>`,
     };
   }
+  const self = encodeURIComponent(location.hash);
+  const needExchange = state.voucher === 'gift' && !state.exchanged;
   return {
     title: '컬쳐캐쉬 충전',
     html: `${bar('충전', back)}${demoTag()}
     <div class="scroll"><div class="mock-body">
+      ${needExchange ? `<div class="callout callout-warn"><img src="assets/char/boy-please.webp" alt="" /><div><h3>먼저 [교환소]에서 교환해요</h3><p>선물·경품으로 받은 상품권은 교환소에서 상품권으로 바꾼 뒤 충전할 수 있어요.</p><div class="btns"><button class="btn btn-sm btn-dark" data-go="#/mock/exchange?back=${self}">${icon('swap', 15)}교환소 열기</button></div></div></div>` : ''}
       <div><p class="field-label">충전 수단</p>
         <div class="optlist">
           <button class="opt on">${icon('card', 18)}컬쳐랜드상품권(모바일문화상품권)<small>16자리</small></button>
-          <button class="opt" disabled>${icon('gift', 18)}교환소에서 교환한 상품권<small>카톡 선물·기프티쇼</small></button>
+          <button class="opt" data-go="#/mock/exchange?back=${self}">${icon('gift', 18)}선물·경품 상품권은 교환소에서 먼저 교환<small>${icon('chev', 16)}</small></button>
         </div>
       </div>
       <div><p class="field-label">상품권 번호 16자리 <small style="font-weight:500;color:var(--ink-3)">(시연용 번호가 채워져 있어요)</small></p>
@@ -124,6 +128,64 @@ function charge({ back }) {
           state.charged = true;
         }
         if (!state.voucher) state.voucher = 'cl16';
+        save();
+        local.step = 'done';
+        rerender();
+      });
+    },
+  };
+}
+
+// ── 상품권 교환소 ──
+// 공식 충전 안내: "카카오톡, 아이넘버, 기프티쇼, 이벤트 경품으로 받은 상품권은 상품권 교환소에서 상품권으로 교환 후 컬쳐랜드상품권으로 충전이 가능합니다."
+// 실제 교환소 화면(로그인 필요)의 입력 항목·유효기간은 확인하지 못해, 시연 화면에는 확인된 내용만 담는다.
+const EX_FROM = ['카카오톡 선물', '기프티쇼', '아이넘버', '이벤트 경품'];
+function exchange({ back }) {
+  const tag = demoTag('시연용 화면 · 실제로 교환되지 않아요');
+  if (local.step === 'done') {
+    const toCharge = `#/mock/charge${back ? `?back=${encodeURIComponent(back)}` : ''}`;
+    const fromCharge = back.startsWith('#/mock/charge');
+    return {
+      title: '교환 완료',
+      html: `${bar('교환소', back)}${tag}
+      <div class="scroll"><div class="mock-body bulk-body success">
+        <img src="assets/char/boy-thumb.webp" alt="" />
+        <h2>상품권 ${won(DEMO.voucherAmount)}으로 교환 완료</h2>
+        <p>이제 [충전]에서 컬쳐랜드상품권으로 충전할 수 있어요.</p>
+        <p class="bulk-rest">교환한 상품권의 유효기간과 사용 조건은 받은 상품권 안내에서 확인해 주세요.</p>
+      </div></div>
+      <div class="cta-bar">${
+        !back
+          ? `<button class="btn btn-primary btn-block" data-go="${toCharge}">컬쳐캐쉬로 충전하기</button><div class="cta-sub"><button class="btn" data-go="#/search">어디서 쓸 수 있는지 찾기</button></div>`
+          : fromCharge
+            ? backBtn(back, '충전 화면으로 돌아가기')
+            : `${backBtn(back, back.startsWith('#/g/') ? '안내로 돌아가기' : /^#\/(r|m|c|t)\b/.test(back) ? '확인 결과로 돌아가기' : '이전 화면으로 돌아가기')}<div class="cta-sub"><button class="btn" data-go="${esc(toCharge)}">컬쳐캐쉬로 충전하기</button></div>`
+      }</div>`,
+    };
+  }
+  const from = EX_FROM.includes(local.partner) ? local.partner : EX_FROM[0];
+  return {
+    title: '상품권 교환소',
+    html: `${bar('교환소', back)}${tag}
+    <div class="scroll"><div class="mock-body bulk-body">
+      <p class="mock-lead">선물·경품으로 받은 상품권은 여기서 상품권으로 바꾼 뒤, [충전]에서 컬쳐랜드상품권으로 충전해요.</p>
+      <div><p class="field-label">어디서 받은 상품권인가요?</p>
+        <div class="optlist">${EX_FROM.map((f) => `<button class="opt ${f === from ? 'on' : ''}" data-from="${esc(f)}" aria-pressed="${f === from}">${icon('gift', 18)}${esc(f)}</button>`).join('')}</div>
+      </div>
+      <div><p class="field-label">교환권 번호 <small style="font-weight:500;color:var(--ink-3)">(시연용 번호가 채워져 있어요)</small></p>
+        <div class="pin-row" style="grid-template-columns:1fr"><input value="DEMO-0000-0000" readonly aria-label="시연용 교환권 번호" /></div>
+      </div>
+      <ul class="notes">
+        <li>${icon('info', 14)}<span>교환한 뒤에는 [충전] › [컬쳐랜드상품권]에서 컬쳐캐쉬로 충전할 수 있어요.</span></li>
+        <li>${icon('info', 14)}<span>입력 항목·유효기간 같은 자세한 조건은 실제 교환소 화면에서 확인해 주세요(로그인 필요).</span></li>
+      </ul>
+      ${sourceList(['chargeMain', 'exchange'], { compact: true })}
+    </div></div>
+    <div class="cta-bar"><button class="btn btn-primary btn-block" id="doEx">상품권으로 교환하기(시연)</button></div>`,
+    mount(root) {
+      root.querySelectorAll('[data-from]').forEach((b) => b.addEventListener('click', () => ((local.partner = b.dataset.from), rerender())));
+      root.querySelector('#doEx').addEventListener('click', () => {
+        state.exchanged = true;
         save();
         local.step = 'done';
         rerender();
@@ -256,6 +318,7 @@ function convert({ back, m }) {
         <div><span>수수료 ${pct(lane.fee)}</span><b>- ${won(fee)}</b></div>
         <div class="total"><span>받는 ${esc(lane.target)}</span><span>${get.toLocaleString('ko-KR')}P</span></div>
       </div>
+      ${state.cash >= local.amount ? '' : `<div class="callout callout-warn"><img src="assets/char/boy-please.webp" alt="" /><div><h3>컬쳐캐쉬가 부족해요</h3><p>전환할 금액만큼 먼저 충전해요.</p><div class="btns"><button class="btn btn-sm btn-dark" data-go="#/mock/charge?back=${encodeURIComponent(location.hash)}">충전하기</button></div></div></div>`}
       <label class="consent"><input type="checkbox" id="consent" ${local.consent ? 'checked' : ''} /><span>(최초 1회) 제3자 정보제공에 동의하고, 컬쳐랜드와 ${esc(p.name)} 계정의 명의가 같은지 확인했어요. 전환 후에는 취소할 수 없어요.</span></label>
     </div></div>
     <div class="cta-bar"><button class="btn btn-primary btn-block" id="doConv" ${local.consent && state.cash >= local.amount ? '' : 'disabled'}>전환하기(시연)</button></div>`,

@@ -3,10 +3,26 @@ import { icon, esc, pct } from '../ui.js';
 import { VERDICT, laneVerdict, LANE_LABEL } from '../../data/merchants.js';
 import { METHODS, routesForLane } from '../../data/methods.js';
 import { VOUCHERS, VOUCHER_ORDER } from '../../data/vouchers.js';
-import { setVoucher } from '../state.js';
+import { SOURCES } from '../../data/sources.js';
+import { state, setVoucher } from '../state.js';
 import { openSheet, closeSheet } from '../app.js';
 
 export const CH_LABEL = { online: '온라인', offline: '매장' };
+
+// ── 다음 동작 버튼 ──
+// 안내 문구가 "먼저 교환소에서…", "고객센터에서 확인…"처럼 다음 동작을 가리키면, 말로만 두지 않고 그 화면·공식 페이지·전화로 바로 이어준다.
+export const extBtn = (label, url) => `<a class="btn btn-sm" href="${esc(url)}" target="_blank" rel="noopener">${esc(label)}${icon('ext', 13)}</a>`;
+export const callBtn = () => `<a class="btn btn-sm" href="tel:15772111">${icon('phone', 14)}고객센터 1577-2111</a>`;
+export const officialListBtn = () => extBtn('공식 사용처 목록 보기', SOURCES.useCash.url);
+export function voucherActions(id, back) {
+  const b = encodeURIComponent(back || location.hash);
+  if (id === 'gift') return state.exchanged ? '' : `<button class="btn btn-sm btn-dark" data-go="#/mock/exchange?back=${b}">${icon('swap', 15)}교환소 열기</button>`;
+  if (id === 'smart') return extBtn('스마트문상 안내 보기', SOURCES.smartMunsang.url);
+  if (id === 'paper') return extBtn('공지사항 보기', SOURCES.notice.url) + callBtn();
+  return '';
+}
+// 방식의 기본 단계 앞에 붙는 단계 수(선물·경품 상품권은 교환, 컬쳐캐쉬가 필요한 방식은 충전)
+export const extraSteps = (method, voucher) => (voucher === 'gift' ? 1 : 0) + (method.needsCash && voucher !== 'cash' ? 1 : 0);
 const TONE_PILL = { ok: 'pill-ok', warn: 'pill-warn', no: 'pill-no', muted: 'pill-muted' };
 
 // 레인 상태를 짧은 알약 배지로

@@ -59,8 +59,8 @@ export const VOUCHERS = {
     digits: null,
     chargeable: 'exchange',
     storeDirect: false,
-    reason: '카카오톡·기프티쇼·경품으로 받은 상품권은 컬쳐랜드 앱 [교환소]에서 먼저 교환한 뒤 충전해요.',
-    sources: ['chargeMain'],
+    reason: '카카오톡·아이넘버·기프티쇼·이벤트 경품으로 받은 상품권은 컬쳐랜드 [교환소]에서 먼저 상품권으로 교환한 뒤 충전해요.',
+    sources: ['chargeMain', 'exchange'],
   },
 };
 

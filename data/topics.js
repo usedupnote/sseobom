@@ -25,6 +25,8 @@ export const TOPICS = {
       ['처리 시간', '10만원 이상 실시간 · 10만원 미만 다음 영업일 18시 이후 · 일반 10~15영업일'],
       ['환불 불가', '경품으로 받은 상품권'],
     ],
+    // 다음 동작: to(앱 안 화면) · src(공식 페이지, sources.js 키) · tel(고객센터 전화)
+    actions: [{ label: '환불 약관 보기', src: 'cashTerms' }, { tel: true }],
     sources: ['policyMobile', 'cashTerms', 'faq'],
   },
   balance: {
@@ -36,6 +38,7 @@ export const TOPICS = {
       ['컬쳐캐쉬', '앱 홈의 사용가능 금액 · 보관중인 금액(안심금고)'],
       ['안심금고', '보관 중인 캐쉬는 [사용 가능]으로 꺼내야 결제에 쓸 수 있음'],
     ],
+    actions: [{ label: '문자 상품권 열어 보기', to: '#/mock/mms' }, { label: '앱 홈에서 잔액 보기', to: '#/home' }],
     sources: ['voucherUse', 'faq'],
   },
 };

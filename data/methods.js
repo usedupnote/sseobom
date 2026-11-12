@@ -11,6 +11,16 @@ export const CHARGE_STEP = {
   sources: ['mobileVoucher', 'chargeMain', 'userType'],
 };
 
+// 선물·경품으로 받은 상품권(gift)을 갖고 있으면 맨 앞에 붙는 단계
+export const EXCHANGE_STEP = {
+  id: 'exchange',
+  title: '[교환소]에서 상품권으로 교환하기',
+  body: '카카오톡·아이넘버·기프티쇼·이벤트 경품으로 받은 상품권은 컬쳐랜드 [교환소]에서 먼저 상품권으로 바꿔요.',
+  tip: '교환한 상품권의 유효기간과 사용 조건은 교환소 화면과 받은 상품권 안내에서 확인해 주세요.',
+  action: { label: '교환소 화면 열기', to: 'mock/exchange' },
+  sources: ['chargeMain', 'exchange'],
+};
+
 export const METHODS = {
   'barcode-mms': {
     id: 'barcode-mms',
@@ -34,6 +44,7 @@ export const METHODS = {
       {
         title: '남은 금액 확인하기',
         body: '잔액 관리형이라 남은 금액은 다음에 나눠 쓸 수 있어요. 문자의 [사용처/잔액안내]에서 남은 금액을 확인해요.',
+        action: { label: '문자에서 잔액 안내 보기', to: 'mock/mms' },
       },
     ],
     cautions: ['오프라인 전용으로 발행된 상품권은 컬쳐캐쉬 충전이 안 돼요(매장에서만 사용).'],

@@ -3,6 +3,7 @@ import { icon, esc, topbar, sourceList } from '../ui.js';
 import { VOUCHERS, identifyVoucher } from '../../data/vouchers.js';
 import { setVoucher } from '../state.js';
 import { go, rerender } from '../app.js';
+import { voucherActions } from './shared.js';
 
 const ans = { received: null, digits: null, label: null };
 let lastBack = null;
@@ -47,7 +48,7 @@ export function voucherView({ query }) {
       ? `<article class="card" aria-live="polite">
           <div class="callout ${v.blocked ? 'callout-no' : v.chargeable === true ? 'callout-info' : 'callout-warn'}" style="padding:0;background:none">
             <img src="assets/char/${v.blocked ? 'boy-sweat' : v.chargeable === true ? 'boy-thumb' : 'boy-please'}.webp" alt="" />
-            <div><h3>${esc(v.name)}</h3><p>${esc(v.summary || v.reason || '')}</p>${v.alternative ? `<p style="margin-top:6px">${esc(v.alternative)}</p>` : ''}</div>
+            <div><h3>${esc(v.name)}</h3><p>${esc(v.summary || v.reason || '')}</p>${v.alternative ? `<p style="margin-top:6px">${esc(v.alternative)}</p>` : ''}${voucherActions(result, location.hash) ? `<div class="btns">${voucherActions(result, location.hash)}</div>` : ''}</div>
           </div>
         </article>
         ${sourceList(v.sources, { compact: true })}`

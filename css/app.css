@@ -671,6 +671,11 @@ body.capture-lv.lv-on .stage { grid-template-columns: auto auto; }
 .calc-input input { width: 100%; }
 .search-field { min-width: 0; }
 
+/* 안내가 가리키는 다음 동작 버튼 줄(공식 페이지·고객센터·앱 화면) */
+.next-actions { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+.mock-lead { margin: 0; font-size: calc(14px * var(--ts, 1)); line-height: 1.6; color: var(--ink-2); }
+.opt small .ic { color: var(--ink-4); }
+
 /* ── 사진에서 상품권 한 번에 등록(일괄등록) ─────────────── */
 .bulk-entry { display: flex; align-items: center; gap: 12px; width: 100%; padding: 12px 14px; border-radius: 16px; border: 1px solid var(--line); background: var(--surface); text-align: left; }
 .bulk-entry .q-ic { width: 40px; height: 40px; border-radius: 12px; display: grid; place-items: center; background: var(--red-50); color: var(--red-deep); flex: none; }

@@ -1,11 +1,11 @@
 // [3 사용 안내] 보유 상품권에 맞춘 단계 안내 — 결과 화면에서 바로 이어짐
 import { icon, esc, fill, won, pct, sourceList, topbar, speakBtn } from '../ui.js';
 import { MERCHANT_BY_ID, laneVerdict } from '../../data/merchants.js';
-import { METHODS, CHARGE_STEP, routesForLane } from '../../data/methods.js';
+import { METHODS, CHARGE_STEP, EXCHANGE_STEP, routesForLane } from '../../data/methods.js';
 import { VOUCHERS } from '../../data/vouchers.js';
 import { setVoucher, stepDone, toggleFavorite } from '../state.js';
 import { rerender, toast } from '../app.js';
-import { CH_LABEL, feeText, openVoucherSheet, voucherLabel } from './shared.js';
+import { CH_LABEL, feeText, openVoucherSheet, voucherLabel, voucherActions, extraSteps } from './shared.js';
 
 const CHARGE_ONLY = {
   id: 'charge',
@@ -18,7 +18,7 @@ const CHARGE_ONLY = {
     { title: '컬쳐랜드 앱 로그인', body: '아이디가 없으면 회원가입 후 휴대폰 본인인증을 해 두세요. 본인인증 회원이 아니면 일부 사용처 이용이 제한돼요.' },
     { title: '[충전] › [컬쳐랜드상품권] 선택', body: '앱 홈의 [컬쳐랜드상품권 충전하기]를 누르거나, 받은 문자의 [컬쳐캐쉬 바로충전] 링크를 눌러요.', action: { label: '충전 화면 열기', to: 'mock/charge' } },
     { title: '16자리 번호 입력 → [충전하기]', body: '문자에 있는 16자리 번호를 입력해요. 20회 이상 틀리면 하루 동안 충전이 제한돼요.' },
-    { title: '컬쳐캐쉬 잔액 확인', body: '앱 홈의 사용가능 금액에서 확인해요. 보유한도(본인인증 50만원)를 넘는 금액은 대기 캐쉬로 들어가요.' },
+    { title: '컬쳐캐쉬 잔액 확인', body: '앱 홈의 사용가능 금액에서 확인해요. 보유한도(본인인증 50만원)를 넘는 금액은 대기 캐쉬로 들어가요.', action: { label: '앱 홈에서 잔액 보기', to: 'home' } },
   ],
   cautions: ['18자리 문화상품권(㈜문화상품권)·스마트문상·오프라인 전용 상품권은 충전할 수 없어요.'],
   sources: ['mobileVoucher', 'chargeMain', 'userType'],
@@ -45,15 +45,16 @@ export function guideView({ segs, query, state }) {
   const vinfo = VOUCHERS[voucher];
   const blocked = vinfo?.blocked;
 
-  // 단계 구성: 컬쳐캐쉬가 필요한 방식이면 앞에 충전 단계
+  // 단계 구성: 선물·경품 상품권이면 맨 앞에 교환 단계, 컬쳐캐쉬가 필요한 방식이면 그다음에 충전 단계
   const steps = [];
+  if (voucher === 'gift') steps.push({ ...EXCHANGE_STEP, exchange: true });
   if (method.needsCash) {
     steps.push({ ...CHARGE_STEP, skip: voucher === 'cash', charge: true });
   }
   for (const s of method.steps) steps.push({ ...s, title: fill(s.title, vars), body: fill(s.body, vars) });
   const doneKey = `${m.id}/${routeId}`;
   const done = state.done[doneKey] || [];
-  const isDone = (i) => !!done[i] || steps[i].skip || (steps[i].charge && state.charged);
+  const isDone = (i) => !!done[i] || steps[i].skip || (steps[i].charge && state.charged) || (steps[i].exchange && state.exchanged);
   const doneCount = steps.filter((_, i) => isDone(i)).length;
   const allDone = doneCount === steps.length;
   const backHash = location.hash;
@@ -74,7 +75,7 @@ export function guideView({ segs, query, state }) {
       for (const r of routesForLane(l)) {
         const mt = METHODS[r];
         const needCharge = mt.needsCash && voucher !== 'cash';
-        alts.push({ r, key, mt, l, n: mt.steps.length + (needCharge ? 1 : 0), needCharge });
+        alts.push({ r, key, mt, l, n: mt.steps.length + extraSteps(mt, voucher), needCharge });
       }
     }
   }
@@ -105,7 +106,7 @@ export function guideView({ segs, query, state }) {
       return `<li class="step ${cls}">
         <span class="step-n">${d && !s.skip ? icon('check', 18) : i + 1}</span>
         <div>
-          <h4>${esc(s.title)}${s.skip ? '<span class="tag-skip">이미 충전함 · 건너뛰기</span>' : ''}${s.charge && state.charged && !s.skip ? '<span class="tag-skip">시연 충전 완료</span>' : ''}</h4>
+          <h4>${esc(s.title)}${s.skip ? '<span class="tag-skip">이미 충전함 · 건너뛰기</span>' : ''}${s.charge && state.charged && !s.skip ? '<span class="tag-skip">시연 충전 완료</span>' : ''}${s.exchange && state.exchanged ? '<span class="tag-skip">시연 교환 완료</span>' : ''}</h4>
           ${s.skip ? '' : `<p>${esc(s.body)}</p>`}
           ${s.tip && !s.skip ? `<p class="tip">${icon('info', 13)}${esc(s.tip)}</p>` : ''}
           ${calc}
@@ -126,7 +127,7 @@ export function guideView({ segs, query, state }) {
     : [];
 
   const cautions = [...(method.cautions || []), ...(lane?.notes || [])];
-  const srcKeys = [...(method.sources || []), ...(method.needsCash ? CHARGE_STEP.sources : []), ...(m.sources || [])];
+  const srcKeys = [...(method.sources || []), ...(voucher === 'gift' ? EXCHANGE_STEP.sources : []), ...(method.needsCash ? CHARGE_STEP.sources : []), ...(m.sources || [])];
   const fav = state.favorites.includes(m.id);
   const firstOpen = steps.findIndex((s, i) => !s.skip && !isDone(i));
   const visible = steps.filter((s) => !s.skip);
@@ -150,7 +151,7 @@ export function guideView({ segs, query, state }) {
         </div>
       </section>
       <div class="guide-body">
-        ${blocked ? `<div class="callout callout-no"><img src="assets/char/boy-sweat.webp" alt="" /><div><h3>${esc(vinfo.short)}은(는) 이 방법으로 쓸 수 없어요</h3><p>${esc(vinfo.reason)}</p><div class="btns"><button class="btn btn-sm" data-go="#/v?back=${encodeURIComponent(backHash)}">내 상품권 다시 확인</button></div></div></div>` : ''}
+        ${blocked ? `<div class="callout callout-no"><img src="assets/char/boy-sweat.webp" alt="" /><div><h3>${esc(vinfo.short)}은(는) 이 방법으로 쓸 수 없어요</h3><p>${esc(vinfo.reason)}</p><div class="btns"><button class="btn btn-sm" data-go="#/v?back=${encodeURIComponent(backHash)}">내 상품권 다시 확인</button>${voucherActions(voucher, backHash)}</div></div></div>` : ''}
         ${mismatch}
         <article class="card">
           <h3 class="card-t">${icon('check', 18)}준비물</h3>

@@ -6,9 +6,10 @@ import { MERCHANTS, MERCHANT_BY_ID, CATEGORIES, laneVerdict, merchantVerdict } f
 import { VOUCHERS } from '../../data/vouchers.js';
 import { TOPICS } from '../../data/topics.js';
 import { parseQuery, suggest } from '../parser.js';
-import { setVoucher, toggleFavorite, addRecent } from '../state.js';
+import { state as appState, setVoucher, toggleFavorite, addRecent } from '../state.js';
 import { go, rerender, toast } from '../app.js';
-import { CH_LABEL, lanePill, laneLine, routeFor, pickLane, verdictCopy, verdictBox, openVoucherSheet, voucherLabel, METHODS } from './shared.js';
+import { CH_LABEL, lanePill, laneLine, routeFor, pickLane, verdictCopy, verdictBox, openVoucherSheet, voucherLabel, METHODS, voucherActions, callBtn, extBtn, officialListBtn, extraSteps } from './shared.js';
+import { SOURCES } from '../../data/sources.js';
 
 const CAT_LABEL = Object.fromEntries(CATEGORIES.map((c) => [c.id, c.label]));
 const TOTAL_OFFICIAL = 154;
@@ -66,12 +67,15 @@ function voucherCallout(voucher, back, current) {
     return `<div class="callout callout-no">
       <img src="assets/char/boy-sweat.webp" alt="" />
       <div><h3>${esc(v.short)}은(는) 컬쳐랜드에서 쓸 수 없어요</h3><p>${esc(v.reason)}</p>
-      <div class="btns"><button class="btn btn-sm" data-go="#/v?back=${encodeURIComponent(back)}">내 상품권 다시 확인</button></div></div>
+      <div class="btns"><button class="btn btn-sm" data-go="#/v?back=${encodeURIComponent(back)}">내 상품권 다시 확인</button>${voucherActions(voucher, back)}</div></div>
     </div>`;
+  // 안내가 가리키는 다음 동작(교환소·공지·고객센터)은 버튼으로 바로 이어준다
   if (voucher === 'gift')
-    return `<div class="callout callout-warn"><img src="assets/char/boy-please.webp" alt="" /><div><h3>먼저 [교환소]에서 교환해요</h3><p>${esc(v.reason)}</p></div></div>`;
+    return appState.exchanged
+      ? `<div class="callout callout-info"><img src="assets/char/boy-thumb.webp" alt="" /><div><h3>교환소에서 교환을 마쳤어요</h3><p>교환한 상품권으로 아래 방법대로 쓰면 돼요.</p></div></div>`
+      : `<div class="callout callout-warn"><img src="assets/char/boy-please.webp" alt="" /><div><h3>먼저 [교환소]에서 교환해요</h3><p>${esc(v.reason)}</p><div class="btns">${voucherActions('gift', back)}</div></div></div>`;
   if (voucher === 'paper')
-    return `<div class="callout callout-warn"><img src="assets/char/boy-please.webp" alt="" /><div><h3>종이 상품권은 확인이 필요해요</h3><p>2026-01-09 ‘지류상품권 충전 서비스 종료 안내’ 공지가 있어요. 대상·날짜는 공지 본문이나 고객센터(1577-2111)에서 확인해 주세요.</p></div></div>`;
+    return `<div class="callout callout-warn"><img src="assets/char/boy-please.webp" alt="" /><div><h3>종이 상품권은 확인이 필요해요</h3><p>2026-01-09 ‘지류상품권 충전 서비스 종료 안내’ 공지가 있어요. 대상·날짜는 공지 본문이나 고객센터(1577-2111)에서 확인해 주세요.</p><div class="btns">${voucherActions('paper', back)}</div></div></div>`;
   return '';
 }
 
@@ -113,6 +117,7 @@ function merchantCard(m, { ch, state }) {
     <div class="m-head">${mark(m, 48)}<div><h2>${esc(m.group ? m.name : m.full || m.name)}</h2><p>${esc(CAT_LABEL[m.cat] || '')} ${confidenceBadge(m.confidence)}</p></div></div>
     ${members}
     ${verdictBox(copy)}
+    ${focus && laneVerdict(m[focus]) === 'unknown' ? `<div class="next-actions" aria-label="확인할 곳">${officialListBtn()}${callBtn()}</div>` : ''}
     ${speakBtn(sayText, '결과 읽어주기') ? `<div style="margin-top:8px">${speakBtn(sayText, '결과 읽어주기')}</div>` : ''}
     <div class="lanes" role="list" aria-label="온라인·매장 구분">${laneRow('online')}${laneRow('offline')}</div>
     ${notes.length ? `<ul class="notes">${notes.map((n) => `<li>${icon('info', 14)}<span>${esc(n)}</span></li>`).join('')}</ul>` : ''}
@@ -134,7 +139,7 @@ function ctaFor(m, ch, state) {
   const route = routeFor(lane, state.voucher);
   if (!route) return '';
   const method = METHODS[route];
-  const n = method.steps.length + (method.needsCash && state.voucher !== 'cash' ? 1 : 0);
+  const n = method.steps.length + extraSteps(method, state.voucher);
   const label = key !== focus ? `대신 ${CH_LABEL[key]}에서 쓰는 방법 보기` : `${CH_LABEL[key]}에서 쓰는 방법 보기`;
   return `<button class="btn btn-primary btn-block" data-go="#/g/${m.id}/${route}">${esc(label)} · ${n}단계 ${icon('chev', 18)}</button>`;
 }
@@ -268,16 +273,17 @@ export function topicScreen(topicId, { q, p, state }) {
       ${q ? interpBar(p, { q, state, ch: null }) : ''}
       <div class="result-body">
         ${voucherCallout(calloutVoucher(p, state), location.hash, v)}
-        ${blocked && t.route === 'charge' ? `<div class="card"><h3 class="card-t">${icon('info', 18)}이렇게 해 보세요</h3><p style="margin:0;font-size:14px;line-height:1.6;color:var(--ink-2)">${esc(VOUCHERS[v].alternative)}</p><div class="btns" style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap"><button class="btn btn-sm" data-setv="cl16">16자리 컬쳐랜드상품권이에요</button><button class="btn btn-sm" data-go="#/search">사용처 찾기</button></div></div>` : ''}
+        ${blocked && t.route === 'charge' ? `<div class="card"><h3 class="card-t">${icon('info', 18)}이렇게 해 보세요</h3><p style="margin:0;font-size:14px;line-height:1.6;color:var(--ink-2)">${esc(VOUCHERS[v].alternative)}</p><div class="btns" style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap"><button class="btn btn-sm" data-setv="cl16">16자리 컬쳐랜드상품권이에요</button><button class="btn btn-sm" data-go="#/search">사용처 찾기</button>${voucherActions(v, location.hash)}</div></div>` : ''}
         <article class="card">
           <h3 class="card-t">${icon('info', 18)}${esc(t.title)}</h3>
           <p style="margin:0 0 12px;font-size:14px;line-height:1.6;color:var(--ink-2)">${esc(t.lead)}</p>
           <dl class="facts">${t.facts.map(([k, val]) => `<dt>${esc(k)}</dt><dd>${esc(val)}</dd>`).join('')}</dl>
+          ${t.actions ? `<div class="next-actions">${t.actions.map((a) => (a.to ? `<button class="btn btn-sm" data-go="${esc(a.to)}">${esc(a.label)}</button>` : a.tel ? callBtn() : extBtn(a.label, SOURCES[a.src].url))).join('')}</div>` : ''}
         </article>
         ${sourceList(t.sources)}
       </div>
     </div>
-    ${showCharge ? `<div class="cta-bar"><button class="btn btn-primary btn-block" data-go="#/g/_charge/charge">충전 방법 보기 · 4단계 ${icon('chev', 18)}</button></div>` : ''}`,
+    ${showCharge ? `<div class="cta-bar"><button class="btn btn-primary btn-block" data-go="#/g/_charge/charge">충전 방법 보기 · ${v === 'gift' ? 5 : 4}단계 ${icon('chev', 18)}</button></div>` : ''}`,
     mount(root) {
       if (q) bindInterp(root, { q, ch: null, onCh: () => {} });
       bindVoucherButtons(root);
