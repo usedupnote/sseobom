@@ -48,6 +48,11 @@ export const SOURCES = {
     url: 'https://www.cultureland.co.kr/customer/notice/noticeList.do',
     kind: 'official',
   },
+  noticePaper: {
+    label: '공지: 지류상품권 충전 서비스 종료 안내(2026-01-09)',
+    url: 'https://www.cultureland.co.kr/customer/notice/noticeList.do',
+    kind: 'official',
+  },
   policyMobile: {
     label: '컬쳐랜드상품권 이용약관',
     url: 'https://www.cultureland.co.kr/etc/policyCash_mobilePin.do',

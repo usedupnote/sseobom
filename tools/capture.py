@@ -27,7 +27,7 @@ SHOTS = [
     ("06-result-coupang", "", "#/r?q=" + quote("쿠팡에서 쓸 수 있어?") + "&v=cl16", 844),
     ("07-guide-coupang", "", "#/g/coupang/convert?v=cl16", 1500),
     ("08-cgv-compare", "", "#/g/cgv/barcode-mms?v=cl16", 1900),
-    ("09-munsang18", "", "#/r?q=" + quote("문화상품권 18자리 충전되나요?"), 844),
+    ("09-munsang18", "", "#/r?q=" + quote("지류 상품권 충전되나요?"), 844),  # 파일명은 그대로(설명 자료가 참조), 내용은 지류 상품권
     ("10-empty", "", "#/r?q=" + quote("배달의민족"), 844),
     ("11-voucher", "", "#/v", 844),
     ("12-starbucks-ask", "", "#/r?q=" + quote("스타벅스에서 문화상품권 돼?"), 844),

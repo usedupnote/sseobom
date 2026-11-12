@@ -143,7 +143,7 @@ function scan() {
 function result() {
   if (!picked) picked = new Set(OK.filter((p) => !isRegistered(p)).map((p) => p.id));
   const self = encodeURIComponent('#/bulk?st=result');
-  const other = VOUCHERS.munsang18;
+  const other = VOUCHERS[BLOCKED[0]?.type] || VOUCHERS.paper;
 
   const okItem = (p) => {
     const reg = isRegistered(p);
@@ -159,10 +159,12 @@ function result() {
       <span class="bk-main"><strong>컬쳐랜드상품권으로 보여요</strong><small>번호 일부가 잘려 있어 다 읽지 못했어요. 원본 문자를 보고 직접 입력해 주세요.</small><small>${esc(p.from)} · ${esc(p.date)}</small>
         <button type="button" class="btn btn-sm" data-go="#/mock/charge?back=${self}">번호 직접 입력하기</button></span>
     </div>`;
+  // 등록할 수 없는 사진(다른 회사 상품권) — 왜 안 되는지와 대안을 보여주는 결과 화면으로 이어준다
+  const WHY = { paper: '지류 상품권 충전되나요?', munsang18: '문화상품권 18자리 충전되나요?' };
   const blockedItem = (p) => `<div class="bk-item is-static">
       ${thumb(p)}
-      <span class="bk-main"><strong>${esc(other.short)} ${won(p.amount)}</strong><small>${esc(other.reason)}</small><small>${esc(p.from)} · ${esc(p.date)}</small>
-        <button type="button" class="btn btn-sm" data-go="#/r?q=${encodeURIComponent('문화상품권 18자리 충전되나요?')}">이유와 대안 보기</button></span>
+      <span class="bk-main"><strong>${esc(VOUCHERS[p.type].short)} ${won(p.amount)}</strong><small>${esc(VOUCHERS[p.type].reason)}</small><small>${esc(p.from)} · ${esc(p.date)}</small>
+        <button type="button" class="btn btn-sm" data-go="#/r?q=${encodeURIComponent(WHY[p.type] || WHY.paper)}">이유와 대안 보기</button></span>
     </div>`;
 
   return {

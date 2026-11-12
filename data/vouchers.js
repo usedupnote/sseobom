@@ -34,9 +34,9 @@ export const VOUCHERS = {
     chargeable: false,
     storeDirect: false,
     blocked: true,
-    reason: '㈜문화상품권이 발행한 상품권이에요. 2023년 1월 1일 제휴가 끝나 컬쳐랜드에서는 충전·사용할 수 없어요.',
-    alternative: '상품권 뒷면(또는 구매 문자)에 적힌 발행사 안내에서 사용처를 확인하세요.',
-    sources: ['faq', 'nexonNotice'],
+    reason: '㈜문화상품권이 발행한 상품권이에요. 제휴가 끝나 컬쳐랜드 충전 서비스가 종료됐어요(온라인문화상품권은 2025년 8월 11일 종료).',
+    alternative: '사용처는 ㈜문화상품권 홈페이지나 고객센터(1577-3111)에서 확인하세요.',
+    sources: ['noticePaper', 'faq', 'nexonNotice'],
   },
   smart: {
     id: 'smart',
@@ -64,24 +64,30 @@ export const VOUCHERS = {
   },
 };
 
+// 지류(종이) 상품권 — 공식 공지(2026-01-09): ㈜문화상품권 발행, 제휴 종료로 2026-02-06 충전 서비스 종료(2022-12-31 이전 발행분 포함),
+// 사용처 문의는 ㈜문화상품권 홈페이지·고객센터(1577-3111)
 VOUCHERS.paper = {
   id: 'paper',
-  short: '종이 상품권',
-  name: '종이(지류) 상품권',
-  aka: '긁는 PIN이 있는 종이 상품권',
-  digits: null,
-  chargeable: 'unknown',
+  short: '지류 상품권',
+  name: '지류 상품권(종이 문화상품권)',
+  aka: '㈜문화상품권이 발행한 종이 상품권',
+  digits: 18,
+  chargeable: false,
   storeDirect: false,
-  reason: '2026-01-09 "지류상품권 충전 서비스 종료 안내" 공지가 있어요. 대상·날짜는 공지 본문이나 고객센터(1577-2111)에서 확인이 필요해요.',
-  sources: ['notice', 'faq'],
+  blocked: true,
+  reason: '㈜문화상품권이 발행한 종이 상품권이에요. 제휴가 끝나 컬쳐랜드 충전 서비스가 2026년 2월 6일에 종료됐어요(2022년 12월 31일 이전 발행분 포함).',
+  alternative: '사용처는 ㈜문화상품권 홈페이지나 고객센터(1577-3111)에서 확인하세요.',
+  sources: ['noticePaper'],
 };
 
-export const VOUCHER_ORDER = ['cl16', 'cash', 'munsang18', 'smart', 'gift'];
+// '내 상품권' 선택지 순서. 18자리 온라인문화상품권(munsang18)은 선택지에서 빼고, 질문에 "18자리"가 나오거나 판별 도우미에서만 쓴다.
+export const VOUCHER_ORDER = ['cl16', 'cash', 'paper', 'smart', 'gift'];
 
 // 판별 도우미: 받은 방식 + PIN 자릿수(숫자는 받지 않음) + 적힌 이름 → 상품권 종류
 export function identifyVoucher({ received, digits, label }) {
   if (received === 'account') return 'cash';
   if (received === 'gift') return 'gift';
+  if (received === 'paper') return 'paper'; // 종이 상품권은 자릿수를 묻지 않는다
   if (label === 'smart') return 'smart';
   if (digits === 18) return 'munsang18';
   if (digits === 16) return 'cl16';

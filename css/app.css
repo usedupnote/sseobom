@@ -730,7 +730,7 @@ body.capture-lv.lv-on .stage { grid-template-columns: auto auto; }
 .bk-thumb { flex: none; width: 44px; height: 56px; border-radius: 7px; border: 1px solid #c9c9cf; background: #fff; display: grid; grid-template-rows: 12px 1fr; overflow: hidden; }
 .bk-thumb i { background: #ff3838; }
 .bk-thumb b { margin: 9px 6px; background: repeating-linear-gradient(90deg, #222 0 2px, transparent 2px 4px, #222 4px 5px, transparent 5px 8px); }
-.bk-thumb.bk-munsang18 i { background: #7b8494; }
+.bk-thumb.bk-munsang18 i, .bk-thumb.bk-paper i { background: #7b8494; }
 .bk-thumb.bk-check b { filter: blur(1.4px); margin-right: 20px; }
 
 .screen.ts-l .bk-item, .screen.ts-xl .bk-item { flex-wrap: wrap; }

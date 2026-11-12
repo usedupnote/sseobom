@@ -3,7 +3,7 @@ import { icon, esc, won, mark, a11yBtn } from '../ui.js';
 import { MERCHANT_BY_ID } from '../../data/merchants.js';
 import { DEMO } from '../../data/demo.js';
 
-const ASKS = ['편의점에서 컬쳐랜드상품권 써도 돼?', '쿠팡에서 쓸 수 있어?', '스타벅스에서 결제되나요?', '문화상품권 18자리 충전되나요?'];
+const ASKS = ['편의점에서 컬쳐랜드상품권 써도 돼?', '쿠팡에서 쓸 수 있어?', '스타벅스에서 결제되나요?', '지류 상품권 충전되나요?'];
 
 export function homeView({ state }) {
   const favs = state.favorites

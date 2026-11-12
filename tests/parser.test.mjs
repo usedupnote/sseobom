@@ -44,6 +44,12 @@ const CASES = [
   ['다이소 매장', { merchants: ['daiso'], channel: 'offline' }],
   ['애슐리', { merchants: ['eland'] }],
   ['컬쳐랜드 상품권 넥슨에서 충전', { merchants: ['nexon'], voucher: 'cl16' }],
+  // 지류(종이) 상품권 — ㈜문화상품권 발행, 2026-02-06 충전 종료
+  ['지류 상품권 충전되나요?', { merchants: [], voucher: 'paper', topic: 'charge', matchedBy: 'topic' }],
+  ['종이 상품권 편의점에서 쓸 수 있어?', { merchants: ['conv-all'], voucher: 'paper' }],
+  ['지류 문화상품권 18자리', { voucher: 'munsang18' }],
+  ['신세계지류상품권', { voucher: null }],
+  ['롯데 지류상품권 살 수 있어?', { voucher: null }],
   // 공식 목록 전체 반영(2026-11-12)
   ['한게임', { merchants: [idOf('한게임')] }],
   ['피망에서 써도 돼?', { merchants: [idOf('피망')] }],

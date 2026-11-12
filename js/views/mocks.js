@@ -117,7 +117,7 @@ function charge({ back }) {
       <ul class="notes">
         <li>${icon('info', 14)}<span>상품권 충전 한도는 없어요. 보유한도(본인인증 50만원)를 넘으면 대기 캐쉬로 보관돼요.</span></li>
         <li>${icon('info', 14)}<span>번호를 20회 이상 잘못 입력하면 하루 동안 충전이 제한돼요.</span></li>
-        <li>${icon('info', 14)}<span>18자리 문화상품권·스마트문상은 충전할 수 없어요.</span></li>
+        <li>${icon('info', 14)}<span>지류 상품권·18자리 온라인문화상품권(㈜문화상품권 발행)과 스마트문상은 충전할 수 없어요.</span></li>
       </ul>
     </div></div>
     <div class="cta-bar"><button class="btn btn-primary btn-block" id="doCharge">충전하기(시연)</button></div>`,

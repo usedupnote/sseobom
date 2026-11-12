@@ -11,9 +11,12 @@ const EXAMPLES = ['편의점에서 컬쳐랜드상품권 써도 돼?', '쿠팡�
 const VOUCHER_CHIPS = [
   ['cl16', '문자로 받은 상품권'],
   ['cash', '충전한 컬쳐캐쉬'],
-  ['munsang18', '18자리 문화상품권'],
+  ['paper', '지류 상품권'],
   ['smart', '스마트문상'],
 ];
+
+// 충전할 수 없는 상품권(지류 상품권·스마트문상 등)을 고르면 칩 아래에 바로 알려준다
+const blockedNote = (id) => (VOUCHERS[id]?.blocked ? `${icon('info', 14)} ${esc(VOUCHERS[id].short)}은(는) 컬쳐캐쉬로 충전할 수 없어요. 결과에서 이유와 대안을 알려드릴게요.` : '');
 
 export function searchView({ query, state }) {
   const from = query.get('from');
@@ -47,7 +50,7 @@ export function searchView({ query, state }) {
           <div class="chips" id="vchips">
             ${VOUCHER_CHIPS.map(([id, label]) => `<button type="button" class="chip ${state.voucher === id ? 'on' : ''}" data-v="${id}" aria-pressed="${state.voucher === id}">${esc(label)}</button>`).join('')}
           </div>
-          ${state.voucher && VOUCHERS[state.voucher]?.blocked ? `<p class="typo-note">${icon('info', 14)} ${esc(VOUCHERS[state.voucher].short)}은(는) 컬쳐랜드에서 충전할 수 없어요. 결과에서 대안을 알려드릴게요.</p>` : ''}
+          <p class="typo-note" id="vnote" ${blockedNote(state.voucher) ? '' : 'hidden'}>${blockedNote(state.voucher)}</p>
         </section>
         <section>
           <p class="label">이렇게 물어보세요</p>
@@ -104,6 +107,9 @@ export function searchView({ query, state }) {
           c.classList.toggle('on', on);
           c.setAttribute('aria-pressed', on);
         });
+        const note = root.querySelector('#vnote');
+        note.innerHTML = blockedNote(state.voucher);
+        note.hidden = !note.innerHTML;
       });
       if (pre) update();
     },

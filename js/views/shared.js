@@ -18,7 +18,8 @@ export function voucherActions(id, back) {
   const b = encodeURIComponent(back || location.hash);
   if (id === 'gift') return state.exchanged ? '' : `<button class="btn btn-sm btn-dark" data-go="#/mock/exchange?back=${b}">${icon('swap', 15)}교환소 열기</button>`;
   if (id === 'smart') return extBtn('스마트문상 안내 보기', SOURCES.smartMunsang.url);
-  if (id === 'paper') return extBtn('공지사항 보기', SOURCES.notice.url) + callBtn();
+  // ㈜문화상품권 발행 상품권(지류·온라인 18자리): 공식 공지가 안내하는 문의처로 연결
+  if (id === 'paper' || id === 'munsang18') return extBtn('충전 종료 공지 보기', SOURCES.noticePaper.url) + `<a class="btn btn-sm" href="tel:15773111">${icon('phone', 14)}㈜문화상품권 1577-3111</a>`;
   return '';
 }
 // 방식의 기본 단계 앞에 붙는 단계 수(선물·경품 상품권은 교환, 컬쳐캐쉬가 필요한 방식은 충전)
@@ -140,7 +141,6 @@ export function openVoucherSheet(onPick) {
 
 export function voucherLabel(id) {
   if (!id) return '선택 안 함';
-  if (id === 'paper') return '종이 상품권';
   return VOUCHERS[id]?.short || id;
 }
 

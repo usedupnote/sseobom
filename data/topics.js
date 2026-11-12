@@ -9,10 +9,10 @@ export const TOPICS = {
       ['충전 한도', '상품권 충전 한도는 없음'],
       ['보유 한도', '본인인증 회원 50만원 · 고객확인(CDD/EDD) 200만원, 넘는 금액은 대기 캐쉬로 보관'],
       ['입력 제한', '20회 이상 잘못 입력하면 하루 동안 충전 제한'],
-      ['충전 불가', '18자리 문화상품권(㈜문화상품권)·스마트문상·오프라인 전용 상품권'],
+      ['충전 불가', '㈜문화상품권 발행 상품권(온라인문화상품권 2025-08-11, 지류상품권 2026-02-06 충전 종료)·스마트문상·오프라인 전용 상품권'],
     ],
     route: 'charge',
-    sources: ['chargeMain', 'userType', 'mobileVoucher', 'faq'],
+    sources: ['chargeMain', 'userType', 'mobileVoucher', 'noticePaper', 'faq'],
   },
   refund: {
     id: 'refund',

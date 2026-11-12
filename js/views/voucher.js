@@ -10,7 +10,7 @@ let lastBack = null;
 
 const Q_RECEIVED = [
   ['mms', '문자(MMS)로 받았어요', 'msg'],
-  ['paper', '종이 상품권이에요', 'ticket'],
+  ['paper', '종이(지류) 상품권이에요', 'ticket'],
   ['gift', '카톡 선물·기프티쇼·경품', 'gift'],
   ['account', '이미 컬쳐랜드에 충전했어요', 'wallet'],
 ];
@@ -31,7 +31,7 @@ export function voucherView({ query }) {
     Object.assign(ans, { received: null, digits: null, label: null });
     lastBack = back;
   }
-  const needDigits = ans.received && !['account', 'gift'].includes(ans.received);
+  const needDigits = ans.received && !['account', 'gift', 'paper'].includes(ans.received);
   const needLabel = needDigits && ans.digits === 0;
   const ready = ans.received && (!needDigits || ans.digits === 16 || ans.digits === 18 || (needLabel && ans.label));
   const result = ready ? identifyVoucher(ans) : null;
