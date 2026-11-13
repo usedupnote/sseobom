@@ -1,5 +1,5 @@
 // 사진에서 상품권 한 번에 등록(일괄등록) — 사진첩 전체를 살펴 컬쳐랜드상품권을 찾고, 이용자가 확인한 것만 한 번에 충전하는 제안 화면.
-// 시연용: 실제 사진·상품권 번호를 읽지 않고 data/demo.js의 가상 사진첩만 쓴다. 단계는 주소의 ?st=scan|result|done 으로 구분한다.
+// 사진 접근과 번호 인식은 시연에 필요하지 않아 꺼 두고, data/demo.js의 예시 사진첩만 쓴다. 단계는 주소의 ?st=scan|result|done 으로 구분한다.
 import { icon, esc, won, demoTag, topbar, sourceList } from '../ui.js';
 import { DEMO } from '../../data/demo.js';
 import { VOUCHERS } from '../../data/vouchers.js';
@@ -20,7 +20,7 @@ const sumOf = (list) => list.reduce((a, p) => a + (p.amount || 0), 0);
 
 let picked = null; // 등록하려고 고른 사진 id
 const chosen = () => OK.filter((p) => picked.has(p.id) && !isRegistered(p));
-const ctaLabel = (list) => (list.length ? `${list.length}장 · ${won(sumOf(list))} 한 번에 등록(시연)` : '등록할 상품권을 골라 주세요');
+const ctaLabel = (list) => (list.length ? `${list.length}장 · ${won(sumOf(list))} 한 번에 등록` : '등록할 상품권을 골라 주세요');
 let lastRun = []; // 방금 등록한 사진 id(완료 화면에 보여줄 것)
 let scanTimer;
 
@@ -39,7 +39,7 @@ export function bulkView({ query }) {
 function intro() {
   return {
     title: '상품권 일괄등록',
-    html: `${bar()}${demoTag('시연용 화면 · 실제 사진에 접근하지 않아요')}
+    html: `${bar()}${demoTag('사진 접근은 시연에 필요하지 않아 꺼 두었어요')}
     <div class="scroll"><div class="mock-body bulk-body">
       <div class="bulk-hero">
         <span class="bulk-hero-ic">${icon('photo', 30)}</span>
@@ -70,11 +70,11 @@ function intro() {
   };
 }
 
-// 휴대폰의 사진 접근 허용 창을 본뜬 시트(시연용)
+// 휴대폰의 사진 접근 허용 창을 본뜬 시트
 function askPermission() {
   openSheet(
     `<h3>‘컬쳐랜드’가 사진에 접근하려고 합니다</h3>
-     <p class="vs-note" style="margin-bottom:14px">상품권 사진을 찾아 한 번에 등록하는 데에만 써요. 시연용 화면이라 실제 사진에는 접근하지 않고, 가상 사진첩 ${TOTAL}장을 살펴봐요.</p>
+     <p class="vs-note" style="margin-bottom:14px">상품권 사진을 찾아 한 번에 등록하는 데에만 써요. 실제 사진 접근은 시연에 필요하지 않아 꺼 두었고, 예시 사진첩 ${TOTAL}장을 살펴봐요.</p>
      <div class="optlist">
        <button type="button" class="btn btn-primary btn-block" id="permAll">전체 사진 접근 허용</button>
        <button type="button" class="btn btn-block" id="permNo">허용 안 함</button>
@@ -96,7 +96,7 @@ function scan() {
   const tiles = Array.from({ length: 12 }, () => '<i></i>').join('');
   return {
     title: '사진 살펴보는 중',
-    html: `${bar()}${demoTag('시연용 가상 사진첩 · 실제 사진에 접근하지 않아요')}
+    html: `${bar()}${demoTag('예시 사진첩을 살펴보고 있어요')}
     <div class="scroll"><div class="mock-body bulk-body bulk-scan" aria-live="off">
       <div class="bulk-tiles" aria-hidden="true">${tiles}</div>
       <h2 id="scanTitle">사진을 살펴보고 있어요</h2>
@@ -169,7 +169,7 @@ function result() {
 
   return {
     title: '찾은 상품권',
-    html: `${bar()}${demoTag('시연용 가상 사진첩 · 번호는 모두 가짜예요')}
+    html: `${bar()}${demoTag('예시 사진첩이에요 · 실제 상품권 번호가 아니에요')}
     <div class="scroll"><div class="mock-body bulk-body">
       <div class="bulk-sum">
         <h2>사진 ${TOTAL}장에서 상품권 ${PHOTOS.length}장을 찾았어요</h2>
@@ -220,7 +220,7 @@ function done() {
   const left = CHECK.length + BLOCKED.length;
   return {
     title: '등록 완료',
-    html: `${bar()}${demoTag()}
+    html: `${bar()}${demoTag('실제 충전은 시연에 필요하지 않아 꺼 두었어요')}
     <div class="scroll"><div class="mock-body bulk-body success">
       <img src="assets/char/catsh-cash.webp" alt="" />
       <h2>${items.length}장 · ${won(sumOf(items))} 등록 완료</h2>

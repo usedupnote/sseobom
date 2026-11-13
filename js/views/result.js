@@ -8,7 +8,7 @@ import { TOPICS } from '../../data/topics.js';
 import { parseQuery, suggest } from '../parser.js';
 import { state as appState, setVoucher, toggleFavorite, addRecent } from '../state.js';
 import { go, rerender, toast } from '../app.js';
-import { CH_LABEL, lanePill, laneLine, routeFor, pickLane, verdictCopy, verdictBox, openVoucherSheet, voucherLabel, METHODS, voucherActions, callBtn, extBtn, officialListBtn, extraSteps } from './shared.js';
+import { CH_LABEL, lanePill, laneLine, routeFor, pickLane, verdictCopy, verdictBox, openVoucherSheet, voucherLabel, METHODS, voucherActions, callBtn, extBtn, officialListBtn, extraSteps, blockedCopy, OTHER_VOUCHER_HEAD } from './shared.js';
 import { SOURCES } from '../../data/sources.js';
 
 const CAT_LABEL = Object.fromEntries(CATEGORIES.map((c) => [c.id, c.label]));
@@ -58,7 +58,7 @@ function bindInterp(root, { q, ch, onCh }) {
 // 질문에 "문화상품권"처럼 모호한 표현이 있으면 이전 설정과 상관없이 다시 묻는다
 const calloutVoucher = (p, state) => (p?.voucher === 'ask' ? 'ask' : state.voucher);
 
-function voucherCallout(voucher, back, current) {
+function voucherCallout(voucher, back, current, { inCard = false } = {}) {
   if (voucher === 'ask') {
     const b = (id, label) => `<button class="btn btn-sm ${current === id ? 'btn-dark' : ''}" data-setv="${id}" aria-pressed="${current === id}">${current === id ? icon('check', 14) : ''}${label}</button>`;
     return `<div class="callout callout-warn">
@@ -66,14 +66,15 @@ function voucherCallout(voucher, back, current) {
       <div><h3>어떤 ‘문화상품권’인가요?</h3>
       <p>이름이 비슷해도 발행사가 달라요. 상품권 번호 자릿수를 확인해 주세요(번호는 입력하지 마세요).</p>
       <div class="btns">${b('cl16', '16자리 · 컬쳐랜드상품권')}${b('munsang18', '18자리 문화상품권')}${b('paper', '종이(지류) 상품권')}</div>
-      ${VOUCHERS[current]?.blocked ? `<p style="margin-top:8px"><b>${esc(VOUCHERS[current].short)}은(는) 컬쳐랜드에서 충전·사용할 수 없어요.</b> ${esc(VOUCHERS[current].reason)}</p><div class="btns">${voucherActions(current, back)}</div>` : ''}</div>
+      ${!inCard && VOUCHERS[current]?.blocked ? `<p style="margin-top:8px"><b>${esc(blockedCopy(current).title)}.</b> ${esc(VOUCHERS[current].reason)}</p><div class="btns">${voucherActions(current, back)}</div>` : ''}</div>
     </div>`;
   }
   const v = VOUCHERS[voucher];
+  if (v?.blocked && inCard) return ''; // 사용처 화면: 판정 카드가 내 상품권 기준으로 답한다
   if (v?.blocked)
     return `<div class="callout callout-no">
       <img src="assets/char/boy-sweat.webp" alt="" />
-      <div><h3>${esc(v.short)}은(는) 컬쳐캐쉬로 충전할 수 없어요</h3><p>${esc(v.reason)}</p>
+      <div><h3>${esc(blockedCopy(voucher).title)}</h3><p>${esc(v.reason)} 아래 내용은 컬쳐랜드상품권(16자리)·컬쳐캐쉬 기준이에요.</p>
       <div class="btns"><button class="btn btn-sm" data-go="#/v?back=${encodeURIComponent(back)}">내 상품권 다시 확인</button>${voucherActions(voucher, back)}</div></div>
     </div>`;
   // 안내가 가리키는 다음 동작(교환소·공지·고객센터)은 버튼으로 바로 이어준다
@@ -94,9 +95,11 @@ function bindVoucherButtons(root) {
 }
 
 // ── 판정 카드(사용처 1곳) ─────────────────────────────────
-function merchantCard(m, { ch, state }) {
+function merchantCard(m, { ch, state, back }) {
   const focus = pickLane(m, ch);
-  const copy = verdictCopy(m, focus);
+  // 내 상품권이 쓸 수 없는 종류면 그 답을 먼저 보여주고, 사용처의 일반 판정은 '다른 상품권이 있다면' 아래로 내린다
+  const mine = blockedCopy(state.voucher, m.name);
+  const copy = mine || verdictCopy(m, focus);
   const laneRow = (key) => {
     const lane = m[key];
     const v = laneVerdict(lane);
@@ -117,13 +120,15 @@ function merchantCard(m, { ch, state }) {
     if (!l) return `${CH_LABEL[key]}은 해당 없음.`;
     return `${CH_LABEL[key]}: ${laneLine(l)}.`;
   };
-  const sayText = `${m.group ? m.name : m.full || m.name}. ${copy.title}. ${copy.body} ${laneSay('online')} ${laneSay('offline')}`;
+  const sayText = `${m.group ? m.name : m.full || m.name}. ${copy.title}. ${copy.body} ${mine ? `${OTHER_VOUCHER_HEAD}, ` : ''}${laneSay('online')} ${laneSay('offline')}`;
   return `<article class="card">
     <div class="m-head">${mark(m, 48)}<div><h2>${esc(m.group ? m.name : m.full || m.name)}</h2><p>${esc(CAT_LABEL[m.cat] || '')} ${confidenceBadge(m.confidence)}</p></div></div>
     ${members}
     ${verdictBox(copy)}
-    ${focus && laneVerdict(m[focus]) === 'unknown' ? `<div class="next-actions" aria-label="확인할 곳">${officialListBtn()}${callBtn()}</div>` : ''}
+    ${mine ? `<div class="next-actions"><button class="btn btn-sm" data-go="#/v?back=${encodeURIComponent(back)}">내 상품권 다시 확인</button>${voucherActions(state.voucher, back)}</div>` : ''}
+    ${!mine && focus && laneVerdict(m[focus]) === 'unknown' ? `<div class="next-actions" aria-label="확인할 곳">${officialListBtn()}${callBtn()}</div>` : ''}
     ${speakBtn(sayText, '결과 읽어주기') ? `<div style="margin-top:8px">${speakBtn(sayText, '결과 읽어주기')}</div>` : ''}
+    ${mine ? `<p class="lanes-head">${icon('info', 14)}${OTHER_VOUCHER_HEAD}</p>` : ''}
     <div class="lanes" role="list" aria-label="온라인·매장 구분">${laneRow('online')}${laneRow('offline')}</div>
     ${notes.length ? `<ul class="notes">${notes.map((n) => `<li>${icon('info', 14)}<span>${esc(n)}</span></li>`).join('')}</ul>` : ''}
   </article>`;
@@ -150,7 +155,7 @@ function ctaFor(m, ch, state) {
 }
 
 function merchantScreen(m, { q, p, ch, state, back }) {
-  const blocked = VOUCHERS[state.voucher]?.blocked && p?.voucher !== 'ask';
+  const blocked = !!VOUCHERS[state.voucher]?.blocked;
   const fav = state.favorites.includes(m.id);
   return {
     title: m.name,
@@ -160,8 +165,8 @@ function merchantScreen(m, { q, p, ch, state, back }) {
     <div class="scroll">
       ${interpBar(p || { merchants: [m.id], matchedBy: 'name' }, { q, state, ch })}
       <div class="result-body">
-        ${voucherCallout(calloutVoucher(p, state), back, state.voucher)}
-        ${merchantCard(m, { ch, state })}
+        ${voucherCallout(calloutVoucher(p, state), back, state.voucher, { inCard: true })}
+        ${merchantCard(m, { ch, state, back })}
         ${sourceList(m.sources, { checkedAt: m.checkedAt })}
       </div>
     </div>
@@ -252,13 +257,12 @@ function emptyScreen({ q, p, state }) {
           <button class="btn btn-dark btn-block" data-go="#/search">카테고리로 찾기</button>
           <a class="btn btn-block" href="https://www.cultureland.co.kr/usecash/useCash.do" target="_blank" rel="noopener">공식 사용처 전체 보기 ${icon('ext', 14)}</a>
           <a class="btn btn-block" href="tel:15772111">고객센터 1577-2111 (평일 08:00~17:00)</a>
-          <button class="btn btn-ghost btn-block" id="reqBtn">이 사용처 추가 요청하기</button>
+          <button class="btn btn-ghost btn-block" data-off="사용처 추가 요청">이 사용처 추가 요청하기</button>
         </div>
       </div>
     </div>`,
     mount(root) {
       bindInterp(root, { q, ch: null, onCh: () => {} });
-      root.querySelector('#reqBtn').addEventListener('click', () => toast('요청이 접수됐어요(시연)'));
     },
   };
 }

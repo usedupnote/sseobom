@@ -1,5 +1,5 @@
 // 결과·안내 화면이 함께 쓰는 판정 로직과 조각
-import { icon, esc, pct } from '../ui.js';
+import { icon, esc, pct, josa } from '../ui.js';
 import { VERDICT, laneVerdict, LANE_LABEL } from '../../data/merchants.js';
 import { METHODS, routesForLane } from '../../data/methods.js';
 import { VOUCHERS, VOUCHER_ORDER } from '../../data/vouchers.js';
@@ -22,6 +22,22 @@ export function voucherActions(id, back) {
   if (id === 'paper' || id === 'munsang18') return extBtn('충전 종료 공지 보기', SOURCES.noticePaper.url) + `<a class="btn btn-sm" href="tel:15773111">${icon('phone', 14)}㈜문화상품권 1577-3111</a>`;
   return '';
 }
+// 쓸 수 없는 상품권(지류·18자리·스마트문상)을 갖고 있을 때의 판정 문구.
+// 사용처의 일반 판정("매장에서 바로 사용 가능")과 섞이면 헷갈리므로, 내 상품권 기준의 답을 먼저 보여주고 일반 안내는 '다른 상품권이 있다면'으로 따로 둔다.
+// 종이 상품권을 매장이 직접 받는지는 컬쳐랜드 정보가 아니라서 단정하지 않고 발행사 문의처를 알려 준다.
+export function blockedCopy(voucherId, placeName = '') {
+  const v = VOUCHERS[voucherId];
+  if (!v?.blocked) return null;
+  const direct = v.issuerAsk && placeName ? `${placeName}에서 ${v.short}${josa(v.short, '을', '를')} 직접 받는지는 ${v.issuerAsk}에 확인해 주세요.` : v.alternative || '';
+  return {
+    tone: 'no',
+    icon: 'x',
+    title: `${v.short}${josa(v.short, '은', '는')} 컬쳐랜드를 통해 쓸 수 없어요`,
+    body: `${v.reason} ${direct}`.trim(),
+  };
+}
+export const OTHER_VOUCHER_HEAD = '컬쳐랜드상품권(16자리)이나 컬쳐캐쉬가 있다면';
+
 // 방식의 기본 단계 앞에 붙는 단계 수(선물·경품 상품권은 교환, 컬쳐캐쉬가 필요한 방식은 충전)
 export const extraSteps = (method, voucher) => (voucher === 'gift' ? 1 : 0) + (method.needsCash && voucher !== 'cash' ? 1 : 0);
 const TONE_PILL = { ok: 'pill-ok', warn: 'pill-warn', no: 'pill-no', muted: 'pill-muted' };

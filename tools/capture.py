@@ -52,6 +52,11 @@ SHOTS = [
     # 발표자료용: 수수료 계산(한 단계씩 크게 보기), 공식 목록에 없는 곳
     ("29-coupang-calc", "", "#/g/coupang/convert?v=cl16&s=3", 844),
     ("30-unknown", "", "#/r?q=" + quote("닌텐도"), 844),
+    # 시연에 필요하지 않아 꺼 둔 기능을 눌렀을 때의 안내(?off=1)
+    ("31-off-toast", "", "#/home?off=1", 844),
+    # 내 상품권(지류)으로는 쓸 수 없을 때: 판정과 사용 안내가 같은 답을 한다
+    ("32-blocked-result", "", "#/r?q=" + quote("교보문고") + "&v=paper", 844),
+    ("33-blocked-guide", "", "#/g/kyobo/barcode-mms?v=paper", 844),
 ]
 
 # 일부만 다시 찍기: python tools/capture.py <기본 URL> 04,25,26  (파일명 앞 번호)

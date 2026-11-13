@@ -1,7 +1,7 @@
 // 해시 라우터 + 공통 동작(뒤로가기·시트·토스트·보기 설정·읽어주기)
 import { state, save, resetDemo, view, saveView, applyView, restoreView } from './state.js';
 import { VOUCHERS } from '../data/vouchers.js';
-import { speak } from './ui.js';
+import { speak, offNote } from './ui.js';
 import { initLowVision, applyLowVision } from './lowvision.js';
 import { homeView } from './views/home.js';
 import { searchView } from './views/search.js';
@@ -58,8 +58,9 @@ function render({ keepScroll } = {}) {
   const { segs, query } = parseHash();
   const route = ROUTES[segs[0]] || homeView;
   // 딥링크로 보유 상품권 지정(예: 문자 상품권 링크 → ?v=cl16)
+  // 새로 들어올 때만 적용한다(화면 안에서 상품권을 바꾼 뒤 다시 그릴 때 링크 값으로 되돌아가지 않게)
   const v = query.get('v');
-  if (v && VOUCHERS[v] && state.voucher !== v) {
+  if (keepScroll === undefined && v && VOUCHERS[v] && state.voucher !== v) {
     state.voucher = v;
     save();
   }
@@ -79,6 +80,7 @@ function render({ keepScroll } = {}) {
     // 설명 자료 캡처용: ?vs=1 이면 보기 설정 시트, ?bb=1 이면 바코드 크게 보기를 바로 연다
     if (query.get('vs') === '1') openViewSettings();
     if (query.get('bb') === '1') app.querySelector('[data-big-barcode]')?.click();
+    if (query.get('off') === '1') app.querySelector('[data-off]')?.click(); // 캡처용: 꺼 둔 기능을 눌렀을 때의 안내
   }
 }
 
@@ -155,6 +157,13 @@ document.addEventListener('click', (e) => {
     speak(sp.dataset.speak, sp);
     return;
   }
+  // 시연에서 꺼 둔 기능(출석체크·선물하기·번호 입력 등): 죽은 버튼으로 두지 않고 이유를 알려 준다
+  const off = e.target.closest('[data-off]');
+  if (off) {
+    e.preventDefault();
+    toast(offNote(off.dataset.off));
+    return;
+  }
   const goEl = e.target.closest('[data-go]');
   if (goEl) {
     e.preventDefault();
@@ -228,7 +237,7 @@ export function toast(msg) {
   t.textContent = msg;
   screen.append(t);
   clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => t.remove(), 2200);
+  if (!document.body.classList.contains('capture')) toastTimer = setTimeout(() => t.remove(), 2200); // 캡처 모드에서는 안내를 그대로 둔다
 }
 
 // 설명 자료용 캡처 모드(?capture): 떠 있는 시연 버튼 숨김. ?ts=l|xl&hc=1 로 보기 설정을 저장 없이 지정
@@ -274,7 +283,8 @@ document.getElementById('resetDemo')?.addEventListener('click', (e) => {
 document.getElementById('mobileFab')?.addEventListener('click', () => {
   const items = [...document.querySelectorAll('.scn button')].map((b) => b.outerHTML).join('');
   openSheet(`<h3>심사용 시나리오</h3><div class="scn">${items}</div>
-    <div class="panel-links"><a href="#/home" data-scn="#/home">앱 홈에서 시작</a><a href="docs/explain.pdf" target="_blank" rel="noopener">설명 자료(PDF)</a><a href="docs/pitch.pdf" target="_blank" rel="noopener">발표자료(PDF)</a></div>`);
+    <div class="panel-links"><a href="#/home" data-scn="#/home">앱 홈에서 시작</a><a href="docs/explain.pdf" target="_blank" rel="noopener">설명 자료(PDF)</a><a href="docs/pitch.pdf" target="_blank" rel="noopener">발표자료(PDF)</a></div>
+    ${document.querySelector('.panel-note')?.outerHTML || ''}`);
 });
 
 render();

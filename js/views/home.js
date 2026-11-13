@@ -19,12 +19,12 @@ export function homeView({ state }) {
       <img src="assets/brand/logo-wordmark.svg" alt="CULTURE LAND" />
       <div class="hh-right">
         <span class="proposal">${a11yBtn()}</span>
-        <button type="button" aria-label="출석체크">${icon('calendar', 18)}출첵</button>
-        <button type="button" aria-label="전체 메뉴">${icon('menu', 22)}</button>
+        <button type="button" data-off="출석체크" aria-label="출석체크">${icon('calendar', 18)}출첵</button>
+        <button type="button" data-off="전체 메뉴" aria-label="전체 메뉴">${icon('menu', 22)}</button>
       </div>
     </div>
     <nav class="home-tabs" aria-label="홈 탭">
-      <button class="on">컬쳐캐쉬</button><button data-go="#/mock/charge">충전</button><button>선물</button><button data-go="#/mock/exchange">교환소</button>
+      <button class="on">컬쳐캐쉬</button><button data-go="#/mock/charge">충전</button><button data-off="선물하기">선물</button><button data-go="#/mock/exchange">교환소</button>
     </nav>
     <div class="scroll">
       <div class="home-body">
@@ -34,13 +34,13 @@ export function homeView({ state }) {
           ${icon('chev', 18)}
         </button>
 
-        <section class="balance" aria-label="컬쳐캐쉬 잔액(시연용)">
+        <section class="balance" aria-label="컬쳐캐쉬 잔액(예시)">
           <div class="balance-row">
             <div><small>사용가능 금액</small><b>${won(state.cash)}</b></div>
-            <span class="balance-swap" aria-hidden="true">${icon('swap', 18)}</span>
+            <button type="button" class="balance-swap" data-off="안심금고 보관·찾기" aria-label="안심금고에 보관하거나 찾기">${icon('swap', 18)}</button>
             <div><small>보관중인 금액</small><b>${won(DEMO.safeBalance)}</b></div>
           </div>
-          <div class="balance-foot">${icon('lock', 13)}안심금고 · 시연용 가상 잔액</div>
+          <div class="balance-foot">${icon('lock', 13)}안심금고 · 예시 잔액</div>
         </section>
 
         <section class="quick" aria-label="빠른 메뉴">
@@ -71,7 +71,7 @@ export function homeView({ state }) {
           </ul>
         </section>
 
-        <p class="home-note">이 화면은 컬쳐랜드 앱 홈 구조를 참고한 시연용 모형이에요. 빨간 점선은 이번에 새로 제안하는 영역이에요.</p>
+        <p class="home-note">컬쳐랜드 앱 홈 구조를 바탕으로 만들었어요. 빨간 점선은 이번에 새로 제안하는 영역이에요.</p>
       </div>
     </div>`,
   };

@@ -134,9 +134,20 @@ export function confidenceBadge(conf) {
   return `<span class="conf conf-unverified">${icon('question', 13)}확인 필요</span>`;
 }
 
-export function demoTag(text = '시연용 화면 · 실제 결제·충전되지 않아요') {
+// 화면 위 한 줄 안내 — 실제 결제·충전처럼 시연에 필요하지 않아 꺼 둔 기능을 차분하게 알린다(‘시연용’ 경고 띠 대신)
+export function demoTag(text = '실제 결제·충전은 시연에 필요하지 않아 꺼 두었어요') {
   return `<div class="demo-tag" role="note">${icon('info', 14)}${esc(text)}</div>`;
 }
+
+// 시연에서 꺼 둔 기능을 눌렀을 때의 안내 문구. 버튼에 data-off="기능 이름"을 달면 app.js가 이 문구를 띄운다.
+// 받침에 따라 조사를 고른다. 끝이 괄호·숫자면 그 앞의 마지막 한글을 본다('문화상품권(18자리)' → '는')
+export const josa = (word, withFinal, without) => {
+  const m = String(word).match(/[가-힣](?=[^가-힣]*$)/);
+  if (!m) return `${withFinal}(${without})`;
+  return (m[0].charCodeAt(0) - 0xac00) % 28 ? withFinal : without;
+};
+const eunNeun = (word) => josa(word, '은', '는');
+export const offNote = (name = '') => (name ? `${name}${eunNeun(name)} 시연에는 필요하지 않은 기능이에요` : '시연에는 필요하지 않은 기능이에요');
 
 // 사용처 이니셜 원형(제3자 로고 대신)
 export function mark(m, size = 44) {
@@ -146,7 +157,7 @@ export function mark(m, size = 44) {
   return `<span class="mmark" style="--s:${size}px;--h:${h}" aria-hidden="true">${esc(ch)}</span>`;
 }
 
-// 가짜 바코드(시연용) — 숫자로부터 결정적으로 생성
+// 예시 바코드 — 숫자로부터 결정적으로 생성(실제 결제에는 쓸 수 없음)
 export function fakeBarcode(digits, { w = 260, h = 64 } = {}) {
   const ds = String(digits).replace(/\D/g, '');
   let x = 4;
@@ -157,5 +168,5 @@ export function fakeBarcode(digits, { w = 260, h = 64 } = {}) {
     if (b === '1') bars += `<rect x="${x.toFixed(2)}" y="0" width="${unit.toFixed(2)}" height="${h}"/>`;
     x += unit;
   }
-  return `<svg class="barcode" viewBox="0 0 ${w} ${h}" width="100%" height="${h}" role="img" aria-label="시연용 바코드">${bars}</svg>`;
+  return `<svg class="barcode" viewBox="0 0 ${w} ${h}" width="100%" height="${h}" role="img" aria-label="예시 바코드">${bars}</svg>`;
 }

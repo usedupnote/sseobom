@@ -35,7 +35,7 @@ export const METHODS = {
       {
         title: '받은 문자에서 상품권 열기',
         body: '컬쳐랜드상품권 문자(MMS)를 열어 바코드가 보이게 해요. 화면 밝기를 올리면 인식이 잘 돼요.',
-        action: { label: '시연용 상품권 문자 보기', to: 'mock/mms' },
+        action: { label: '받은 상품권 문자 보기', to: 'mock/mms' },
       },
       {
         title: '{name} 계산대에서 바코드 보여주기',

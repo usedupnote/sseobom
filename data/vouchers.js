@@ -36,6 +36,7 @@ export const VOUCHERS = {
     blocked: true,
     reason: '㈜문화상품권이 발행한 상품권이에요. 제휴가 끝나 컬쳐랜드 충전 서비스가 종료됐어요(온라인문화상품권은 2025년 8월 11일 종료).',
     alternative: '사용처는 ㈜문화상품권 홈페이지나 고객센터(1577-3111)에서 확인하세요.',
+    issuerAsk: '발행사인 ㈜문화상품권 고객센터(1577-3111)', // 매장이 이 상품권을 직접 받는지 물어볼 곳
     sources: ['noticePaper', 'faq', 'nexonNotice'],
   },
   smart: {
@@ -77,6 +78,7 @@ VOUCHERS.paper = {
   blocked: true,
   reason: '㈜문화상품권이 발행한 종이 상품권이에요. 제휴가 끝나 컬쳐랜드 충전 서비스가 2026년 2월 6일에 종료됐어요(2022년 12월 31일 이전 발행분 포함).',
   alternative: '사용처는 ㈜문화상품권 홈페이지나 고객센터(1577-3111)에서 확인하세요.',
+  issuerAsk: '발행사인 ㈜문화상품권 고객센터(1577-3111)',
   sources: ['noticePaper'],
 };
 

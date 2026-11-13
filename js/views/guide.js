@@ -5,7 +5,7 @@ import { METHODS, CHARGE_STEP, EXCHANGE_STEP, routesForLane } from '../../data/m
 import { VOUCHERS } from '../../data/vouchers.js';
 import { setVoucher, stepDone, toggleFavorite } from '../state.js';
 import { rerender, toast } from '../app.js';
-import { CH_LABEL, feeText, openVoucherSheet, voucherLabel, voucherActions, extraSteps } from './shared.js';
+import { CH_LABEL, feeText, openVoucherSheet, voucherLabel, voucherActions, extraSteps, blockedCopy, OTHER_VOUCHER_HEAD } from './shared.js';
 
 const CHARGE_ONLY = {
   id: 'charge',
@@ -55,7 +55,9 @@ export function guideView({ segs, query, state }) {
   };
   const voucher = state.voucher;
   const vinfo = VOUCHERS[voucher];
-  const blocked = vinfo?.blocked;
+  const blocked = !!vinfo?.blocked;
+  // 내 상품권이 쓸 수 없는 종류면 그 답을 맨 위에 두고, 아래 단계는 '다른 상품권이 있을 때'의 참고용으로 보여준다
+  const mine = blockedCopy(voucher, isChargeOnly ? '' : m.name);
 
   // 단계 구성: 선물·경품 상품권이면 맨 앞에 교환 단계, 컬쳐캐쉬가 필요한 방식이면 그다음에 충전 단계
   const steps = [];
@@ -74,7 +76,7 @@ export function guideView({ segs, query, state }) {
   const title = isChargeOnly ? '컬쳐캐쉬 충전 방법' : `${m.name} ${CH_LABEL[chKey]}에서 쓰는 방법`;
 
   // 한 단계씩 크게 보기(?s=1부터) — 시야장애·저시력 이용자를 위해 한 화면에 한 단계만 가운데 크게
-  if (query?.get('s')) {
+  if (query?.get('s') && !blocked) {
     return focusScreen({ m, steps, isDone, doneKey, lane, listHash, backHash, title, s: parseInt(query.get('s'), 10) || 1 });
   }
 
@@ -113,16 +115,16 @@ export function guideView({ segs, query, state }) {
       const d = isDone(i);
       const cls = s.skip ? 'is-skip' : d ? 'is-done' : '';
       const act = s.action ? `<button class="btn btn-sm btn-dark" data-go="#/${s.action.to}?m=${m.id}&back=${encodeURIComponent(backHash)}">${icon('phone', 15)}${esc(s.action.label)}</button>` : '';
-      const check = s.skip ? '' : `<button class="step-check" data-step="${i}" aria-pressed="${d}">${icon('check', 14)}${d ? '했어요' : '완료 표시'}</button>`;
+      const check = s.skip || blocked ? '' : `<button class="step-check" data-step="${i}" aria-pressed="${d}">${icon('check', 14)}${d ? '했어요' : '완료 표시'}</button>`;
       const calc = s.calculator && feeKnown ? calcHtml(lane) : '';
       return `<li class="step ${cls}">
         <span class="step-n">${d && !s.skip ? icon('check', 18) : i + 1}</span>
         <div>
-          <h4>${esc(s.title)}${s.skip ? '<span class="tag-skip">이미 충전함 · 건너뛰기</span>' : ''}${s.charge && state.charged && !s.skip ? '<span class="tag-skip">시연 충전 완료</span>' : ''}${s.exchange && state.exchanged ? '<span class="tag-skip">시연 교환 완료</span>' : ''}</h4>
+          <h4>${esc(s.title)}${s.skip ? '<span class="tag-skip">이미 충전함 · 건너뛰기</span>' : ''}${s.charge && state.charged && !s.skip ? '<span class="tag-skip">충전 완료</span>' : ''}${s.exchange && state.exchanged ? '<span class="tag-skip">교환 완료</span>' : ''}</h4>
           ${s.skip ? '' : `<p>${esc(s.body)}</p>`}
           ${s.tip && !s.skip ? `<p class="tip">${icon('info', 13)}${esc(s.tip)}</p>` : ''}
           ${calc}
-          ${s.skip ? '' : `<div class="step-actions">${act}${check}</div>`}
+          ${s.skip || !(act || check) ? '' : `<div class="step-actions">${act}${check}</div>`}
         </div>
       </li>`;
     })
@@ -154,27 +156,28 @@ export function guideView({ segs, query, state }) {
     <div class="scroll">
       <section class="guide-hero">
         <h2>${esc(title)}</h2>
-        <p>${esc(fill(method.summary, vars))}</p>
-        ${tabs}
+        ${mine ? '' : `<p>${esc(fill(method.summary, vars))}</p>`}
+        ${mine ? `<div class="callout callout-no guide-block"><img src="assets/char/boy-sweat.webp" alt="" /><div><h3>${esc(mine.title)}</h3><p>${esc(mine.body)}</p><div class="btns"><button class="btn btn-sm" data-go="#/v?back=${encodeURIComponent(backHash)}">내 상품권 다시 확인</button>${voucherActions(voucher, backHash)}</div></div></div>` : ''}
         ${vRow}
-        <div class="focus-entry proposal">
+        ${mine ? `<p class="ref-head">${icon('info', 14)}아래는 ${OTHER_VOUCHER_HEAD.replace('있다면', '있을 때')}의 방법이에요.</p>` : ''}
+        ${tabs}
+        ${mine ? '' : `<div class="focus-entry proposal">
           <button class="btn" data-go="${listHash}?s=${startAt}">${icon('steps', 18)}한 단계씩 크게 보기</button>
           ${speakBtn(sayAll, '전체 읽어주기').replace('btn-sm ', '')}
-        </div>
+        </div>`}
       </section>
       <div class="guide-body">
-        ${blocked ? `<div class="callout callout-no"><img src="assets/char/boy-sweat.webp" alt="" /><div><h3>${esc(vinfo.short)}은(는) 이 방법으로 쓸 수 없어요</h3><p>${esc(vinfo.reason)}</p><div class="btns"><button class="btn btn-sm" data-go="#/v?back=${encodeURIComponent(backHash)}">내 상품권 다시 확인</button>${voucherActions(voucher, backHash)}</div></div></div>` : ''}
         ${mismatch}
         <article class="card">
           <h3 class="card-t">${icon('check', 18)}준비물</h3>
           <ul class="prep">${(method.prep || []).map((p) => `<li>${icon('check', 16)}${esc(fill(p, vars))}</li>`).join('')}</ul>
         </article>
         <article class="card">
-          <div class="progress-label"><b>따라 하기</b><span>${doneCount}/${steps.length} 완료</span></div>
-          <div class="progress" role="progressbar" aria-valuemin="0" aria-valuemax="${steps.length}" aria-valuenow="${doneCount}"><i style="width:${(doneCount / steps.length) * 100}%"></i></div>
+          ${mine ? `<div class="progress-label"><b>${OTHER_VOUCHER_HEAD.replace('있다면', '있을 때')}의 순서</b><span>참고용</span></div>` : `<div class="progress-label"><b>따라 하기</b><span>${doneCount}/${steps.length} 완료</span></div>
+          <div class="progress" role="progressbar" aria-valuemin="0" aria-valuemax="${steps.length}" aria-valuenow="${doneCount}"><i style="width:${(doneCount / steps.length) * 100}%"></i></div>`}
           <ol class="steps">${stepHtml}</ol>
         </article>
-        ${allDone ? `<article class="card done-card"><img src="assets/char/boy-thumb.webp" alt="" /><h3>다 됐어요!</h3><p>${esc(m.name)}에서 상품권을 쓰는 순서를 모두 확인했어요.</p></article>` : ''}
+        ${allDone && !mine ? `<article class="card done-card"><img src="assets/char/boy-thumb.webp" alt="" /><h3>다 됐어요!</h3><p>${esc(m.name)}에서 상품권을 쓰는 순서를 모두 확인했어요.</p></article>` : ''}
         ${facts.length ? `<article class="card"><h3 class="card-t">${icon('info', 18)}수수료·한도</h3><dl class="facts">${facts.map(([k, v]) => `<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join('')}</dl></article>` : ''}
         ${cautions.length ? `<article class="card caution"><img src="assets/char/catsh-safe.webp" alt="" /><div><h3 class="card-t">주의하세요</h3><ul>${cautions.map((c) => `<li>${esc(fill(c, vars))}</li>`).join('')}<li>상품권 번호·바코드를 요구하는 전화·문자는 사기일 수 있어요.</li></ul></div></article>` : ''}
         ${alts.length > 1 ? compareHtml(alts, routeId, m) : ''}
@@ -182,7 +185,7 @@ export function guideView({ segs, query, state }) {
       </div>
     </div>
     <div class="cta-bar">
-      ${allDone ? `<button class="btn btn-primary btn-block" data-go="#/search">다른 사용처 찾기</button>` : `<button class="btn btn-primary btn-block" id="nextStep">다음 단계 완료 표시 (${Math.min(doneCount + 1, steps.length)}/${steps.length})</button>`}
+      ${mine ? `<button class="btn btn-primary btn-block" data-go="#/v?back=${encodeURIComponent(backHash)}">내 상품권 다시 확인하기</button>` : allDone ? `<button class="btn btn-primary btn-block" data-go="#/search">다른 사용처 찾기</button>` : `<button class="btn btn-primary btn-block" id="nextStep">다음 단계 완료 표시 (${Math.min(doneCount + 1, steps.length)}/${steps.length})</button>`}
       ${isChargeOnly ? '' : `<div class="cta-sub"><button class="btn btn-ghost" id="favBtn">${icon('star', 16)}${fav ? '즐겨찾기 해제' : '즐겨찾기'}</button><button class="btn btn-ghost" data-go="#/m/${m.id}">판정 결과로</button></div>`}
     </div>`,
     mount(root) {
